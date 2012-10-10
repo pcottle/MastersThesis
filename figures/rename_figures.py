@@ -36,6 +36,7 @@ for figure_dir in figure_dirs:
   source_image = os.path.join(figure_dir, most_recent)
   source_image = source_image.replace(' ', '\ ')
   dest_image = os.path.join(figure_dir, 'figure.png')
+  # convert
   command = 'sips -s format png {0} --out {1}'.format(source_image, dest_image)
   status, output = commands.getstatusoutput(command)
   if status:
@@ -44,4 +45,12 @@ for figure_dir in figure_dirs:
   else:
     print 'completed: ', output, ':DDD'
 
-print 'Done!'
+  # resize
+  command = 'sips -Z 400 {0}'.format(dest_image)
+  status, output = commands.getstatusoutput(command)
+
+  # remove original
+  command = 'rm {0}'.format(source_image)
+  status, output = commands.getstatusoutput(command)
+
+ print 'Done!'
