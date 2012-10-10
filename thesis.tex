@@ -1,19 +1,20 @@
 \documentclass[masters]{ucbthesis}
 \usepackage{biblatex}
+\usepackage{graphicx}
 
-% Double spacing, if you want it.
-% \def\dsp{\def\baselinestretch{2.0}\large\normalsize}
-% \dsp
+%%%%%%%%%%%%%%%% Commands %%%%%%%%%%%%%%%%%%%
+\newcommand\myfigure[2]{
+\begin{center}
+	\includegraphics[width=#2]{#1}
+\end{center}
+}
 
-% If the Grad. Division insists that the first paragraph of a section
-% be indented (like the others), then include this line:
-% \usepackage{indentfirst}
 
 %%%%%%%%%%%%%%%% Citations %%%%%%%%%%%%%%%%%%
 
-%\newtheorem{theorem}{Jibberish}
 \bibliography{references}
-%\hyphenation{mar-gin-al-ia}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
