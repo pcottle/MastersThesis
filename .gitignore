@@ -25,3 +25,8 @@
 *.maf
 *.mtc
 *.mtc0
+*.fls
+*.bcf
+*.xml
+doit.sh
+
