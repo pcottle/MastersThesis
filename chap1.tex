@@ -22,27 +22,47 @@ Parametric rays look like this (equation).
 	\subsection{Geometric Primitive Intersections}
 
 Once parametric rays are defined, you can easily intersect them with geometric primitives
-\myfigure{rayexample}{3in}
+\myfigure{rayexample}{2.5in}
 
 Example of sphere ray intersection equation.
-\myfigure{raysphere}{4in}
-
-
+\myfigure{raysphere}{2.5in}
 
 
 \section{Previous Work}
 
+Previous work (Yusuke's work) involved a few simplifying assumptions about water particle simulation.
+\\
+
 	\subsection{Infinitesimally Slow Rotations}
+The first was that rotations would be infinitesimally slow, meaning that gravity direction was always essentially perpendicular to the leading edge of the rotation when a particle fell.
+\myfigure{prevworkgravityperp}{2.5in}
+
 
 	\subsection{Inelastic Collisions}
+The second was that particle collisions would be inelastic, meaning that velocities were instantaneously projected onto the plane or edge that they collided with.
+
+\myfigure{prevworkinelasticcollision}{2.5in}
+
 
 	\subsection{Kinetic Energy Limitation}
 
-\section{Adaption to Finite Angular Velocities}
+The last was that particles never accumulated kinetic energy above an epsilon value, meaning that they did not leave leading edges with a finite velocity. This means that all paths traced out by the particles were straight lines. This allowed for fast particle simulation but unrealistic particle behavior.
+
+\section{Adaption to Finite Velocities}
+
+This paper adapts the particle simulation to finite velocities and rotation speeds while maintaining the performant nature of the simulation.
 
 	\subsection{Parametric Equation Modification}
 
+Now our parametric equation includes an acceleration term:
+
+$$
+\vec{x}(t) = \vec{x_0} + \vec{v}t + \vec{a}t
+$$
+
 		\subsubsection{Free Fall Equation}
+In free-fall, this leaves us with a parabolic equation of the particle's path. Kinematically valid, except for finite
+
 
 		\subsubsection{Rolling Equation}
 
