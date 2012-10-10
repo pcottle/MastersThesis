@@ -59,4 +59,8 @@ for figure_dir in figure_dirs:
   command = 'git add {0}'.format(dest_image)
   status, output = commands.getstatusoutput(command)
 
+  # open dir
+  command = 'open {0}'.format(figure_dir)
+  status, output = commands.getstatusoutput(command)
+
 print 'Done!'

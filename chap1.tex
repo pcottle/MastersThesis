@@ -57,26 +57,64 @@ This paper adapts the particle simulation to finite velocities and rotation spee
 Now our parametric equation includes an acceleration term:
 
 $$
-\vec{x}(t) = \vec{x_0} + \vec{v}t + \vec{a}t
+\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a}t
 $$
 
 		\subsubsection{Free Fall Equation}
-In free-fall, this leaves us with a parabolic equation of the particle's path. Kinematically valid, except for finite
+In free-fall, this leaves us with a parabolic equation of the particle's path. Kinematically valid, but assumes no aerodynamic drag.
 
+\myfigure{freefallequation}{2.5in}
 
-		\subsubsection{Rolling Equation}
+		\subsubsection{Sliding Equation}
 
-		\subsubsection{Concurrent Rotation \& Rolling Equation}
+When the particle comes to rest against an edge in the workpiece, it begins to slide along this edge. The acceleration vector is projected along the edge, and the resulting component of acceleration is responsible for accelerating the particle.
+\\
+
+Note that while the particle is now traveling along an edge, it is essentially the same as the freefall equation with a new projected acceleration.
+
+$$
+\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a_{projected}}t
+$$
+
+\myfigure{slidingequation}{2.5in}
+
+		\subsubsection{Rotation}
+
+We would like to simulate the particle during workpiece rotation. Since we no longer assume infinitely slow rotations, our particles will need to be simulated during workpiece rotation.
+\\
+
+In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. During rotation, only the acceleration vector changes in direction -- the rest of the math stays the same.
+
+We see now how this rotating acceleration vector affects the two above equations.
+
+		\subsubsection{Concurrent Rotation \& Sliding Equation}
+
+When the particle is sliding on an edge, the acceleration vector is projected along the edge. A rotating acceleration vector, when changed, is equivalent to a fixed-direction vector with changing magnitude.
+
+$$
+\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \hat{a_{projected}}t \cdot mag_{accel}(t)
+$$
+
 
 		\subsubsection{Assumption \#1 - No concurrent Rotation + Freefall}
+
+When the particle is in free-fall, the acceleration vector is no longer projected along an edge.
+
+$$
+\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a}(t) \cdot t
+$$
+
+Although possible to integrate with numerical methods, no easy way of substituting into parametric equations and solving.
+
+\myfigure{norotationfreefall}{2.5in}
 
 	\subsection{Elastic Collisions}
 
 		\subsubsection{Planar Collision}
 
-		\subsubsection{Rolling-Edge Collision}
+		\subsubsection{Sliding-Edge Collision}
 
-		\subsubsection{Rolling-Corner Collision}
+		\subsubsection{Sliding-Corner Collision}
 
 	\subsection{Conservation of Momentum}
 
