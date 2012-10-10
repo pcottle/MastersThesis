@@ -1,5 +1,6 @@
 \documentclass[masters]{ucbthesis}
-\usepackage{biblatex}
+%\usepackage{biblatex}
+\usepackage{natbib}
 
 % Double spacing, if you want it.
 % \def\dsp{\def\baselinestretch{2.0}\large\normalsize}
@@ -11,12 +12,34 @@
 
 %%%%%%%%%%%%%%%% Citations %%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{ifthen}
+\newcommand {\mycitestyle}[1]
+{
+\ifthenelse{\equal{#1}{authyear}}
+{
+\newcommand {\mcite} {\citep}
+\usepackage[comma,authoryear]{natbib}
+\bibpunct{[}{]}{,}{a}{}{;}
+}{}
+\ifthenelse{\equal{#1}{authnum}}{
+\newcommand {\mcite} {\citet}
+\usepackage[comma,numbers]{natbib}}{}
+\ifthenelse{\equal{#1}{onlynum}}{
+\newcommand {\mcite} {\citep}
+\usepackage[comma,numbers]{natbib}
+}{}
+}
+% uncomment eventually once you get the bst file \mycitestyle{authnum} %or authnum or onlynum
 
-\newtheorem{theorem}{Jibberish}
+%Use only \mcite in place of \cite all over the paper.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newtheorem{theorem}{Jibberish}
 
 \bibliography{references}
 
-\hyphenation{mar-gin-al-ia}
+%\hyphenation{mar-gin-al-ia}
 
 \begin{document}
 
@@ -74,9 +97,8 @@ To everyone who helped me along this journey.
 
 %%%%%%%%%%%%%%%%%%%%%%% Appendix and Things %%%%%
 
-% \appendix
-% \chapter{More Monticello Candidates}
+\appendix
 
-% \printbibliography
+%\printbibliography   when using biblatex
 
 \end{document}
