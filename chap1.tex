@@ -57,7 +57,7 @@ This paper adapts the particle simulation to finite velocities and rotation spee
 Now our parametric equation includes an acceleration term:
 
 $$
-\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a}t
+\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a} \cdot t^2
 $$
 
 		\subsubsection{Free Fall Equation}
@@ -73,10 +73,10 @@ When the particle comes to rest against an edge in the workpiece, it begins to s
 Note that while the particle is now traveling along an edge, it is essentially the same as the freefall equation with a new projected acceleration.
 
 $$
-\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a_{projected}}t
+\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}_{projected} \cdot t^2
 $$
 
-\myfigure{slidingequation}{2.5in}
+\myfigure{slidingequation}{3.5in}
 
 		\subsubsection{Rotation}
 
@@ -92,7 +92,7 @@ We see now how this rotating acceleration vector affects the two above equations
 When the particle is sliding on an edge, the acceleration vector is projected along the edge. A rotating acceleration vector, when changed, is equivalent to a fixed-direction vector with changing magnitude.
 
 $$
-\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \hat{a_{projected}}t \cdot mag_{accel}(t)
+\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}_{projected}  \cdot t^2 \cdot mag_{accel}(t)
 $$
 
 
@@ -101,7 +101,7 @@ $$
 When the particle is in free-fall, the acceleration vector is no longer projected along an edge.
 
 $$
-\vec{x}(t) = \vec{x_0} + \vec{v_0}t + \vec{a}(t) \cdot t
+\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
 $$
 
 Although possible to integrate with numerical methods, no easy way of substituting into parametric equations and solving.
@@ -110,33 +110,69 @@ Although possible to integrate with numerical methods, no easy way of substituti
 
 	\subsection{Elastic Collisions}
 
+	Collisions are now elastic, meaning particles maintain a perpendicular velocity when colliding with an edge.
+
 		\subsubsection{Planar Collision}
+
+		When colliding simply on an edge, they bounce and transition back into freefall.
+
+%figureneeded
+
+		\subsubsection{Planar To Sliding Transition}
+
+		When the particles have some $\epsilon$ perpendicular velocity, they transition from freefall to sliding along an edge.
+
+%figureneeded
 
 		\subsubsection{Sliding-Edge Collision}
 
+		When sliding along an edge, the particle may encounter another edge. If this edge has a dot product greater than zero, it collides with the edge and enters freefall again.
+
+%figureneeded
+
 		\subsubsection{Sliding-Corner Collision}
+
+		If the next edge has a dot product less than or equal to 0, the particle is effectively ``trapped'' as long as the gravity vector points within the edge.
+
+%figureneeded
 
 	\subsection{Conservation of Momentum}
 
+		The only source of energy in this demo is the potential energy from gravity. Note that as the workpiece rotates, the gravity vector (and corresponding field) changes. This means that a particle in a low-energy configuration can transition to a high-energy configuration.
+
 		\subsubsection{Settling Guarantee}
+
+		The only addition of energy is from rotation, so in the absence of rotation, no energy is added to the system. Because the elasiticity $\kappa$ of the system is less than 1, energy dissipates as the particles are simulated throughout the workpiece.
 
 		\subsubsection{Duration of Simulation}
 
-		%\subsubsubsection{Concave Vertex}
+		Because of this energy dissipation, the simulation is guaranteed to terminate in one of two ways.
 
-		%\subsubsubsection{Workpiece Exit}
+		\subsubsection{Simulation End -- Concave Vertex}
+
+		Either the particle settles into a concave vertex with a kinetic energy less than $\epsilon$, or
+
+		\subsubsection{Simulation End -- Workpiece Exit}
+
+		The particle exits the workpiece, which is the goal of the simulation.
 
 \section{Results}
 
 	\subsection{Run Time}
 
+	It was fast, here are some numbers
+
 	\subsection{Accuracy Comparison}
+
+	It was accurate in finding intersections that some euler integration schemes would not.
 
 		\subsubsection{With Euler Integration}
 
 \section{Future Work \& Discussion}
 
 	\subsection{Bounding Box Method Adaption}
+
+	You could modify normal bounding box methods to use parametric equations instead.
 
 	\subsection{Bounded Simulation Between Limits}
 
