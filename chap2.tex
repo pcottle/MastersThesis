@@ -2,57 +2,134 @@
 
 \section{General A.I. Search}
 
-	\subsection{State Space}
+General A.I. Search essentially expands from a start state and proceeds towards a goal.
+
+	\subsection{State Space Formulation}
+
+The state space is the tuple of information that directly encodes the time-variant properties that describe your progress towards the goal. For pacman, the example is his position and the food.
+\\
+
+Other parts of the problem that are not time-variant are considered part of the environment (for instance, the walls of pacman or the polygons in our workpiece here).
+
+
+	\subsection{State Space Size}
+The size of the state space is all possible valid combinations of the components of the state space. E.G. for pacman, it's $MN$ for an M x N sized board.
 
 	\subsection{State Space Exploration}
 
+Exploration of a state space happens through a transition function that generates successors from a state from a list of available actions.
+\\
+
+For pacman, this means that North/South/East/West produce different states. Transition functions can fail to return a state from an action if that action is invalid.
+
 \section{Adaption of A.I. Search}
+
+Our A.I. Search algorithms will be quite similar, but our state space approach is quite different.
 
 	\subsection{Traditional Formulation}
 
+The traditional formulation for kinematic problems is to define the state of a particle as it's position, velocity, and acceleration. Successor function integrates in time.
+
 	\subsection{Our State Space Formulation}
+
+Our state space formulation is instead either:
+
+\begin{enumerate}
+\item The concave vertex the particle is resting in
+\item The particle is out of the workpiece
+\end{enumerate}
+
+Our state space is thus dramatically reduced in complexity compared to the traditional formulation, meaning our state space size will be reduced dramatically as well.
 
 	\subsection{Exploration}
 
+	Instead, the bulk of the algorithm's work will be in the transition function, allowing us to determine what concave vertices we can reach from a given state.
+
 \section{Transition Function}
+
 
 	\subsection{Definition}
 
+Transition function returns states.
+
 	\subsection{Sampling}
+
+We will sample from our available gravity directions and simulate a kinetic path from there.
+
+%figureneeded
 
 	\subsection{Representative Coverage Between Limits}
 
+Try to get an even coverage over the space, sample with $\sqrt[3]{x}$
+
+%figureneeded
+
 	\subsection{Graph Search}
+
+Reduce possibilities, prioritize by our ``cost'' for the algorithm.
 
 		\subsubsection{Cost Sensitive Closed List}
 
+Essentially similar to CSCL because it is order-independent.
+
 \section{Search}
+
+Now we can search from a start state outwards
 
 	\subsection{Uniform Cost Search}
 
+Using uniform cost, we always maintain optimality based on our cost.
+
 	\subsection{Cost Function}
+
+Our cost function can be a variety of things based on the backwards path.
 
 		\subsubsection{Time}
 
+Most popular is time, because time is money.
+
 		\subsubsection{Energy - Rotation Angle}
+
+Second most popular is energy based on the rotation angle. This would be appropriate if the workpiece was well balanced but fixture generated a lot of friction while rotating.
 
 		\subsubsection{Energy - Workpiece Center of Gravity}
 
+Another option is based on center of gravity if the energy from the workpiece rotations outweighed the friction in the motors.
+
+	\subsection{Solution}
+
+		Defined as the sequence of gravity transitions from each concave vertex to produce a particle path that exits the workpiece.
+
 \section{Control Sequence Generator}
+
+Now that we have a solution, we need to generate a control sequence for the workpiece rotator.
 
 	\subsection{Sample-defined Rotations}
 
+These rotations are defined for us by the transition function.
+
 	\subsection{Intermediary Rotations}
+
+Between these samples we don't have anything. What we do is just interpolate between the last sample and the beginning of the next sample with a cubic bezier curve.
 
 \section{Results}
 
 	\subsection{Run Time}
 
+Runs fast.
+
 	\subsection{Part Complexity}
+
+Transition function is constant in best case, linear in worst case based on the number of polygon edges.
 
 	\subsection{Demonstration of Solution}
 
+Go to this web address!
+
 \section{Future Work \& Discussion}
+
+Could be improvements
 
 	\subsection{Heuristics for A* Search}
 
+A* search can be added with heuristics. Distance to workpiece bounding box might be a good one, but that's essentially a radially symmetric heuristic, not very informative.
