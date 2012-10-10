@@ -20,6 +20,8 @@ for figure_dir in figure_dirs:
   print 'found files ', files
   if files[0] == 'figure.png':
     print 'This directory checks out!'
+    command = 'git add {0}'.format(os.path.join(figure_dir, files[0]))
+    status, output = commands.getstatusoutput(command)
     continue
 
   # we need to move or convert last file
@@ -53,4 +55,8 @@ for figure_dir in figure_dirs:
   command = 'rm {0}'.format(source_image)
   status, output = commands.getstatusoutput(command)
 
- print 'Done!'
+  # git add
+  command = 'git add {0}'.format(dest_image)
+  status, output = commands.getstatusoutput(command)
+
+print 'Done!'
