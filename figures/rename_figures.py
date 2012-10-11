@@ -14,6 +14,10 @@ for figure_dir in figure_dirs:
     if file == '.DS_Store':
       files.remove(file)
 
+  if not files:
+    print 'This directory ', figure_dir, ' does not contain a figure!'
+    continue
+
   files.sort(key=lambda x: os.stat(os.path.join(figure_dir, x)).st_mtime)
   files.reverse()
 

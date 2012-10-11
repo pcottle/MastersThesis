@@ -18,14 +18,14 @@ We will examine a parametric approach.
 
 Parametric rays look like this (equation).
 
+\myfigure{rayexample}{3.5in}
 
 	\subsection{Geometric Primitive Intersections}
 
 Once parametric rays are defined, you can easily intersect them with geometric primitives
-\myfigure{rayexample}{2.5in}
 
 Example of sphere ray intersection equation.
-\myfigure{raysphere}{2.5in}
+\myfigure{raysphere}{3.5in}
 
 
 \section{Previous Work}
@@ -35,7 +35,8 @@ Previous work (Yusuke's work) involved a few simplifying assumptions about water
 
 	\subsection{Infinitesimally Slow Rotations}
 The first was that rotations would be infinitesimally slow, meaning that gravity direction was always essentially perpendicular to the leading edge of the rotation when a particle fell.
-\myfigure{prevworkgravityperp}{2.5in}
+
+\myfigure{prevworkgravityperp}{4in}
 
 
 	\subsection{Inelastic Collisions}
@@ -63,7 +64,7 @@ $$
 		\subsubsection{Free Fall Equation}
 In free-fall, this leaves us with a parabolic equation of the particle's path. Kinematically valid, but assumes no aerodynamic drag.
 
-\myfigure{freefallequation}{2.5in}
+\myfigure{freefallequation}{3.5in}
 
 		\subsubsection{Sliding Equation}
 
@@ -106,7 +107,7 @@ $$
 
 Although possible to integrate with numerical methods, no easy way of substituting into parametric equations and solving.
 
-\myfigure{norotationfreefall}{2.5in}
+\myfigure{norotationfreefall}{3.5in}
 
 	\subsection{Elastic Collisions}
 
@@ -116,25 +117,25 @@ Although possible to integrate with numerical methods, no easy way of substituti
 
 		When colliding simply on an edge, they bounce and transition back into freefall.
 
-%figureneeded
+\myfigure{planarcollision}{3in}
 
 		\subsubsection{Planar To Sliding Transition}
 
 		When the particles have some $\epsilon$ perpendicular velocity, they transition from freefall to sliding along an edge.
 
-%figureneeded
+\myfigure{planartoslidingtransition}{3in}
 
 		\subsubsection{Sliding-Edge Collision}
 
 		When sliding along an edge, the particle may encounter another edge. If this edge has a dot product greater than zero, it collides with the edge and enters freefall again.
 
-%figureneeded
+\myfigure{slidingedgecollision}{2.5in}
 
 		\subsubsection{Sliding-Corner Collision}
 
 		If the next edge has a dot product less than or equal to 0, the particle is effectively ``trapped'' as long as the gravity vector points within the edge.
 
-%figureneeded
+\myfigure{slidingcornercollision}{2.5in}
 
 	\subsection{Conservation of Momentum}
 
