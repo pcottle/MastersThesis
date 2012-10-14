@@ -1,15 +1,32 @@
 \documentclass[masters]{ucbthesis}
-\usepackage{biblatex}
+\usepackage[backend=biber]{biblatex}
 \usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+
+
+%%%%%%%%%%%%%%% Equation Numbering %%%%%%%%%%
+
+%\numberwithin{equation}{subsubsection}
 
 %%%%%%%%%%%%%%%% Commands %%%%%%%%%%%%%%%%%%%
 \newcommand\myfigure[2]{
-\begin{center}
-	\includegraphics[width=#2]{figures/#1/figure.png}
-\end{center}
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.5\textwidth]{figures/#1/figure.png}
+	\caption{#2}
+\end{figure}
 }
 
+\newcommand\myequation[2]{
+% label
+	#2
 
+% equation
+$$
+	#1
+$$
+}
 
 %%%%%%%%%%%%%%%% Citations %%%%%%%%%%%%%%%%%%
 
@@ -29,7 +46,7 @@
 \othermembers{Professor Tarek Zohdi}
 \numberofmembers{2}
 \field{Mechanical Engineering}
-\campus{Berkeley}
+\campus{Berkeley, California}
 
 
 \maketitle
