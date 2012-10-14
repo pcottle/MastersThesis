@@ -42,7 +42,7 @@ There are many ways to find these intersection (or ``collision'') points. One ap
 
 	\subsection{Parametric Equations (rays)}
 
-The above approach, however, is dependent on the resolution of accuracy and subject to many drawbacks. The more popular approach is to model the ray equation as a parametric equation.
+The above approach, however, is dependent on the resolution of the integration and subject to many drawbacks. The more popular approach is to model the ray equation as a parametric equation.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
@@ -58,7 +58,7 @@ Equation \eqref{eq:parametricRay} shows this modeling choice.
 
 Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a ``camera'' location. If one of these rays intersect a geometric primitive in the scene, the resulting color of that ray is calculated and the results are stored in a pixel table.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersect a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table.
 
 	\subsection{Geometric Primitive Intersections}
 
@@ -99,7 +99,7 @@ As shown above, previous work (Yusuke's work) has modeled water particles as ray
 Because ray-modeling of water particles assumes the path is always a straight line, this means two things about the workpiece rotation:
 
 \begin{itemize}
-	\item The acceleration is always in the same direction as the velocity
+	\item The acceleration is always in the same direction as the velocity during free-fall
 	\item The accleration never changes direction while the particle is in motion.
 \end{itemize}
 
@@ -171,7 +171,7 @@ With these two formulations, the water particle's path can be simulated on both 
 
 We would like to simulate the particle during workpiece rotation. Since we no longer assume infinitely slow rotations, our particles will need to be simulated during workpiece rotation.
 
-In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. This means that during rotation, the orientation of the acceleration field changes in time. This field rotation affects the motion of particles during simulation.
+In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. Consequently, the orientation of the acceleration field changes in time during rotation. This field rotation affects the motion of particles during simulation.
 
 We see now how this rotating acceleration field affects the two above equations.
 
@@ -182,23 +182,25 @@ When the particle is sliding on an edge, the acceleration vector is projected al
 This leads to a special case of particle motion, referred to as ``Concurrent Rotation and Sliding.'' Equation \eqref{eq:slidingRotating} shows the resulting formulation.
 
 \myequation{
-	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\hat{a}_{projected}  \cdot t^2 \cdot mag_{accel}(t)
+	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\hat{a}_{projected}  \cdot t^2 \cdot |a_{projected}|(t)
 } {
 	\label{eq:slidingRotating}
 }
 
-In equation \eqref{eq:slidingRotating}, $\hat{a}$ is a constant unit-vector in the direction of edge. The $mag_{accel}$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate, the magnitude term can be modeled as
+In equation \eqref{eq:slidingRotating}, $\hat{a}_projected$ is a constant unit-vector in the direction of edge. The $|a_{projected}|(t)$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate, the magnitude term can be modeled as
 $$
-mag_{accel} = cos(\omega t)
+mag_{accel} = cos(\omega \cdot t)
 $$
 
 where $omega$ is the angular velocity.
 
 		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
 
-In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections.
+In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections. We can, however, easily subtitute in values of $t$ to determine the position of the particle at a given time.
 
-		\subsubsection{Assumption \#1 - No concurrent Rotation + Freefall}
+The ability to determine where the particle is at a given time will come in handy later.
+
+		\subsubsection{Concurrent Rotation \& Free-Fall Equation}
 
 With equation \eqref{eq:slidingRotating}, we can model the particle motion during concurrent rotating and sliding. We would also like to model the motion of the particle during free-fall when the workpiece is rotating.
 
@@ -220,7 +222,9 @@ $$
 a_y = sin(\alpha t) \cdot |a_g|
 $$
 
-These non-linear terms produce a much more complicated equation.
+		\subsubsection{Assumption \#1 - No concurrent Rotation + Freefall}
+
+These non-linear terms produce a much more complicated equation; again, we can no longer substitute in easily to determine the intersection points.
 
 \myfigure{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
 
