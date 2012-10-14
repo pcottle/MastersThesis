@@ -85,11 +85,9 @@ In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the e
 Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the popular quadratic formula:
 
 \myequation{
-	\frac{
-	-b \pn \sqrt{b^2 - 4ac}
-	}{2a} = t
+	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
 } {
-	\label{eq:quadraticFormula}
+	\label{eq:quadraticFormula} 
 }
 
 This constant-time solution for the intersection between a parametric equation and geometric primitive will be crucial for later parts of this paper.
@@ -135,7 +133,13 @@ Although modeling water particles as rays is convenient, this paper aims to prod
 	\label{eq:freeFall}
 }
 
-Although we now include an acceleration term, we maintain the performance of intersection tests as shown in later sections.
+Although we now include an acceleration term, we can maintain the performance of intersection tests.
+
+\section{Parabola Primitive Intersections}
+
+TODO
+
+\section{Parametric Equations}
 
 		\subsubsection{Free Fall Equation}
 
@@ -190,17 +194,35 @@ $$
 
 where $omega$ is the angular velocity.
 
+		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
+
+In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections.
+
 		\subsubsection{Assumption \#1 - No concurrent Rotation + Freefall}
 
-When the particle is in free-fall, the acceleration vector is no longer projected along an edge.
+With equation \eqref{eq:slidingRotating}, we can model the particle motion during concurrent rotating and sliding. We would also like to model the motion of the particle during free-fall when the workpiece is rotating.
+
+In this case, the acceleration vector is no longer constant as shown in \eqref{eq:freefallRotating}.
+
+\myequation{
+	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
+} {
+	\label{eq:freefallRotating}
+}
+
+Here, the $\vec{a}(t)$ term describes the acceleration vector over time as the workpiece rotates. Assuming a constant rotation, this term breaks down to
 
 $$
-\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
+a_x = cos(\alpha t) \cdot |a_g|
 $$
 
-Although possible to integrate with numerical methods, no easy way of substituting into parametric equations and solving.
+$$
+a_y = sin(\alpha t) \cdot |a_g|
+$$
 
-\myfigure{norotationfreefall}{3.5in}
+These non-linear terms produce a much more complicated equation.
+
+\myfigure{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
 
 	\subsection{Elastic Collisions}
 
