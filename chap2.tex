@@ -2,73 +2,105 @@
 
 \section{General A.I. Search}
 
-General A.I. Search essentially expands from a start state and proceeds towards a goal.
+Artificial Intelligence Search is a general class of algorithms that discover (or ``search'' for) plans that turn a start state into a goal state. The plan produced is a sequence of actions that, if taken, will obtain a goal state.
 
 	\subsection{State Space Formulation}
 
-The state space is the tuple of information that directly encodes the time-variant properties that describe your progress towards the goal. For pacman, the example is his position and the food.
-\\
+The ``state'' is defined as a set of information that minimally represents the current progress to the goal. The state is transformed by actions available to the agent. The successor function is responsible for transforming a state and action into a successor state.
 
-Other parts of the problem that are not time-variant are considered part of the environment (for instance, the walls of pacman or the polygons in our workpiece here).
-
+Other parts of the problem that are not time-variant are considered part of the environment.
 
 	\subsection{State Space Size}
-The size of the state space is all possible valid combinations of the components of the state space. E.G. for pacman, it's $MN$ for an M x N sized board.
+The size of the state space is all possible valid combinations of the components of the state space. For a positional search problem on an $M$ by $N$ grid with one agent, the size of the state space is $MN$. For two players, it would be $(MN)^2$.
+
+As the size of the state space expands, it can have disastrous consequences on the effectiveness of a search problem. General A.I. Search is effective at finding solutions in state spaces that are manageable; if the state space becomes too expansive, the search algorithms have to enumerate through far too many possibilities to make progress towards a goal. This prevents the search from terminating in a reasonable amount of time.
 
 	\subsection{State Space Exploration}
 
-Exploration of a state space happens through a transition function that generates successors from a state from a list of available actions.
-\\
-
-For pacman, this means that North/South/East/West produce different states. Transition functions can fail to return a state from an action if that action is invalid.
+Exploration of a state space happens through a transition function that generates successor states from state action pairs. The transition function commonly contains all the ``environment'' information and validation checks -- for example in a positional search problem, the transition function would contain the list of walls and prevent the agent from moving into a wall.
 
 \section{Adaption of A.I. Search}
 
-Our A.I. Search algorithms will be quite similar, but our state space approach is quite different.
+The A.I. Search algorithms in this paper will be unmodified versions of those found in popular literature, but our approach to the state space approach will be quite different.
 
 	\subsection{Traditional Formulation}
 
-The traditional formulation for kinematic problems is to define the state of a particle as it's position, velocity, and acceleration. Successor function integrates in time.
+The traditional state formulation for kinematic problems is to define the state of a particle as it's currrent position, velocity, and acceleration. The actions available to the agent at any time are usually actions that change the acceleration on the particle. The successor function integrates this kinematic state in time with a pre-defined accuracy.
 
-	\subsection{Our State Space Formulation}
+The problem with this type of state formulation is that the state space becomes far too expansive for the majority of problems. Even in the reduced problem where there are 100 possible position, velocity, and acceleration vectors, the state space is $100^3$. This presents far too many possible states for search algorithms to enumerate, and it produces an unbearable computational load.
 
-Our state space formulation is instead either:
+Because of this, general A.I. search is rarely used in kinematics problems -- other techniques like kinematical planning are more common.
+
+	\subsection{Our State Formulation}
+
+Our state formulation overcomes these difficulties by drastically reducing the size of the state space. We instead transition most of the computational overhead to the transition function.
+
+We define our state as the ``settled'' position of the particle, meaning the state is either:
 
 \begin{enumerate}
-\item The concave vertex the particle is resting in
-\item The particle is out of the workpiece
+\item The concave vertex the particle is resting in, or
+\item outside of the workpiece.
 \end{enumerate}
 
-Our state space is thus dramatically reduced in complexity compared to the traditional formulation, meaning our state space size will be reduced dramatically as well.
+By defining our state this way, we dramatically reduce the size of the state space to
+$$
+num(V_{cc}) + 1
+$$
+where $V_{cc}$ is defined as the set of concave vertices in the workpiece.
+
+Because the maximum number of states visited is now only linear in concave vertices, our search algorithms have far fewer states to expand and a reduced computational load.
 
 	\subsection{Exploration}
 
-	Instead, the bulk of the algorithm's work will be in the transition function, allowing us to determine what concave vertices we can reach from a given state.
+The bulk of the computational work will now be in the transition function. The transition function will be responsible for producing the set of concave vertices ``reachable'' from the current concave vertex from the available actions.
 
 \section{Transition Function}
 
+The transition function produces successor states from a set of available actions and initial state. For our problem, this means that the transition function will produce the set of concave vertices (or workpiece exit status) ``reachable'' from a given arbitrary concave vertex.
 
-	\subsection{Definition}
-
-Transition function returns states.
+The actions available to the agent will represent the possible gravity directions from a given concave vertex. These gravity directions can be obtained by rotating the workpiece; in this sense, a given gravity direction must be obtained by rotating a starting gravity direction to the desired direction.
 
 	\subsection{Sampling}
 
-We will sample from our available gravity directions and simulate a kinetic path from there.
+The transition function will sample from the available set of gravity vectors and produce a desired ``turn.'' A turn of the workpiece results in the gravity vector sweeping from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. During this turn, the particle's path is simulated. After the turn, the particle is simulated over time until it settles in a new concave vertex or exits the workpiece.
 
-\myfigure{transitionfunctionsampling}{2.5in}
+In this sense, one can think of the transition function as taking in a concave vertex and producing a set of ``reachable'' concave vertices:
+
+$$
+trans(V_{cc}^{i}) = \left \{ V_{cc}^{1}, V_{cc}^{2}, ...  \right \}
+$$
 
 	\subsection{Limits of Sampling}
 
-We need a gravity direction that will induce movement away from the concave vertex -- this is the min. We then increase that maximum angle until the gravity direction almost causes the particle to leave the surface -- we call this the maximum.
+In this paper, we restrict the possible gravity directions available from a concave vertex. The primary reason for this is based on our simulation -- if a shift in gravity causes a particle to leave the surface while the workpiece is still rotating, we cannot simulate that part of the path efficiently. For this reason, we throw out the possible gravity vectors that cause this type of particle movement to happen.
+
+The first set gravity vectors we exclude are any vectors that don't cause the particle to leave the concave vertex. These vectors result in no state change and can be ignored.
+
+The second set of gravity vectors that are excluded are those that cause the particle to fall off the leading edge out of a concave vertex.
+
+\myfigure{transitionfunctionsampling}{The possible range of gravity vectors to sample from.}
+
+This leaves two arcs of gravity vectors. The bounds on each arc are defined by the minimal gravity vector to produce movement out of the concave vertex ($g_{\epsilon}$) and the maximum gravity vector to keep the particle on the surface ($g_{max}$).
+
+	\subsection{Ideal Transition Function}
+
+The ideal transition function produces the maximum set of ``reachable'' concave vertices while minimizing the necessary computation. In order to do this, the transition function must construct a number of starting kinetic states for the particle and simulate where the particle settles.
 
 	\subsection{Representative Coverage Between Limits}
 
-Try to get an even coverage over the space, sample with $\sqrt[3]{x}$
+Because each arc of gravity vectors is a range, there are an infinite number of samples to extract. This means that our transition function must enumerate an infinite number of possibilities to get full confidence that the set of ``reachable'' concave vertices has been achieved.
 
-%figureneeded ??
+To reduce our computational load, we will instead choose a set of gravity vectors that produces a reasonable coverage over the possible types of kinetic paths achieved. Because our goal is to produce the maximum number of reachable concave vertices, we will choose a sampling method that produces the most diverse set of kinetic paths.
+
+If the possible range of samples is from $0$ to $1$, a fairly reasonable sample function was to use $x^3$. Because the acceleration effects compound with time, uniform sampling produced far too many high-velocity kinetic paths. A cubed sampling produced a more even coverage of kinetic paths.
+
+\myfigure{samplingUniform}{The range of kinetic paths produced from 10 samples at uniform sampling.}
+
+\myfigure{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the leading edge.}
 
 	\subsection{Graph Search}
+
+To increase computation
 
 Reduce possibilities, prioritize by our ``cost'' for the algorithm.
 
