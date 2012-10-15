@@ -98,39 +98,87 @@ If the possible range of samples is from $0$ to $1$, a fairly reasonable sample 
 
 \myfigure{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the leading edge.}
 
+With this sampling function, we can obtain better coverage with lower computational cost.
+
 	\subsection{Graph Search}
 
-To increase computation
+To further increase computational efficiency, we implement two types of graph reduction in our search.
 
-Reduce possibilities, prioritize by our ``cost'' for the algorithm.
+The first is by using the standard Graph implementation of our A.I. Search Algorithm. This graph version of the algorithm prevents a state from being expanded twice. Because the connectivity graph within workpieces often has a lot of cycles, preventing more than one expansion at each state helps considerably in cutting down computational cost.
 
-		\subsubsection{Cost Sensitive Closed List}
+The second graph reduction is in the transition function. When the transition function samples in both directions and receives a list of concave vertices that are ``reachable,'' it reduces that list down to a set. The reduction is based on cost-priority (where the lower-cost plans to reach a concave vertex are chosen over higher-cost plans). This graph reduction puts fewer plans on the fringe, reducing the memory overhead.
 
-Essentially similar to CSCL because it is order-independent.
+In workpieces with finely-tesselated concave sections, the connectivity graph is highly connected and contains many cycles. These two graph reductions improve performance dramatically.
+
+\myfigure{hemisphereSection}{A finely-tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
 
 \section{Search}
 
-Now we can search from a start state outwards
+Now that our state formulation and transition function is fully defined, we can then use a standard A.I. Search algorithm to expand out from a start state to a goal state.
 
 	\subsection{Uniform Cost Search}
 
-Using uniform cost, we always maintain optimality based on our cost.
+Our paper uses the standard implementation of uniform cost graph search to obtain a plan to he goal state. By using uniform cost search, we ensure our obtained solution is optimal in cost.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+\Function{UniformCostGraphSearch}{$problem,fringe$}
+	\State $closed \gets$ an empty set
+	\State $fringe \gets$ INSERT(MAKE-NODE(INITIAL-STATE[$problem$]),$fringe$)
+
+	\While{$fringe$ not empty}
+		\State $node \gets$ REMOVE-FRONT($fringe$)
+		\If{Goal-Test($problem$,STATE[$node$])}
+			\State \textbf{return} $node$ \Comment{Success}
+		\EndIf
+		\If{State[$node$] not in $closed$}
+			\State add State[$node$] to $closed$
+			\State $fringe \gets$ InsertAllByPriority(Expand($node, problem$), $fringe$)
+		\EndIf
+	\EndWhile
+	\State \textbf{return} $failure$ \Comment{Failure from exhausting all states}
+
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
 
 	\subsection{Cost Function}
 
-Our cost function can be a variety of things based on the backwards path.
+Our cost function for a given plan (sequence of turns) can be a variety of properties depending on our optimization goal.
 
 		\subsubsection{Time}
 
-Most popular is time, because time is money.
+The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the total backward time to execute that plan. This ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe.
+
+		\subsubsection{Energy}
+
+Another popular concern in manufacturing is the energy required for a given procedure. If energy is the optimization goal, plans can be instead enqueued by the estimated total amount of energy required to execute that series of turns.
+
+
+There are many ways to estimate the amount of energy required to execute a series of turns. The exact details are dependent on the fixture setup and associated motor; we present three simple models of energy estimation.
 
 		\subsubsection{Energy - Rotation Angle}
 
-Second most popular is energy based on the rotation angle. This would be appropriate if the workpiece was well balanced but fixture generated a lot of friction while rotating.
+The first estimation of energy is based on the total rotation angle. If friction in the bearings and motor are the primary energy losses for the draining process, plans can be enqueued by their total absolute angle change.
+
+This model would be appropriate if the workpiece was well balanced in a fixture that produced high energy loss due to friction.
 
 		\subsubsection{Energy - Workpiece Center of Gravity}
 
-Another option is based on center of gravity if the energy from the workpiece rotations outweighed the friction in the motors.
+Another model for energy is based on the work the motor has to perform against gravity. If the workpiece's center of gravity is positioned far away from the center of rotation, the workpiece is unbalanced in the fixture. Turns that raise the center of gravity will produce counter-torques, will turns that lower the center of gravity will produce added acceleration.
+
+% figure needed
+
+If this model is more appropriate for the fixture setup, the plans can be enqueued onto the fringe based on the integrated change in height for the center of gravity.
+
+		\subsubsection{Energy - Acceleration And Deceleration}
+
+Finally, if the workpiece is well balanced and friction in the rotator is low, the most appropriate model may be one based on acceleration and deceleration of the workpiece. While the total number of accelerations commonly scales with the total angle, these two properties are not necessarily the same.
+
+In this case, plans can be enqueued based on their total acceleration change.
+
+%shitton of equations needed here
 
 	\subsection{Solution}
 
@@ -156,7 +204,7 @@ Runs fast.
 
 	\subsection{Part Complexity}
 
-Transition function is constant in best case, linear in worst case based on the number of polygon edges.
+Transition function is constant in best case, unbounded in worst case based on the number of polygon edges.
 
 	\subsection{Demonstration of Solution}
 
