@@ -9,10 +9,6 @@
 \usepackage{hyperref}
 
 
-%%%%%%%%%%%%%%% Equation Numbering %%%%%%%%%%
-
-%\numberwithin{equation}{subsubsection}
-
 %%%%%%%%%%%%%%%% Commands %%%%%%%%%%%%%%%%%%%
 \newcommand\myfigure[2]{
 \begin{figure}[H]
@@ -25,11 +21,10 @@
 \newcommand\myequation[2]{
 % label
 	#2
-
 % equation
-$$
+\begin{equation}
 	#1
-$$
+\end{equation}
 }
 
 %%%%%%%%%%%%%%%% Citations %%%%%%%%%%%%%%%%%%
@@ -41,6 +36,7 @@ $$
 \begin{document}
 
 % Declarations for Front Matter
+
 \title{2D Polygonal Mesh Draining via Parametric AI Search}
 \author{Peter Cottle}
 \degreesemester{Fall}
@@ -90,8 +86,10 @@ To everyone who helped me along this journey.
 
 \include{background}
 \include{introduction}
-\include{chap1}
-\include{chap2}
+
+\include{ModelingChapter}
+\include{PhysicalSimulationChapter}
+\include{AISearchChapter}
 \include{conclusion}
 
 %%%%%%%%%%%%%%%%%%%%%%% Appendix and Things %%%%%

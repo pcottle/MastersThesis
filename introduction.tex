@@ -6,13 +6,8 @@ A paragraph about manufacturing work pieces and jet cleaning
 A paragraph about draining the fluid after cleaning. Oven approach vs rotating / draining approach.
 \\
 
-Exisiting research \cite{plot} has been conducted to determine the ``drainability'' of workpieces. ``Drainability'' in this sense refers to the ability for a part to be fully drained by an infinite number of rotations about a particular axis. Water particles move between concave vertices while the workpiece is being rotated; they eventually either leave the workpiece or enter a cycle in the draining graph.
+The key obstacle for manufacturers is both to analyze the ``drainability'' of a workpiece and produce a series of actions that will fully drain the workpiece.
 
-Existing software can sample all rotation axes over the Gaussian Sphere and produce a map of which rotation axes contain loops in the draining graph. These rotation axes that contain loops cannot be drained by an infintie number of rotations, so manufacturers know to produce fixtures that rotate the workpiece along a different axis.
+Drainability in this sense refers to the ability for a part to be fully drained by rotations about a particular axis. Existing work has made great progress in this domain; Yasui et all's work is capable of producing a map of which rotation axes would fully drain the part under an infinite number of rotations. These results can be quite useful when designing rotation fixtures or altering the geometry of a workpiece.
 
-Once an axis is chosen however, manufacturers have no way of knowing the duration of rotation needed. They also do not know the optimal speed of rotation (the speed that guarantees draining in the shortest amount of time). Because of this, there still exists a gap between the theoretical results of drainability and the implementation in industry.
-
-Furthermore, the existing research only calculates drainability for rotation in one direction. It is fairly easy to imagine parts that are undrainable with rotations in solely one direction, but easily drainable with rotations in two directions. Omitting the possibility of bi-directional draining unncessarily reduces the set of workpieces that are considered ``drainable.''
-
-This paper aims to bridge the gap between drainability analysis and industry implementation. Similar drainability analysis results will be produced, but a final control sequence of the rotation angle of the workpiece will be produced. Furthermore, bi-directional draining solutions will be produced, further expanding the set of workpieces that can be drained. These two objectives give rise to a fairly different approach than existing research.
-
+More progress is needed in the domain of producing a series of actions that would drain the part. This work aims to produce those useful results. (probably more here)
