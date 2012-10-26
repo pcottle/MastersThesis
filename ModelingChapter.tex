@@ -1,0 +1,64 @@
+						\chapter{Modeling Approach}
+
+Analyzing the drainability of a workpiece requires that the behavior of fluid throughout the workpiece be modeled in some way. This behavior is complex; trapped gases, viscuous effects, and fluid mechanics all interact during workpiece draining. There are many ways to model this fluid behavior, and each choice comes with both advantages and disadvantages.
+
+Advanced simulation methods like FEM fluid simulation or smoothed-particle hydrodynamics approximate the behavior of the fluid quite well, but their computation is quite expensive in both time and memory. Due to their performance characteristics and the current state of computational power, it is difficult to use these methods in the actual drainability analysis. They can, however, be used for validation of a potential solution.
+
+Consequently, previous work creates simplified fluid models and then performs drainability analysis on the reduced problem.
+
+\section{Straight-line Multiple-Particle Model (Yasui Et. all)}
+
+	\subsection{Core Assumptions}
+
+Yasui et. all chose a simplified particle modeling approach with a few core underlying simplifications:
+
+\begin{itemize}
+	\item The fluid body at each ``pool'' would be approximated as a single particle
+	\item Water particles only travel in straight lines and do not maintain a kinetic state
+	\item The workpiece would rotate infinitesimally slow in one direction for an infinite amount of time
+\end{itemize}
+
+	\subsection{Assumption Effects}
+
+This modeling approach allowed Yusuke et all to reduce the draining problem down to a particle draining problem. Furthermore, the particle simulation within the workpiece was greatly simplified; particles always traveled in straight lines and did not maintain kinetic state. When particles collided with parts of the workpiece, they experienced completely inelastic collisions. Lastly, particles leaving an edge or surface were assumed to have no initial velocity.
+
+	\subsection{Infinitesimally Slow Rotations}
+
+The assumption about workpiece rotation meant that when particles rolled out of a concave vertex, the gravity direction was always nearly perpendicular to the leading edge.
+
+\myfigure{prevworkgravityperp}{The gravity direction is perpendicular to concave vertex leading edges.}
+
+With these two assumptions, particle simulation out of a concave vertex... TODO
+
+	\subsection{Inelastic Collisions}
+
+Since water particles do not maintain kinetic state in Yasui et all, collisions against a plane are essentially just projections onto that plane.
+
+\myfigure{prevworkinelasticcollision}{Demonstration of purely inelastic collisions, where velocities are projected onto the collision surface.}
+
+	\subsection{Modeling Advantages}
+
+With this modeling choice, Yasui et all were able to produce a particle simulation method that was both performant and deterministic. Because of the performance characteristics of their particle simulation, they were able to simulate particles falling out of every concave vertex in the workpiece at multiple rotation angles. These results led to the creation of a draining graph, which was the core of the drainability analysis.
+
+Their work produced results that summarized which rotation axes out in the Gaussian sphere would produce full workpiece draining under their model choice. Their results help greatly in visualizing which orientations produce ``cycles'' in the draining graph, which are orientations to avoid when producing rotation fixtures.
+
+	\subsection{Modeling Disadvantages}
+
+Because of the infinite rotation at an infinitesimal speed assumption, Yasui et all's algorithm results did not tell manufacturers the minimum speed or required time to drain the workpiece. Without that information, the actual control process of draining a workpiece is fairly rudamentary and time-consuming.
+
+This work aims to produce results that are directly useful in manufacturing when physically controlling the workpiece rotaton fixture. A direct control sequence as actually produced out of this work that will drain a single particle out of the provided 2D part.
+
+\section{Kinetic Single-Particle Model}
+
+Our particle modeling approach has a few similar but different underlying simplifications:
+
+\begin{itemize}
+	\item The fluid in the entire workpiece will be approximated by a single particle
+	\item Water particles travel according to a reasonable kinetic model
+	\item The workpiece can be rotated in either direction along it's rotation axis
+	\item The workpiece is a two dimensional polygonal mesh
+\end{itemize}
+
+	\subsection{Assumption Effects}
+
+These assumptions... (TODO)
