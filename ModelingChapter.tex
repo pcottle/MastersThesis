@@ -18,35 +18,30 @@ Yasui et. all chose a simplified particle modeling approach with a few core unde
 	\item The workpiece would rotate infinitesimally slow in one direction for an infinite amount of time
 \end{itemize}
 
-	\subsection{Assumption Effects}
+	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling approach allowed Yusuke et all to reduce the draining problem down to a particle draining problem. Furthermore, the particle simulation within the workpiece was greatly simplified; particles always traveled in straight lines and did not maintain kinetic state. When particles collided with parts of the workpiece, they experienced completely inelastic collisions. Lastly, particles leaving an edge or surface were assumed to have no initial velocity.
+This modeling approach allowed Yusuke et all to reduce the draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece was greatly simplified; particles always traveled in straight lines and did not maintain kinetic state. When particles collided with parts of the workpiece, they experienced completely inelastic collisions. Lastly, particles leaving an edge or surface were assumed to have no initial velocity.
 
-	\subsection{Infinitesimally Slow Rotations}
+Thus, particle simulation in this choice of model was reduced to essentially line projection, propagation, and intersection within the workpiece. Because these tests are computationally inexpensive and have a sub-linear runtime, Yusuke et all were able to perform many particle simulations. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece.
 
-The assumption about workpiece rotation meant that when particles rolled out of a concave vertex, the gravity direction was always nearly perpendicular to the leading edge.
+This thoroughness of simulation produces a great set of results that describes the drainability of any given rotation axis out of the Gaussian sphere. Unfortunately, the assumptions needed to attain this fast particle simulation reduce the usability of the results.
 
-\myfigure{prevworkgravityperp}{The gravity direction is perpendicular to concave vertex leading edges.}
+Yusuke et all's model assumes infinitesimally slow rotation for an infinite time; while most workpieces will drain fairly quickly, there is no upper bound (or information at all) about the amount of time required for draining. Manufacturers may want to choose an axis that drains the workpiece as quickly as possible, which is not possible under this model.
+Furthermore, since workpieces are only rotated in a single direction about the rotation axis, this unnecessarily reduces the number of workpieces that can be drained. A model that allows bi-directional rotation could provide many more rotation axes that fully drain the workpiece.
 
-With these two assumptions, particle simulation out of a concave vertex... TODO
+%	\subsection{Infinitesimally Slow Rotations}
 
-	\subsection{Inelastic Collisions}
+%The assumption about workpiece rotation meant that when particles rolled out of a concave vertex, the gravity direction was always nearly perpendicular to the leading edge.
 
-Since water particles do not maintain kinetic state in Yasui et all, collisions against a plane are essentially just projections onto that plane.
+%\myfigure{prevworkgravityperp}{The gravity direction is perpendicular to concave vertex leading edges.}
 
-\myfigure{prevworkinelasticcollision}{Demonstration of purely inelastic collisions, where velocities are projected onto the collision surface.}
+%	\subsection{Inelastic Collisions}
 
-	\subsection{Modeling Advantages}
+%Since water particles do not maintain kinetic state in Yasui et all, collisions against a plane are essentially just projections onto that plane.
 
-With this modeling choice, Yasui et all were able to produce a particle simulation method that was both performant and deterministic. Because of the performance characteristics of their particle simulation, they were able to simulate particles falling out of every concave vertex in the workpiece at multiple rotation angles. These results led to the creation of a draining graph, which was the core of the drainability analysis.
+%\myfigure{prevworkinelasticcollision}{Demonstration of purely inelastic collisions, where velocities are projected onto the collision surface.}
 
-Their work produced results that summarized which rotation axes out in the Gaussian sphere would produce full workpiece draining under their model choice. Their results help greatly in visualizing which orientations produce ``cycles'' in the draining graph, which are orientations to avoid when producing rotation fixtures.
-
-	\subsection{Modeling Disadvantages}
-
-Because of the infinite rotation at an infinitesimal speed assumption, Yasui et all's algorithm results did not tell manufacturers the minimum speed or required time to drain the workpiece. Without that information, the actual control process of draining a workpiece is fairly rudamentary and time-consuming.
-
-This work aims to produce results that are directly useful in manufacturing when physically controlling the workpiece rotaton fixture. A direct control sequence as actually produced out of this work that will drain a single particle out of the provided 2D part.
+This work aims to produce results that are directly useful in manufacturing when physically controlling the workpiece rotaton fixture. A direct control sequence as actually produced out of this work that will drain a single particle out of a provided 2D polygonal mesh.
 
 \section{Kinetic Single-Particle Model}
 
@@ -54,11 +49,15 @@ Our particle modeling approach has a few similar but different underlying simpli
 
 \begin{itemize}
 	\item The fluid in the entire workpiece will be approximated by a single particle
-	\item Water particles travel according to a reasonable kinetic model
+	\item Water particles travel according to a reasonable kinetic model (acceleration, but no aerodynamic drag)
 	\item The workpiece can be rotated in either direction along it's rotation axis
 	\item The workpiece is a two dimensional polygonal mesh
 \end{itemize}
 
 	\subsection{Assumption Effects}
 
-These assumptions... (TODO)
+These assumptions lead to work that is complementary to Yusuke et all's work. Their set of assumptions allow for highly performant drainability analysis about a particular axis. This analysis can performed over the entire Gaussian sphere of axes, leading to results that allow designers and manufacturers to pick a rotation axis for a fixture (or detect when a geometry change prevents draining about a given axis).
+
+
+
+
