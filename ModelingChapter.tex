@@ -27,7 +27,7 @@ Thus, particle simulation in this choice of model was reduced to essentially lin
 This thoroughness of simulation produces a great set of results that describes the drainability of any given rotation axis out of the Gaussian sphere. Unfortunately, the assumptions needed to attain this fast particle simulation reduce the usability of the results.
 
 Yusuke et all's model assumes infinitesimally slow rotation for an infinite time; while most workpieces will drain fairly quickly, there is no upper bound (or information at all) about the amount of time required for draining. Manufacturers may want to choose an axis that drains the workpiece as quickly as possible, which is not possible under this model.
-Furthermore, since workpieces are only rotated in a single direction about the rotation axis, this unnecessarily reduces the number of workpieces that can be drained. A model that allows bi-directional rotation could provide many more rotation axes that fully drain the workpiece.
+Furthermore, since workpieces are only rotated in a single direction about the rotation axis, this unnecessarily reduces the number of workpieces that can be drained. A model that allows bi-directional rotation could provide many more rotation axes that fully drain the workpiece. Finally, manufacturers may be interested in a more accurate model of the fluid behavior in the workpiece.
 
 %	\subsection{Infinitesimally Slow Rotations}
 
@@ -41,23 +41,24 @@ Furthermore, since workpieces are only rotated in a single direction about the r
 
 %\myfigure{prevworkinelasticcollision}{Demonstration of purely inelastic collisions, where velocities are projected onto the collision surface.}
 
-This work aims to produce results that are directly useful in manufacturing when physically controlling the workpiece rotaton fixture. A direct control sequence as actually produced out of this work that will drain a single particle out of a provided 2D polygonal mesh.
-
 \section{Kinetic Single-Particle Model}
 
-Our particle modeling approach has a few similar but different underlying simplifications:
+Our work addresses these concerns by utilizing a different (but related) model of the workpiece draining problem. The results produced are complementary to Yusuke et all's results and can be used in conjunction.
+
+The objectives of a more accurate kinetic model and bi-directional draining lead to the following assumptions:
 
 \begin{itemize}
-	\item The fluid in the entire workpiece will be approximated by a single particle
-	\item Water particles travel according to a reasonable kinetic model (acceleration, but no aerodynamic drag)
+	\item The fluid in the entire workpiece will be approximated by a single particle starting at a concave vertex
+	\item Water particles travel according to a reasonable kinetic model (acceleration due to gravity, but no aerodynamic drag)
 	\item The workpiece can be rotated in either direction along it's rotation axis
 	\item The workpiece is a two dimensional polygonal mesh
 \end{itemize}
 
 	\subsection{Assumption Effects}
 
-These assumptions lead to work that is complementary to Yusuke et all's work. Their set of assumptions allow for highly performant drainability analysis about a particular axis. This analysis can performed over the entire Gaussian sphere of axes, leading to results that allow designers and manufacturers to pick a rotation axis for a fixture (or detect when a geometry change prevents draining about a given axis).
+This modeling choice requires a different approach to drainability analysis than the approach used by Yusuke et all; our approach, however, draws inspiration from their previous work.
 
+The key componenets of our approach break down into the water particle simulation (presented in Chapter 4) and the search for a drainability sequence (presented in Chapter 5).
 
 
 
