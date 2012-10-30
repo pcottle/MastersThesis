@@ -1,6 +1,12 @@
 						\chapter{Physical Simulation of Water Particles}
 
+Water particle simulation is the underlying core of drainability analysis -- the behavior of the fluid (or water particles in this case) must be simulated in order to analyze when and where the fluid can leave the workpiece.
+
+Here we present the popular approach to simulating straight-line water particles based on parametric rays (the approach used in Yusuke et all's work) and then our modification of this approach to fit parabolic water particles.
+
 \section{Popular Reduced Ray Approach}
+
+	\subsection{Underlying Kinetic Model}
 
 Individual water particles under an acceleration field $a$ with initial position $x_0$ and initial velocity $v_0$ can be modeled with a simple kinetic equation.
 
@@ -10,11 +16,14 @@ Individual water particles under an acceleration field $a$ with initial position
 	\label{eq:basickinematic}
 }
 
-Equation \eqref{eq:basickinematic} shows the basic kinematic model of a particle. Note that this modelomits aerodynamic drag on the water particle; the velocities achieved in workpiece draining produce fairly negligible aerodynamic effects, and this omission greatly simplifies the trajectories of each particle.
+Equation \eqref{eq:basickinematic} shows the basic kinematic model of a water particle.
+
+
+Note that this model omits aerodynamic drag ($-\rho v^2 \cdot t$). This is a reasonable assumption, for the velocities achieved in workpiece draining produce fairly negligible aerodynamic effects. The omission of a quadratic term also greatly simplifies intersection tests.
 
 	\subsection{Reduction to Rays}
 
-Despite the simplicity of \eqref{eq:basickinematic}, researchers like (Yasui et all) have chosen to omit the acceleration term to produce particles that move in a straight line at constant velocity. Under this condition, these particles can effectively be modeled as ``rays.''
+Despite the simplicity of \eqref{eq:basickinematic}, many researchers chose to omit the acceleration term to produce particles that move in a straight line at constant velocity. Under this condition, these particles can effectively be modeled as ``rays.''
 
 \myequation{
 x(t) = x_0 + v_0 \cdot t	
@@ -28,7 +37,7 @@ There are many ways to find these intersection (or ``collision'') points. One ap
 
 	\subsection{Parametric Equations (rays)}
 
-The above approach, however, is dependent on the resolution of the integration and subject to many drawbacks. The more popular approach is to model the ray equation as a parametric equation.
+The above solution method, however, is dependent on the resolution of the integration and subject to many drawbacks. The more popular approach is to model the ray equation as a parametric equation.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
@@ -44,11 +53,9 @@ Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized pos
 
 Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; a parametric approach makes these intersection tests quite fast.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to select the optimal intersection test approach. Parametric modeling of geometric primitives combined with parametric rays are the industry standard.
 
 	\subsection{Geometric Primitive Intersections}
-
-TODO - switch to ray line intersection
 
 Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time. 
 
@@ -68,7 +75,7 @@ In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the e
 	\label{eq:sphereParametricSubbed}
 }
 
-\myfigure{raysphere}{A demonstration of a ray intersecting with a line.}
+\myfigure{raysphere}{A demonstration of a ray intersecting with a sphere.}
 
 Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the popular quadratic formula:
 
@@ -82,7 +89,7 @@ This constant-time solution for the intersection between a parametric equation a
 
 \section{Kinetic Parametric Approach}
 
-While this reduced-ray approach at particle simulation is convenient, it makes core assumptions about the kinetic behavior of particles that are too restrictive for our model in this work. Since we would like to produce control sequences for draining in realistic scenarios, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with \eqref{eq:basickinematic} to produce \eqref{eq:freeFall}.
+While this straight-line particle approach is convenient, our model aims to examine particles with more realisitc kinetic properties and paths. Consequently, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with \eqref{eq:basickinematic} to produce \eqref{eq:freeFall}.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t + \frac{1}{2} \vec{a} \cdot t^2
