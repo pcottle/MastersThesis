@@ -18,7 +18,7 @@ For every state, the agent under control has a number of actions available to ta
 
 When the agent under control takes an action, a new state is produced. The ``transition function'' is responsible for transforming a state action pair into a successor state. For example, if the robot above was in position $(M = 1, N = 2)$ and took the action $North$, the transition function would return the state $(M = 1, N = 3)$.
 
-This transition function is also responsible for performing validitiy checks against the environment. In our positional search example, the transition function would be responsible for making sure the robot does not move off the grid or into a square occupied by another agent or wall. If an invalid state action pair is given to the transition function, it often returns $null$ to designate this invalid combination.
+This transition function is also responsible for performing validity checks against the environment. In our positional search example, the transition function would be responsible for making sure the robot does not move off the grid or into a square occupied by another agent or wall. If an invalid state action pair is given to the transition function, the transition function returns $null$ to designate this invalid combination.
 
 The ``successor function'' is a meta function that uses the transition function and available actions to the agent. It is responsible for generating a list of successor states from a given state. For the above problem, the successor function would return the list of adjacent squares the robot could move into and the actions that produce those states.
 
@@ -49,7 +49,7 @@ These definitions are enough to implement the standard tree search algorithm.
 
 	\subsection{Importance of Formulation}
 
-The above definitions of state, actions, and successor functions are quite vague. This means that there are several valid formulations (or definitions) of states for a given problem. The particular formulation chosen can have large consequences on the effectiveness of A.I. search and the algorithmic runtime.
+The above definitions of state, actions, and successor functions are quite general. This means that there are several valid formulations (or definitions) of states for a given problem. The particular formulation chosen can have large consequences on the effectiveness of A.I. search and the algorithmic runtime.
 
 
 The size of the state space is the important factor when considering different problem formulations. A state space size is defined by size of the set of the different values the state could hold.
@@ -70,7 +70,7 @@ Rotating a water particle out of a workpiece can be considered a kinematic plann
 
 The actions available to the agent at any time are usually actions that change the acceleration on the agent. The transition function integrates this kinematic state and acceleration change in time with a pre-defined accuracy. Consequently, many transition function calls must be made to accurately integrate the path of the agent through time.
 
-The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. For example, in a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors for the state, the state space is $1000^3$. This presents far too many possible states for search algorithms to enumerate and produces an unbearable computational load.
+The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. For example, in a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors for the state, the state space is $1000^3$. This presents far too many possible states for search algorithms to enumerate through and may prevent the algorithm from terminating.
 
 Because of this, general A.I. search is rarely used in kinematics problems -- other techniques like kinematical motion planning are more common \cite{plot}.
 
@@ -87,13 +87,13 @@ We define our state as the ``settled'' position of the particle, meaning the sta
 \item outside of the workpiece.
 \end{enumerate}
 
-By defining our state this way, we dramatically reduce the size of the state space to
+By defining our state this way, we produce a state space with size of 
 $$
 num(V_{cc}) + 1
 $$
-where $V_{cc}$ is defined as the set of concave vertices in the workpiece.
+where $V_{cc}$ is defined as the set of concave vertices in the workpiece. The size of this state space is small compared to kinetic state definitions which can be exponential in the accuracy of each value.
 
-Because the maximum number of states visited is now only linear in concave vertices, our search algorithms have far fewer states to expand and a reduced computational load.
+Because the maximum number of states visited is now only linear in concave vertices, our search algorithms have far fewer states to expand and a lower upper bound on running time.
 
 \section{Exploration}
 
@@ -111,7 +111,7 @@ $$
 
 The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time.
 
-Thus, one specific action, or ``turn'', is defined by a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity. Likewise the total time of the turn $t_{turn}$ is similarly unbounded, but we restrict the limits of the turn time to sensible amounts for simplicity.
+Thus, one specific action, or ``turn,'' is defined by a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity. Likewise the total time of the turn $t_{turn}$ is similarly unbounded, but we restrict the limits of the turn time to sensible amounts for simplicity.
 
 	\subsection{Transition Function}
 
