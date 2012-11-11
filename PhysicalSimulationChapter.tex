@@ -4,7 +4,7 @@ Water particle simulation is the underlying core of drainability analysis -- the
 
 Here we present the popular approach to simulating straight-line water particles based on parametric rays (the approach used in Yusuke et all's work) and then our modification of this approach to fit parabolic water particles.
 
-\section{Popular Reduced Ray Approach}
+\section{Reduced Ray Approach}
 
 	\subsection{Underlying Kinetic Model}
 
@@ -19,11 +19,11 @@ Individual water particles under an acceleration field $a$ with initial position
 Equation \eqref{eq:basickinematic} shows the basic kinematic model of a water particle.
 
 
-Note that this model omits aerodynamic drag ($-\rho v^2 \cdot t$). This is a reasonable assumption, for the velocities achieved in workpiece draining produce fairly negligible aerodynamic effects. The omission of a quadratic term also greatly simplifies intersection tests.
+Note that this model omits the effect of aerodynamic drag ($-\rho v^2 \cdot t$) on the particle. The velocities achieved in workpiece draining produce fairly negligible aerodynamic effects, this omission greatly simplifies calculating the trajectory of a particle.
 
 	\subsection{Reduction to Rays}
 
-Despite the simplicity of \eqref{eq:basickinematic}, many researchers chose to omit the acceleration term to produce particles that move in a straight line at constant velocity. Under this condition, these particles can effectively be modeled as ``rays.''
+In order to obtain particles that always travel in straight lines, many researchers chose to omit the acceleration term from \eqref{eq:basickinematic}. Under this condition, these particles can effectively be modeled as ``rays.''
 
 \myequation{
 x(t) = x_0 + v_0 \cdot t	
@@ -33,11 +33,11 @@ x(t) = x_0 + v_0 \cdot t
 
 Equation \eqref{eq:kinematicDropAccel} shows this simplified ray model. Once the motion of a particle under un-obstructed movement can be easily produced, the primary challenge of particle simulation is finding the collision points of a particle's path.
 
-There are many ways to find these intersection (or ``collision'') points. One approach would be to kinematically integrate \eqref{eq:kinematicDropAccel} to produce a series of points. Once one of these points is inside a member of the workpiece geometry, a solution can be searched for with standard methods like Newton's method or Binary Search.
-
 	\subsection{Parametric Equations (rays)}
 
-The above solution method, however, is dependent on the resolution of the integration and subject to many drawbacks. The more popular approach is to model the ray equation as a parametric equation.
+There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation.
+
+% TODO -- cite a common text here!
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
@@ -47,7 +47,7 @@ The above solution method, however, is dependent on the resolution of the integr
 
 Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized positions and a single parameter $t$ that describes the motion of the particle through space.
 
-\myfigure{rayexample}{A visual depicition of a ray and its resulting path}
+\myfigure{rayexample}{A visual depicition of a ray's component vectors and its path through time}
 
 	\subsection{Ray Tracing}
 
@@ -77,7 +77,7 @@ In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the e
 
 \myfigure{raysphere}{A demonstration of a ray intersecting with a sphere.}
 
-Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the popular quadratic formula:
+Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the standard quadratic formula:
 
 \myequation{
 	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
@@ -97,19 +97,31 @@ While this straight-line particle approach is convenient, our model aims to exam
 	\label{eq:freeFall}
 }
 
-		\subsubsection{Free Fall Equation}
+\section{Equation Types}
 
-Equation \eqref{eq:freeFall} gives us the basic ``free-fall'' equation in which the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola.
+During the course of simulation, a particle may be traveling in a variety of conditions. The two primary conditions that determine the type of equation used are:
+
+\begin{itemize}
+	\item Whether the workpiece is rotating
+	\item Whether the particle is traveling along a workpiece surface or through open space.
+\end{itemize}
+
+These two conditions, when combined in all possible ways, produce four scenarios of particle simulation that must be modeled. The following sections cover each scenario and detail the equation used.
+
+		\subsection{Free Fall Equation}
+
+When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola.
 
 \myfigure{freefallequation}{Example path traced out by the ``free-fall'' equation}
 
-During the course of simulation, however, the particle's entire path does not consist of only free-fall segments.
+		\subsection{Sliding Equation}
 
-		\subsubsection{Sliding Equation}
+During simulation, a particle may also begin to travel along an edge if it has a perpendicular velocity less than $\epsilon$. This produces another scenario of particle simulation -- a particle traveling along an edge when the workpiece is not rotating.
 
-When the water particle comes to rest against an edge in the workpiece, its acceleration is projected along the edge. If this projected acceleration is zero, the particle will stay in place; if not, the particle will begin to ``slide'' along this edge.
 
-In this case, we must model the motion of the particle through time. We achieve this modeling by projecting the acceleration in \eqref{eq:freeFall} along the edge, which produces a straight-line path.
+In this scenario, the acceleration of the particle in free-fall is projected along the surface of the workpiece. If this projected acceleration is zero, the particle will stay in place; if not, the particle will begin to ``slide'' along this edge.
+
+We achieve the modeling of this scenario by projecting the acceleration in \eqref{eq:freeFall} along the workpiece surface, which produces a straight-line path.
 
 Note that while the particle is now traveling along an edge, it is essentially the same as the freefall equation with a new projected acceleration.
 
@@ -121,21 +133,23 @@ Note that while the particle is now traveling along an edge, it is essentially t
 
 \myfigure{slidingequation}{Demonstration of the sliding equation.}
 
-With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant.
+With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating).
 
-		\subsubsection{Rotation}
+		\subsection{Rotation}
 
-We would like to simulate the particle during workpiece rotation. Since we no do not assume infinitely slow rotations, our particles will undergo periods of time where the acceleration vector is changing in direction rapidly.
+Here we begin to examine the scenarios where the workpiece is rotating during particle simulation.
 
-In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. Consequently, the orientation of the acceleration field changes in time during rotation. This field rotation affects the motion of particles during simulation.
+In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. Consequently, rotation changes the orientation of the acceleration field changes in time. 
 
-We see now how this rotating acceleration field affects the two above equations.
+We see now how this rotating acceleration field affects the following scenarios.
 
-		\subsubsection{Concurrent Rotation \& Sliding Equation}
+		\subsection{Concurrent Rotation \& Sliding Equation}
 
-When the particle is sliding on an edge, the acceleration vector is projected along the edge. This means the direction of the acceleration is fixed; only the magnitude of the projected acceleration varies. Consequently, rotation of the acceleration field (when the particle is sliding) only results in the magnitude of the projected acceleration changing.
+In this scenario, the particle is traveling along a workpiece edge and the workpiece is rotating.
 
-This leads to a special case of particle motion, referred to as ``Concurrent Rotation and Sliding.'' Equation \eqref{eq:slidingRotating} shows the resulting formulation.
+We know that the acceleration vector is projected along the edge during edge travel. This means the direction of the acceleration in this scenario is fixed; only the magnitude of the projected acceleration varies as the workpiece rotates. Consequently, rotation of the acceleration field only results in the magnitude of the projected acceleration changing.
+
+This leads to a special case of particle motion, referred to as ``concurrent rotation and sliding.'' Equation \eqref{eq:slidingRotating} shows the resulting formulation of this scenario.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\hat{a}_{projected}  \cdot t^2 \cdot |a_{projected}|(t)
@@ -154,13 +168,11 @@ where $omega$ is the angular velocity.
 
 In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections. We can, however, easily subtitute in values of $t$ to determine the position of the particle at a given time.
 
-The ability to determine where the particle is at a given time will come in handy later.
+The ability to determine where the particle is at a given time will be crucial for our methods later; this scenario will still be simulated, despite the inability to intersect these trajectories with geometric primitives.
 
-		\subsubsection{Concurrent Rotation \& Free-Fall Equation}
+		\subsection{Concurrent Rotation \& Free-Fall Equation}
 
-With equation \eqref{eq:slidingRotating}, we can model the particle motion during concurrent rotating and sliding. We would also like to model the motion of the particle during free-fall when the workpiece is rotating.
-
-In this case, the acceleration vector is no longer constant as shown in \eqref{eq:freefallRotating}.
+The fourth scenario is when the particle is traveling through open space and the workpiece is rotating in time. In this case, the acceleration vector is no longer projected along an edge as shown in \eqref{eq:slidingRotating}. Thus, the acceleration vector has a direction that changes in time (with a fixed magntiude), as shown in \eqref{eq:freefallRotating}.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
