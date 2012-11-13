@@ -52,7 +52,7 @@ for figure_dir in figure_dirs:
     print 'completed: ', output, ':DDD'
 
   # resize
-  command = 'sips -Z 400 {0}'.format(dest_image)
+  command = 'sips -Z 1000 {0}'.format(dest_image)
   status, output = commands.getstatusoutput(command)
 
   # remove original
