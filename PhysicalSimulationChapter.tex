@@ -47,7 +47,8 @@ There are many ways to find these intersection (or ``collision'') points. One co
 
 Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized positions and a single parameter $t$ that describes the motion of the particle through space.
 
-\myfigure{rayexample}{A visual depicition of a ray's component vectors and its path through time}
+
+\myfigure{width=0.9\linewidth}{rayexample}{A visual depicition of a ray's component vectors and its path through time}
 
 	\subsection{Ray Tracing}
 
@@ -75,7 +76,7 @@ In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the e
 	\label{eq:sphereParametricSubbed}
 }
 
-\myfigure{raysphere}{A demonstration of a ray intersecting with a sphere.}
+\myfigure{width=0.5\linewidth}{raysphere}{A demonstration of a ray intersecting with a sphere.}
 
 Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the standard quadratic formula:
 
@@ -112,7 +113,7 @@ These two conditions, when combined in all possible ways, produce four scenarios
 
 When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola.
 
-\myfigure{freefallequation}{Example path traced out by the ``free-fall'' equation}
+\myfigure{width=0.9\linewidth}{freefallequation}{Example path traced out by the ``free-fall'' equation}
 
 		\subsection{Sliding Equation}
 
@@ -131,7 +132,7 @@ Note that while the particle is now traveling along an edge, it is essentially t
 	\label{eq:sliding}
 }
 
-\myfigure{slidingequation}{Demonstration of the sliding equation.}
+\myfigure{width=0.8\linewidth}{slidingequation}{Demonstration of the sliding equation.}
 
 With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating).
 
@@ -194,7 +195,7 @@ $$
 
 These non-linear terms produce a much more complicated equation; again, we can no longer combine this equation with geometric primitives easily to determine  intersection points.
 
-\myfigure{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
+\myfigure{width=0.5\linewidth}{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
 
 
 
@@ -208,25 +209,25 @@ TODO -- now we can't simulate this because the particle is in free fall and will
 
 		When colliding simply on an edge, they bounce and transition back into freefall.
 
-\myfigure{planarcollision}{Particle Edge Planar Collision.}
+\myfigure{width=0.5\linewidth}{planarcollision}{Particle Edge Planar Collision.}
 
 		\subsubsection{Planar To Sliding Transition}
 
 		When the particles have some $\epsilon$ perpendicular velocity, they transition from freefall to sliding along an edge.
 
-\myfigure{planartoslidingtransition}{Particle Path transition from Free-Fall to Sliding.}
+\myfigure{width=0.5\linewidth}{planartoslidingtransition}{Particle Path transition from Free-Fall to Sliding.}
 
 		\subsubsection{Sliding-Edge Collision}
 
 		When sliding along an edge, the particle may encounter another edge. If this edge has a dot product greater than zero, it collides with the edge and enters freefall again.
 
-\myfigure{slidingedgecollision}{Sliding particle collision with adjacent edge at obtuse.}
+\myfigure{width=0.5\linewidth}{slidingedgecollision}{Sliding particle collision with adjacent edge at obtuse.}
 
 		\subsubsection{Sliding-Corner Collision}
 
 		If the next edge has a dot product less than or equal to 0, the particle is effectively ``trapped'' as long as the gravity vector points within the edge.
 
-\myfigure{slidingcornercollision}{Sliding particle collision with adjacent edge at acute angle.}
+\myfigure{width=0.5\linewidth}{slidingcornercollision}{Sliding particle collision with adjacent edge at acute angle.}
 
 	\subsection{Conservation of Momentum}
 

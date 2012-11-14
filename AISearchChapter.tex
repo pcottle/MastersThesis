@@ -10,7 +10,7 @@ Based on our ability to rapidly simulate water particles and the deterministic n
 
 In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attemping to reach a goal position $G_{pos}$
 
-\myfigure{robotGrid}{A small positional search problem.}
+\myfigure{width=0.5\linewidth}{robotGrid}{A small positional search problem.}
 
 The ``state'' is defined as a set of information that minimally represents the current progress to the goal. For this positional search problem, the minimal state representation would be the position tuple of the robot $(R_x,R_y)$, where $R_x$ is the horizontal position of the robot and $R_y$ is the vertical position of the robot. Here these variables can take on positive integer values up to $M$ and $N$ respectively.
 
@@ -132,7 +132,7 @@ In this work, we restrict the possible set of ``turns'' from a given concave ver
 
 First, some terminology must be defined. A given concave vertex has two leading edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
 
-\myfigure{samplingUniform}{Pay attention the leading edges here (needs new figure).}
+\myfigure{width=0.5\linewidth}{samplingUniform}{Pay attention the leading edges here (needs new figure).}
 
 Our first restriction is to define $g_{start}$ as the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that result in no particle motion. These vectors represent the last possible gravity direction before movement is obtained; this allows us to ``set up'' the turn slowly while the particle is still settled in the concave vertex.
 
@@ -140,7 +140,7 @@ Our first restriction is to define $g_{start}$ as the perpendicular vectors to $
 
 Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaenously keeping the particle on the leading edge of the concave vertex. This produces a quarter-circle range of possibilities for $g_{end}$ defined by both leading edges.
 
-\myfigure{transitionfunctionsampling}{The possible range of gravity vectors to sample from.}
+\myfigure{width=0.5\linewidth}{transitionfunctionsampling}{The possible range of gravity vectors to sample from.}
 
 This leaves two arcs of gravity vectors. The bounds on each arc are defined by the minimal gravity vector to produce movement out of the concave vertex ($g_{\epsilon}$) and the maximum gravity vector to keep the particle on the surface ($g_{max}$).
 
@@ -164,11 +164,11 @@ The way we produce the majority of this set is to obtain a representative covera
 
 If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time, this uniform sampling method produces many kinetic paths that are almost identical as can be seen in figure (BLAH).
 
-\myfigure{samplingUniform}{The range of kinetic paths produced from 10 samples from each side at uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
+\myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 samples from each side at uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
 
 A far better sampling function is to use $x^3$. This function produces many samples at the low end of the range of $g_{end}$ vectors and only a few at the higher end. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths as can be seen in figure (BLAH).
 
-\myfigure{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the leading edge.}
+\myfigure{width=0.5\linewidth}{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the leading edge.}
 
 With this sampling function, we can obtain better coverage with lower computational cost.
 
@@ -213,7 +213,7 @@ By doing so, our successor function produces the optimal reduced set of concave 
 
 These two graph reductions excel in workpieces with finely-tesselated concave sections. Here, the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a lot of time expanding all the concave vertices over and over again.
 
-\myfigure{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
+\myfigure{width=0.5\linewidth}{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
 
 \section{Cost}
 
