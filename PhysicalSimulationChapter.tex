@@ -26,7 +26,7 @@ Note that this model omits the effect of aerodynamic drag ($-\rho v^2 \cdot t$) 
 In order to obtain particles that always travel in straight lines, many researchers chose to omit the acceleration term from \eqref{eq:basickinematic}. Under this condition, these particles can effectively be modeled as ``rays.''
 
 \myequation{
-x(t) = x_0 + v_0 \cdot t	
+x(t) = x_0 + v_0 \cdot t
 }{
 	\label{eq:kinematicDropAccel}
 }
@@ -42,7 +42,7 @@ There are many ways to find these intersection (or ``collision'') points. One co
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
 } {
-	\label{eq:parametricRay}	
+	\label{eq:parametricRay}
 }
 
 Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized positions and a single parameter $t$ that describes the motion of the particle through space.
@@ -58,7 +58,7 @@ Ray-tracing produces 3D computer graphics by sending out rays from a camera loca
 
 	\subsection{Geometric Primitive Intersections}
 
-Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time. 
+Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time.
 
 For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in equation \eqref{eq:sphereParametric}.
 
@@ -83,7 +83,7 @@ Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yiel
 \myequation{
 	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
 } {
-	\label{eq:quadraticFormula} 
+	\label{eq:quadraticFormula}
 }
 
 This constant-time solution for the intersection between a parametric equation and geometric primitive will be crucial for later parts of this paper.
@@ -109,13 +109,13 @@ During the course of simulation, a particle may be traveling in a variety of con
 
 These two conditions, when combined in all possible ways, produce four scenarios of particle simulation that must be modeled. The following sections cover each scenario and detail the equation used.
 
-		\subsection{Free Fall Equation}
+		\subsection{\#1: Free Fall Equation}
 
 When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola.
 
 \myfigure{width=0.9\linewidth}{freefallequation}{Example path traced out by the ``free-fall'' equation}
 
-		\subsection{Sliding Equation}
+		\subsection{\#2: Sliding Equation}
 
 During simulation, a particle may also begin to travel along an edge if it has a perpendicular velocity less than $\epsilon$. This produces another scenario of particle simulation -- a particle traveling along an edge when the workpiece is not rotating.
 
@@ -140,11 +140,11 @@ With these two formulations, the water particle's path can be simulated on both 
 
 Here we begin to examine the scenarios where the workpiece is rotating during particle simulation.
 
-In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. Consequently, rotation changes the orientation of the acceleration field changes in time. 
+In this paper, we choose our frame of reference to be the $X$ $Y$ axes that define the workpiece geometry. This means that when the workpiece rotates, our frame of reference stays fixed to the workpiece. Consequently, rotation changes the orientation of the acceleration field changes in time.
 
 We see now how this rotating acceleration field affects the following scenarios.
 
-		\subsection{Concurrent Rotation \& Sliding Equation}
+		\subsection{\#3: Concurrent Rotation \& Sliding Equation}
 
 In this scenario, the particle is traveling along a workpiece edge and the workpiece is rotating.
 
@@ -165,7 +165,7 @@ $$
 
 where $omega$ is the angular velocity.
 
-		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
+		\subsubsection{\#4: Concurrent Rotation \& Sliding Equation Intersection}
 
 In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections. We can, however, easily subtitute in values of $t$ to determine the position of the particle at a given time.
 
@@ -195,39 +195,45 @@ $$
 
 These non-linear terms produce a much more complicated equation; again, we can no longer combine this equation with geometric primitives easily to determine  intersection points.
 
-\myfigure{width=0.5\linewidth}{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
+\myfigure{width=0.9\linewidth}{norotationfreefall}{Demonstration of the particle path during concurrent rotating and free-fall}
 
 
 
 TODO -- now we can't simulate this because the particle is in free fall and will collide with some geometric primitive, which we can't solve for performantly. In sliding + rotating it doesn't matter, because the particle is already on an edge and not going to collide with anything (besides the adjacent edge, which is easy to lookup).
 
-	\subsection{Elastic Collisions}
+	\section{Collisions}
 
-	Collisions are now elastic, meaning particles maintain a perpendicular velocity when colliding with an edge.
+Collisions occur when the path for a given particle intersects a surface inside the workpiece.
 
-		\subsubsection{Planar Collision}
+\myfigure{width=0.5\linewidth}{planarcollision}{A particle colliding with a surface and the resulting elastic collision}
 
-		When colliding simply on an edge, they bounce and transition back into freefall.
+After a collision occurs, the particle ``transitions'' into one of three states:
 
-\myfigure{width=0.5\linewidth}{planarcollision}{Particle Edge Planar Collision.}
+\begin{itemize}
+\item The particle has come to rest and simulation terminates
+\item The particle begins a new path through open space
+\item The particle begins a new path along the surface of a polygon
+\end{itemize}
+
+There are many types of collisions depending on the direction of the acceleration vector, the kinetic energy that the particle contains, and the angle between surfaces on a polygon. We present the two primary collisions (or transitions) of concern:
 
 		\subsubsection{Planar To Sliding Transition}
 
-		When a particle collides with an edge and obtains a resulting perpendicular velocity ($v_{perp}$) less than some $\epsilon$ value, the particle transitions from freefall to sliding along an edge.
+When a particle collides with an edge and obtains a resulting perpendicular velocity ($v_{perp}$) less than some $\epsilon$ value, the particle transitions from freefall to sliding along an edge.
 
-\myfigure{width=0.5\linewidth}{planartoslidingtransition}{Particle Path transition from Free-Fall to Sliding.}
+\myfigure{width=0.7\linewidth}{slidingtofreefalltransition}{Particle Path transition from Free-Fall to Sliding.}
 
-		\subsubsection{Sliding-Edge Collision}
+%		\subsubsection{Sliding to Planar Transition}
 
-		When sliding along an edge, the particle may encounter another edge. If this edge has a dot product greater than zero, it collides with the edge and enters freefall again.
+%		When sliding along an edge, the particle may encounter another edge. If this edge has a dot product greater than zero, it collides with the edge and enters freefall again.
 
-\myfigure{width=0.5\linewidth}{slidingedgecollision}{Sliding particle collision with adjacent edge at obtuse.}
+%\myfigure{width=0.5\linewidth}{slidingedgecollision}{Sliding particle collision with adjacent edge at obtuse.}
 
-		\subsubsection{Sliding-Corner Collision}
+%		\subsubsection{Sliding-Corner Collision}
 
-		If the next edge has a dot product less than or equal to 0, the particle is effectively ``trapped'' as long as the gravity vector points within the edge.
+%		If the next edge has a dot product less than or equal to 0, the particle is effectively ``trapped'' as long as the gravity vector points within the edge.
 
-\myfigure{width=0.5\linewidth}{slidingcornercollision}{Sliding particle collision with adjacent edge at acute angle.}
+%\myfigure{width=0.5\linewidth}{slidingcornercollision}{Sliding particle collision with adjacent edge at acute angle.}
 
 	\subsection{Conservation of Momentum}
 
