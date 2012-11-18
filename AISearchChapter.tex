@@ -87,7 +87,7 @@ We define our state as the ``settled'' position of the particle, meaning the sta
 \item outside of the workpiece.
 \end{enumerate}
 
-By defining our state this way, we produce a state space with size of 
+By defining our state this way, we produce a state space with size of
 $$
 num(V_{cc}) + 1
 $$
@@ -111,14 +111,16 @@ $$
 
 The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time.
 
-Thus, one specific action, or ``turn,'' is defined by a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity. Likewise the total time of the turn $t_{turn}$ is similarly unbounded, but we restrict the limits of the turn time to sensible amounts for simplicity.
+Thus, one specific action, or ``turn,'' is defined by a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity.
 
 	\subsection{Transition Function}
 
-In this sense, one can think of the transition function as taking in a concave vertex and defined ``turn'' and producing the settled state of the particle after that turn is simulated.
+Now we have fully defined both elements for the transition function; the states are concave vertices and the actions available to the agent are specific turns.
+
+Consequently, the transition function is then defined as a function that takes in a concave vertex and a turn; it produces the settled state of the particle after simulation.
 
 $$
-trans(V_{cc}^{i}, turn_{l}) = V_{cc}^j or \qquad exit
+trans(V_{cc}^{i}, turn_{l}) = V_{cc}^j \qquad or \qquad exit
 $$
 
 	\subsection{Possible set of Turns}
@@ -126,15 +128,20 @@ $$
 A turn is defined by three different variables: $g_{start}$, $g_{end}$, and $t_{turn}$. These variables could take on many values, which means many different turns could be produced. Consequently, a large number of actions are available to the agent at any given state, which leads to computational explosion (yet again).
 
 
-In this work, we restrict the possible set of ``turns'' from a given concave vertex to reasonable limits. The main way this is accomplished is by reducing the set of gravity vectors available and fixing the duration of the turn. By doing so, we reduce the ``action space'' to something manageable which still represents the full range of kinetic possibilities.
+In this work, we restrict the possible set of ``turns'' from a given concave vertex to reasonable limits. The main way this is accomplished is by reducing the set of gravity vectors available and fixing the duration of the turn. By doing so, we reduce the space of all possible actions to something manageable which still represents the full range of kinetic possibilities.
 
-%figure needed
 
-First, some terminology must be defined. A given concave vertex has two leading edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
+To understand how the set of gravity vectors is reduced, some terminology must first be defined. A given concave vertex has two leading edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
 
-\myfigure{width=0.5\linewidth}{samplingUniform}{Pay attention the leading edges here (needs new figure).}
+\myfigure{width=0.7\linewidth}{edgeDefinition}{A concave vertex $V_{cc}^1$ and its two corresponding outward edge vectors $\vec{e}_1$) and $\vec{e}_2$}
 
-Our first restriction is to define $g_{start}$ as the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that result in no particle motion. These vectors represent the last possible gravity direction before movement is obtained; this allows us to ``set up'' the turn slowly while the particle is still settled in the concave vertex.
+We start with a full sphere of possibilities to sample $g_{start}$ and $g_{end}$ from, as shown below:
+
+\myfigure{width=0.8\linewidth}{restriction1}{The initial set of possible vectors to sample $g_{start}$ and $g_{end}$ from.}
+
+Our first restriction is to define $g_{start}$ as the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that result in no particle motion. These vectors represent the last possible gravity direction before movement is obtained; by defining $g_{start}$ as one of these two vecotrs, we guarantee that the particle immediately begins sliding along an edge when simulation begins.
+
+\myfigure{width=0.8\linewidth}{restriction2}{$g_{start}$ is reduced to one of the two perpendicular vectors}
 
 %figure needed
 
@@ -280,7 +287,7 @@ Transition function is constant in best case, unbounded in worst case based on t
 
 	\subsection{Demonstration of Solution}
 
-This paper was implemented in JavaScript, the programming language built in to most modern web-browsers. A demonstration of the algorithm finding a solution for a fairly complex part is available at 
+This paper was implemented in JavaScript, the programming language built in to most modern web-browsers. A demonstration of the algorithm finding a solution for a fairly complex part is available at
 
 
 
