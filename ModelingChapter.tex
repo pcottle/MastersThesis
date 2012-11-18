@@ -10,7 +10,7 @@ Thus, in order to quickly simulate fluid behavior during drainability analysis, 
 
 	\subsection{Core Assumptions}
 
-Yasui et. all \cite{plot} chose a simplified particle modeling approach with a few core underlying simplifications:
+Yasui et al. \cite{plot} chose a simplified particle modeling approach with a few core underlying simplifications:
 
 \begin{itemize}
 	\item Each fluid body within the workpiece is approximated as a single particle
@@ -20,13 +20,13 @@ Yasui et. all \cite{plot} chose a simplified particle modeling approach with a f
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling approach allowed Yasui et. all to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that all collisions are completely inelastic, and particles leaving an edge travel parallel to the acceleration field.
+This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that all collisions are completely inelastic, and particles leaving an edge travel parallel to the acceleration field.
 
-Consequently, particle simulation in this choice of model was essentially reduced to the intersection between lines and surfaces. Because these tests are computationally inexpensive and have a sub-linear runtime in the number of triangles within the workpiece, Yusuke et. all were able to perform many particle simulations during analysis. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece.
+Consequently, particle simulation in this choice of model was essentially reduced to the intersection between lines and surfaces. Because these tests are computationally inexpensive and have a sub-linear runtime in the number of triangles within the workpiece, Yasui et al. were able to perform many particle simulations during analysis. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece.
 
 This thoroughness of simulation produces a set of results that describes the workpiece drainability of any rotation axis. This analysis serves great utility during the design stage of product creation; engineers can quickly determine if a geometry change would prevent drainability and ``seal'' off the part.
 
-Yusuke et. all's model assumes infinitesimally slow rotation of the workpiece for an infinite amount of time. Because of the assumption about the workpiece rotation, Yusuke et. all's results produce a binary value of drainability about a particular axis rather than a direct control sequence.
+Yasui et al.'s model assumes infinitesimally slow rotation of the workpiece for an infinite amount of time. Because of the assumption about the workpiece rotation, Yasui et al.'s results produce a binary value of drainability about a particular axis rather than a direct control sequence.
 
 If this assumption about the rotation of the workpiece could be relaxed and a  control sequence of how to drain the workpiece could be produced, manufacturers could further optimize the draining stage of product manufacturing.
 
@@ -40,13 +40,13 @@ This work aims to produce those complementary results while simultaneously impro
 
 %	\subsection{Inelastic Collisions}
 
-%Since water particles do not maintain kinetic state in Yasui et all, collisions against a plane are essentially just projections onto that plane.
+%Since water particles do not maintain kinetic state in Yasui et al., collisions against a plane are essentially just projections onto that plane.
 
 %\myfigure{width=0.5\linewidth}{prevworkinelasticcollision}{Demonstration of purely inelastic collisions, where velocities are projected onto the collision surface.}
 
 \section{Parabolic Single-Particle Model}
 
-Our work utilizes a different (but related) model of the workpiece draining problem. The results produced are complementary to Yusuke et. all's results and are ideally used in conjunction.
+Our work utilizes a different (but related) model of the workpiece draining problem. The results produced are complementary to Yasui et al.'s results and are ideally used in conjunction.
 
 This model is based on the following assumptions:
 
@@ -60,7 +60,7 @@ This model is based on the following assumptions:
 
 	\subsection{Assumption Effects}
 
-This modeling choice requires a different approach to drainability analysis than the approach used by Yusuke et all; our approach, however, draws inspiration from their previous work.
+This modeling choice requires a different approach to drainability analysis than the approach used by Yasui et al.; our approach, however, draws inspiration from their previous work.
 
 The key componenets of our approach break down into the water particle simulation (presented in Chapter 4) and the search for a drainability sequence (presented in Chapter 5).
 

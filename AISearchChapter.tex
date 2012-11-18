@@ -78,7 +78,7 @@ Because of this, general A.I. search is rarely used in kinematics problems -- ot
 
 Our state formulation overcomes these difficulties by drastically reducing the size of the state space. We instead offload most of the computational overhead to the successor function.
 
-The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yusuke et all \cite{plot} in order to reduce the scope of the rotation axis discovery problem. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
+The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yasui et al. \cite{plot} in order to reduce the scope of the rotation axis discovery problem. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
 
 We define our state as the ``settled'' position of the particle, meaning the state is either:
 
@@ -274,9 +274,13 @@ These ``setup'' turns can be seen during the solution animation process in our i
 
 Our implementation of this paper is available online at the following url when accessed with a modern web browser:
 
+\vspace{0.2in}
+
 \begin{centering}
 \url{http://petercottle.com/liquidGraph/yc.html?demo}
 \end{centering}
+
+\vspace{0.2in}
 
 This implementation includes a graphical user interface that draws the sampling at each vertex and each path segment for a particle's full simulation. It also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asychronously and is called inbetween graphical frame draws.
 
@@ -284,28 +288,31 @@ This implementation includes a graphical user interface that draws the sampling 
 
 Because our implementation is run asychronously and performs a lot of (unnecessary) graphics processing during the solution search process, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
 
-The following CPU profile was collected during a solution search on a workpiece with 180 vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with 1 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
+The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
 
-The following breakdown on CPU time is provided to get a sense of the computation workload for each part. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
+In fact, search for the solution is rate-limited by the animation engine which runs at 60 frames per second. Consequently, all computers that are capable of completing the necessary operations between frame draws will find the solution in the same amount of time, which is another reason why absolute computation time is not representative of performance for our work.
+
+The following breakdown on CPU time is provided to get a sense of the computation workload for each high-level function. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
 
 \begin{table}
 \begin{tabular}{|c|c|c|}
 \hline
 CPU Self Time & CPU Total Time & Function \\ \hline
 46.08\% & 46.08\% & Program (total time spent processing in Javascript) \\
-20.61\% & 21.35\% & Graphical Path Generation \& Drawing \\
-1.7\% & 2.8\% & Edge-Parabola Intersection \\
-0.63\% & 0.64\% & Quadratic Solver \\
-0.30\% & 0.30\% & Edge-Point Containment Test \\
-0.07\% & 0.38\% & Particle edge slide \\
+20.61\% & 21.35\% & Graphical path generation \& painting \\
+1.7\% & 2.8\% & Edge-Parabola intersection \\
+0.63\% & 0.64\% & Quadratic equation solver \\
+0.30\% & 0.30\% & Edge-Point containment test \\
+0.07\% & 0.38\% & Particle sliding equation \\
 0.07\% & 0.11\% & Particle collision \\
-0.05\% & 3.83\% & Gravity Turn Sampling \\
-0.03\% & 48.74\% & Graph Search Step \\
+0.05\% & 3.83\% & Gravity turn sampling \\
+0.03\% & 48.74\% & Graph search step \\
 \hline
+\caption{CPU Time breakdown for a solution search}
 \end{tabular}
 \end{table}
 
-An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used to smoothen animation.
+An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
 
 	\subsection{Time Complexity}
 
@@ -324,7 +331,13 @@ A particle's full simulation duration is dependent on the elasticity $\kappa$ wh
 
 A full simulation is performed for every sampled turn at a given concave vertex. We restrict the number of samples to 20 in our implementation, so this step introduces a scalar constant $S$ defined as the number of samples taken at each concave vertex.
 
-Finally, the graph search expansion over the workpiece is at worst linear in the total number of concave vertices $V_{cc}$. All together, the big order runtime is approximately $O(S \cdot E^2 \cdot V_{cc})$
+Finally, the graph search expansion over the workpiece is at worst linear in the total number of concave vertices $V_{cc}$. All together, the big order runtime is approximately
+
+\myequation{
+O(S \cdot E^2 \cdot V_{cc})
+} {
+	\label{eq:bigo}
+}
 
 \section{Future Work \& Discussion}
 
@@ -338,6 +351,41 @@ Heuristics are, by nature, very dependent on the problem they are being applied 
 
 One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it is also radially symmetric and does not take into account workpiece geometry. It is probable that better heuristics exist for this search formulation.
 
-	\subsection{Bounding Box Method Adaption for Particle Simulation}
+	\subsection{Bounding Box Method Adaption for Particle Path Intersections}
 
 When intersecting rays with geometric primitives, most implementations using bounding-box methods to reduce the number of primitives tested against the ray. This bounding-box idea could be adapted to parabolic paths as well; determining which bounding boxes are needed still presents a fairly reasonable computational load, but great gains in efficiency could be made for dense workpieces with many edges.
+
+	\subsection{Adaption to 3D - Fixed Axis}
+
+Adapting this work to 3D polygonal meshes when the rotation axis of the workpiece is fixed is mainly an exercise in implementation. The primary difference is that parabolic paths would then need to be intersected with planes in 3D space rather than edges in 2D space.
+
+The rest of the approach, from solution search to particle simulation, would remain the same.
+
+	\subsection{Adaption to 3D - Free Axis}
+
+Adapting this work to 3D polygonal meshes where the workpiece can rotate about \emph{any} rotation axis at any time presents a substantially more difficult problem. The chief obstacle here is that there is an explosion of possible turns available from any given concave vertex. The final gravity vector of the turn, $g_{end}$, could be sampled from an entire sphere rather than two small arcs from a given circle.
+
+There may be ways to intelligently reduce the sample space and still maintain a representative coverage of the kinetic paths attainable from a concave vertex, but much work is needed before those methods can be validated.
+
+	\subsection{Adaption to Multiple Particles}
+
+The adaption of this work for multiple particles is fairly trivial to do in the naive implementation. The main difference is now the state is a tuple of concave vertices, one for each particle:
+
+\myequation{
+	(V_{cc}^{1}, V_{cc}^{2}, V_{cc}^{3}, ... , V_{cc}^{n})
+} {
+	\label{eq:multipleParticleStateSpace}
+}
+
+Now at each state, there are several sets of ``turns'' to sample from, one set for each concave vertex that contains a particle. When a turn is simulated, all other particles must be simulated as well. If any of these particles experiences scenario \#4, the entire sample has to be rejected.
+
+The main disadvantage this naive implementation has is that now the runtime is exponential in the number of concave vertices $n$, as seen in \eqref{eq:bigo}.
+
+\myequation{
+O(S \cdot E^2 \cdot V_{cc}^{n})
+} {
+	\label{eq:bigo}
+}
+
+Alternative methods to intelligently combine separate particles or reduce the runtime of the algorithm are likely to exist.
+

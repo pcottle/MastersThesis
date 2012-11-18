@@ -2,7 +2,7 @@
 
 Water particle simulation is the underlying core of drainability analysis -- the behavior of the fluid (or water particles in this case) must be simulated in order to analyze when and where the fluid can leave the workpiece.
 
-Here we present the popular approach to simulating straight-line water particles based on parametric rays (the approach used in Yusuke et all's work) and then our modification of this approach to fit parabolic water particles.
+Here we present the popular approach to simulating straight-line water particles based on parametric rays (the approach used in Yasui et al.'s work) and then our modification of this approach to fit parabolic water particles.
 
 \section{Reduced Ray Approach}
 
@@ -82,7 +82,7 @@ Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yiel
 \myequation{
 	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
 } {
-	\label{eq:quadraticFormula}
+
 }
 
 This constant-time solution for the intersection between a parametric equation and geometric primitive will be crucial for later parts of this paper.
@@ -230,14 +230,14 @@ There are many types of collisions depending on the direction of the acceleratio
 When a particle collides with an edge and obtains a resulting perpendicular velocity ($v_{perp}$) less than some $\epsilon$ value, the particle transitions from freefall to sliding along an edge.
 
 
-\myfigure{width=0.5\linewidth}{planartoslidingtransition}{Particle path transition from sliding to free-fall.}
+\myfigure{width=0.5\linewidth}{planartoslidingtransition}{Particle path transition from free-fall to sliding.}
 
 
 		\subsubsection{Sliding To Free-Fall Transition}
 
 When a particle reaches the end of an edge (effectively intersecting the adjacent edge), it may enter free-fall, where it is further simulated.
 
-\myfigure{width=0.5\linewidth}{slidingtofreefalltransition}{Particle path transition from Free-Fall to Sliding.}
+\myfigure{width=0.5\linewidth}{slidingtofreefalltransition}{Particle path transition from sliding to free-fall.}
 
 %		\subsubsection{Sliding to Planar Transition}
 
