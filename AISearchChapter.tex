@@ -164,17 +164,17 @@ To overcome this difficulty, we will instead sample from the continuous range of
 
 Sampling from this space produces a list of defined turns (or actions). Our successor function will then examine these actions in conjunction with an input concave vertex and produce the set of reachable concave vertices.
 
-Ideally this set of concave vertices would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but witt careful design we can discover the majority of this set.
+Ideally this set of concave vertices would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but with careful design we can discover the majority of this set.
 
 	\subsection{Representative Coverage Between Limits}
 
 The way we produce the majority of this set is to obtain a representative coverage over the possible kinetic paths out of a concave vertex. This is done by choosing a sampling method that produces the most diverse set of kinetic paths.
 
-If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time, this uniform sampling method produces many kinetic paths that are almost identical as can be seen in figure (BLAH).
+If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time, this uniform sampling method produces many kinetic paths that are almost identical as can be seen in figure \ref{samplingUniform}.
 
 \myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 samples from each side at uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
 
-A far better sampling function is to use $x^3$. This function produces many samples at the low end of the range of $g_{end}$ vectors and only a few at the higher end. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths as can be seen in figure (BLAH).
+A far better sampling function is to use $x^3$. This function produces many samples at the low end of the range of $g_{end}$ vectors and only a few at the higher end. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths as can be seen in figure \ref{samplingCubed}.
 
 \myfigure{width=0.5\linewidth}{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the leading edge.}
 
