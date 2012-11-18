@@ -47,7 +47,6 @@ There are many ways to find these intersection (or ``collision'') points. One co
 
 Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized positions and a single parameter $t$ that describes the motion of the particle through space.
 
-
 \myfigure{width=0.9\linewidth}{rayexample}{A visual depicition of a ray's component vectors and its path through time}
 
 	\subsection{Ray Tracing}
@@ -269,13 +268,3 @@ Because of this energy dissipation from collisions, the simulation of a particle
 \item the particle exits the workpiece, which is the goal of the search.
 \end{itemize}
 
-
-\section{Future Work \& Discussion}
-
-	\subsection{Bounding Box Method Adaption}
-
-	You could modify normal bounding box methods to use parametric equations instead.
-
-	\subsection{Bounded Simulation Between Limits}
-
-	There is a possibility that you could simulate between two arbitrary limits and ``sweep'' across the range of kinetic possiblities. Would eliminate the sampling we will see next chapter.
