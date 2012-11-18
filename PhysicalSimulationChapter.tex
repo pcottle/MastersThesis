@@ -258,31 +258,17 @@ When a particle reaches the end of an edge (effectively intersecting the adjacen
 
 		\subsubsection{Settling Guarantee}
 
-		The only addition of energy is from rotation, so in the absence of rotation, no energy is added to the system. Because the elasiticity $\kappa$ of the particle-edge collisions is chosen to be less than 1 in simulation, energy dissipates as particles collide.
+		The only addition of energy is from rotation, so in the absence of rotation, no energy is added to the system. Because the elasiticity $\kappa$ of the particle-edge collisions is chosen to be less than 1 in simulation, energy dissipates as a particle collides with other surfaces.
 
 		\subsubsection{Duration of Simulation}
-TODO
-		Because of this energy dissipation, the simulation is guaranteed to terminate in one of two ways.
 
-		\subsubsection{Simulation End -- Concave Vertex}
+Because of this energy dissipation from collisions, the simulation of a particle is guaranteed to terminate in one of two ways:
 
-		Either the particle settles into a concave vertex with a kinetic energy less than $\epsilon$, or
+\begin{itemize}
+\item the particle settles into a concave vertex with a kinetic energy less than $\epsilon$, or
+\item the particle exits the workpiece, which is the goal of the search.
+\end{itemize}
 
-		\subsubsection{Simulation End -- Workpiece Exit}
-
-		The particle exits the workpiece, which is the goal of the simulation.
-
-\section{Results}
-
-	\subsection{Run Time}
-
-	It was fast, here are some numbers
-
-	\subsection{Accuracy Comparison}
-
-	It was accurate in finding intersections that some euler integration schemes would not.
-
-		\subsubsection{With Euler Integration}
 
 \section{Future Work \& Discussion}
 
