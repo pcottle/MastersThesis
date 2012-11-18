@@ -248,8 +248,6 @@ This model would be appropriate if the workpiece was well balanced in a fixture 
 
 Another model for energy is based on the work the motor has to perform against gravity. If the workpiece's center of gravity is positioned far away from the center of rotation, the workpiece is unbalanced in the fixture. Turns that raise the center of gravity will produce counter-torques, will turns that lower the center of gravity will produce added acceleration.
 
-% figure needed?
-
 If this model is more appropriate for the fixture setup, the plans can be enqueued onto the fringe based on the integrated change in height for the center of gravity.
 
 		\subsubsection{Energy - Acceleration And Deceleration}
@@ -258,23 +256,16 @@ Finally, if the workpiece is well balanced and friction in the rotator is low, t
 
 In this case, plans can be enqueued based on their total acceleration change.
 
-%shitton of equations needed here
-
 	\subsection{Solution}
-%TODO
-		Defined as the sequence of gravity transitions from each concave vertex to produce a particle path that exits the workpiece.
 
-\section{Control Sequence Generator}
+A full solution is defined as the sequence of gravity transitions to drain the workpiece. The graph search algorithm returns a list of gravity turns from each concave vertex to drain the workpiece; the only issue is that the $g_{end}$ from one turn rarely matches the $g_{start}$ of the following turn.
 
-Now that we have a solution, we need to generate a control sequence for the workpiece rotator.
+In order to rectify this situation and produce a full control sequence, our implementation contains a solution post-processor that stitches together these disparate turns and creates interpolations between one turn's $g_{end}$ and the next turn's $g_{start}$. We refer to these turns as ``setup'' turns, for they prepare the workpiece's orientation prior to the next stage of particle movement.
 
-	\subsection{Sample-defined Rotations}
+These ``setup'' turns never induce motion of the particle; this is because only one particle is simulated at a time and the range of vectors from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ does not produce motion. The latter cause is guaranteed because a particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that does not produce particle motion, a sweep from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ never produces an acceleration field that induces movement of the particle.
 
-These rotations are defined for us by the transition function.
+These ``setup'' turns can be seen during the solution animation process in our implementation which is linked in the results chapter.
 
-	\subsection{Intermediary Rotations}
-
-Between these samples we don't have anything. What we do is just interpolate between the last sample and the beginning of the next sample with a cubic bezier curve.
 
 					\chapter{Results \& Future Work}
 
