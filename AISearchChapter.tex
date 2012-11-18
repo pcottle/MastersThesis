@@ -133,23 +133,24 @@ In this work, we restrict the possible set of ``turns'' from a given concave ver
 
 To understand how the set of gravity vectors is reduced, some terminology must first be defined. A given concave vertex has two leading edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
 
-\myfigure{width=0.7\linewidth}{edgeDefinition}{A concave vertex $V_{cc}^1$ and its two corresponding outward edge vectors $\vec{e}_1$) and $\vec{e}_2$}
+\myfigure{width=0.4\linewidth}{edgeDefinition}{A concave vertex $V_{cc}^1$ and its two corresponding outward edge vectors $\vec{e}_1$) and $\vec{e}_2$}
 
 We start with a full sphere of possibilities to sample $g_{start}$ and $g_{end}$ from, as shown below:
 
 \myfigure{width=0.8\linewidth}{restriction1}{The initial set of possible vectors to sample $g_{start}$ and $g_{end}$ from.}
 
-Our first restriction is to define $g_{start}$ as the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that result in no particle motion. These vectors represent the last possible gravity direction before movement is obtained; by defining $g_{start}$ as one of these two vecotrs, we guarantee that the particle immediately begins sliding along an edge when simulation begins.
+We first restrict the possible values of $g_{start}$. We would like $g_{start}$ to be a vector that does not induce motion of the particle; this ensures a turn that ends in $g_{start}$ does not require simulation once the turn ends. Simultaneously, we would also like any defined turn to spend the maximum amount of time inducing motion of the particle.
+
+This means that $g_{start}$ is a vector that does not produce motion of the particle but is as close as possible to producing motion. There are only two vectors that satisfy these conditions -- the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$.
 
 \myfigure{width=0.8\linewidth}{restriction2}{$g_{start}$ is reduced to one of the two perpendicular vectors}
 
-%figure needed
+Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaenously keeping the particle on the leading edge of the concave vertex. This produces two quarter-circle segements of possibilities for $g_{end}$, each of which are defined by a leading edge and the perpendicular vector to that edge.
 
-Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaenously keeping the particle on the leading edge of the concave vertex. This produces a quarter-circle range of possibilities for $g_{end}$ defined by both leading edges.
 
-\myfigure{width=0.5\linewidth}{transitionfunctionsampling}{The possible range of gravity vectors to sample from.}
+\myfigure{width=0.8\linewidth}{restriction3}{$g_{end}$ is reduced to vectors that produce motion while keeping the particle on the leading edge}
 
-This leaves two arcs of gravity vectors. The bounds on each arc are defined by the minimal gravity vector to produce movement out of the concave vertex ($g_{\epsilon}$) and the maximum gravity vector to keep the particle on the surface ($g_{max}$).
+This leaves two arcs of gravity vectors from which $g_{end}$ can be sampled.
 
 	\subsection{Ideal Successor Function}
 
