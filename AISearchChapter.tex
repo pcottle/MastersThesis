@@ -295,6 +295,7 @@ In fact, search for the solution is rate-limited by the animation engine which r
 The following breakdown on CPU time is provided to get a sense of the computation workload for each high-level function. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
 
 \begin{table}
+\label{resultsTable}
 \begin{tabular}{|c|c|c|}
 \hline
 CPU Self Time & CPU Total Time & Function \\ \hline
@@ -308,8 +309,8 @@ CPU Self Time & CPU Total Time & Function \\ \hline
 0.05\% & 3.83\% & Gravity turn sampling \\
 0.03\% & 48.74\% & Graph search step \\
 \hline
-%\caption{CPU Time breakdown for a solution search}
 \end{tabular}
+\caption{CPU Time breakdown for a solution search}
 \end{table}
 
 An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
