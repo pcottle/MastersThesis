@@ -264,6 +264,8 @@ In order to rectify this situation and produce a full control sequence, our impl
 
 These ``setup'' turns never induce motion of the particle; this is because only one particle is simulated at a time and the range of vectors from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ does not produce motion. The latter cause is guaranteed because a particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that does not produce particle motion, a sweep from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ never produces an acceleration field that induces movement of the particle.
 
+\myfigure{width=0.7\linewidth}{setupturn}{The geometric relationship between $g_{end}^{t=1}$ and $g_{start}^{t=2}$ as it relates to the guarantee that a setup turn does not induce motion}
+
 These ``setup'' turns can be seen during the solution animation process in our implementation which is linked in the results chapter.
 
 
