@@ -4,11 +4,11 @@
 
 Artificial Intelligence search is a field of study and class of algorithms that discover (or ``search'' for) plans that turn a start state into a goal state in a deterministic world. A.I. search makes heavy use of simulation to compute solutions offline before enacting those solutions in the real world.
 
-Based on our ability to rapidly simulate water particles and the deterministic nature of the workpiece draining problem, we choose A.I. search to compute a series of rotations that fully drain a workpiece.
+Based on our ability to rapidly simulate water particles and the deterministic nature of the workpiece draining problem, we choose A.I. search to discover a series of rotations that fully drains a workpiece.
 
 	\subsection{Terminology}
 
-In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attempting to reach a goal position $G_{pos}$
+In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example, shown in figure \ref{robotGrid}. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attempting to reach a goal position $G_{pos}$
 
 \myfigure{width=0.5\linewidth}{robotGrid}{A small positional search problem.}
 
