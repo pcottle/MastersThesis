@@ -2,9 +2,9 @@
 
 Analyzing the drainability of a workpiece requires that the behavior of fluid throughout the workpiece be modeled in some way. This behavior is complex; trapped gases, viscous effects, and fluid mechanics all interact during workpiece draining. There are many ways to model this fluid behavior, and each choice comes with both advantages and disadvantages.
 
-Advanced fluid simulation methods like the finite element method or smoothed-particle hydrodynamics approximate fluid behavior with high accuracy, but their computation is quite expensive in both time and memory. This is primarily because they are integration methods -- their accuracy relies on integrating many times over a small timestep.
+Advanced fluid simulation methods like the finite element method or smoothed-particle hydrodynamics approximate fluid behavior with high accuracy, but their computation is quite expensive in both time and memory. This is primarily because both are integration methods -- their accuracy relies on integrating many times over a small timestep.
 
-Thus, in order to quickly simulate fluid behavior during drainability analysis, most previous work chooses a greatly simplified fluid model. While accuracy is sacrificed by choosing a simpler model, more useful analysis can be produced by simulating many different scenarios.
+Thus, in order to quickly simulate fluid behavior during drainability analysis, most previous work chooses a  simplified fluid model \cite{Yasui2011}. While accuracy is sacrificed by choosing a simpler model, more useful analysis can be produced by simulating fluid in many different scenarios.
 
 \section{Straight-Line Multiple-Particle Model}
 
@@ -15,14 +15,14 @@ Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with
 \begin{itemize}
 	\item Each fluid body within the workpiece is approximated as a single particle
 	\item Water particles only travel in straight lines and do not maintain a kinetic state
-	\item The workpiece would rotate infinitesimally slow in one direction for an infinite amount of time
+	\item The workpiece rotates infinitesimally slow in one direction for an infinite amount of time
 \end{itemize}
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that all collisions are completely inelastic, and particles leaving an edge travel parallel to the acceleration field.
+This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that particles are always traveling either parallel to the acceleration field or along a workpiece surface.
 
-Consequently, particle simulation in this choice of model was essentially reduced to the intersection between lines and surfaces. Because these tests are computationally inexpensive and have a sub-linear runtime in the number of triangles within the workpiece, Yasui et al. were able to perform many particle simulations during analysis. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece.
+Consequently, particle simulation in this choice of model was essentially reduced to the intersection between lines and surfaces. Because these tests are computationally inexpensive and have a sub-linear runtime in the number of triangles within the workpiece, Yasui et al. were able to perform many particle simulations during analysis. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece \cite{Yasui2011}.
 
 This thoroughness of simulation produces a set of results that describes the workpiece drainability of any rotation axis. This analysis serves great utility during the design stage of product creation; engineers can quickly determine if a geometry change would prevent drainability and ``seal'' off the part.
 
@@ -52,8 +52,8 @@ This model is based on the following assumptions:
 
 \begin{itemize}
 	\item The fluid in the workpiece is approximated by a single particle
-	\item Water particles travel in parabolic paths that are influenced by acceleration but not aerodynamic drag
-	\item The workpiece can be rotated in either direction along it's rotation axis
+	\item Water particles travel in parabolic paths that are influenced by acceleration
+	\item The workpiece can be rotated in either direction along its rotation axis
 	\item The workpiece's rotation speed can vary in time
 	\item The workpiece is a two dimensional polygonal mesh
 \end{itemize}

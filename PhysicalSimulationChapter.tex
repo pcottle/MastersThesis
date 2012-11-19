@@ -19,7 +19,7 @@ Individual water particles under an acceleration field $a$ with initial position
 Equation \eqref{eq:basickinematic} shows the basic kinematic model of a water particle.
 
 
-Note that this model omits the effect of aerodynamic drag ($-\rho v^2 \cdot t$) on the particle. The velocities achieved in workpiece draining produce fairly negligible aerodynamic effects, this omission greatly simplifies calculating the trajectory of a particle.
+Note that this model omits the effect of aerodynamic drag ($-\rho v^2 \cdot t$) on the particle. The velocities achieved in workpiece draining produce fairly negligible aerodynamic effects; this omission greatly simplifies calculating the trajectory of a particle.
 
 	\subsection{Reduction to Rays}
 
@@ -35,9 +35,7 @@ Equation \eqref{eq:kinematicDropAccel} shows this simplified ray model. Once the
 
 	\subsection{Parametric Equations (rays)}
 
-There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation.
-
-% TODO -- cite a common text here!
+There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation \cite{purcell2002ray}.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
@@ -53,7 +51,7 @@ Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized pos
 
 Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points \cite{purcell2002ray}.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to select the optimal intersection test approach \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays are the industry standard \cite{glassner1989introduction}.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays are the industry standard \cite{glassner1989introduction}.
 
 	\subsection{Geometric Primitive Intersections}
 
@@ -89,7 +87,7 @@ This constant-time solution for the intersection between a parametric equation a
 
 \section{Kinetic Parametric Approach}
 
-While this straight-line particle approach is convenient, our model aims to examine particles with more realistic kinetic properties and paths. Consequently, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with \eqref{eq:basickinematic} to produce \eqref{eq:freeFall}.
+While this straight-line particle approach is convenient, our model aims to examine particles with more realistic kinetic properties and paths. Consequently, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with \eqref{eq:basickinematic} to produce \eqref{eq:freeFall} -- a parabola defined parametrically.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t + \frac{1}{2} \vec{a} \cdot t^2
@@ -99,7 +97,7 @@ While this straight-line particle approach is convenient, our model aims to exam
 
 \section{Equation Types}
 
-During the course of simulation, a particle may be traveling in a variety of conditions. The two primary conditions that determine the type of equation used are:
+Now that we have defined a parabolic path segment in parametric form, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
 
 \begin{itemize}
 	\item Whether the workpiece is rotating
@@ -110,14 +108,13 @@ These two conditions, when combined in all possible ways, produce four scenarios
 
 		\subsection{\#1: Free Fall Equation}
 
-When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola.
+When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola, and no modification to equation \eqref{eq:freeFall} is necessary.
 
 \myfigure{width=0.9\linewidth}{freefallequation}{Example path traced out by the ``free-fall'' equation}
 
 		\subsection{\#2: Sliding Equation}
 
-During simulation, a particle may also begin to travel along an edge if it has a perpendicular velocity less than $\epsilon$. This produces another scenario of particle simulation -- a particle traveling along an edge when the workpiece is not rotating.
-
+During simulation, a particle may also begin to travel along an edge if it has a perpendicular edge-velocity less than $\epsilon$. This produces another scenario of particle simulation -- a particle traveling along an edge when the workpiece is not rotating.
 
 In this scenario, the acceleration of the particle in free-fall is projected along the surface of the workpiece. If this projected acceleration is zero, the particle will stay in place; if not, the particle will begin to ``slide'' along this edge.
 
@@ -133,7 +130,7 @@ Note that while the particle is now traveling along an edge, it is essentially t
 
 \myfigure{width=0.8\linewidth}{slidingequation}{Demonstration of the sliding equation.}
 
-With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating).
+With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating). Furthermore, because both of these equations are strictly quadratic in $t$, they can be substituted into the definition of geometric primitives to perform intersect tests. Further modifications to \eqref{eq:freeFall} may sacrifice our ability to perform constant-time intersections.
 
 		\subsection{Rotation}
 
@@ -147,7 +144,7 @@ We see now how this rotating acceleration field affects the following scenarios.
 
 In this scenario, the particle is traveling along a workpiece edge and the workpiece is rotating.
 
-We know that the acceleration vector is projected along the edge during edge travel. This means the direction of the acceleration in this scenario is fixed; only the magnitude of the projected acceleration varies as the workpiece rotates. Consequently, rotation of the acceleration field only results in the magnitude of the projected acceleration changing.
+We know that the acceleration vector is projected along the edge during edge travel. This means that the direction of the acceleration in this scenario is fixed; only the magnitude of the projected acceleration varies as the workpiece rotates. Consequently, rotation of the acceleration field only results in the magnitude of the projected acceleration changing.
 
 This leads to a special case of particle motion, referred to as ``concurrent rotation and sliding.'' Equation \eqref{eq:slidingRotating} shows the resulting formulation of this scenario.
 
@@ -157,22 +154,22 @@ This leads to a special case of particle motion, referred to as ``concurrent rot
 	\label{eq:slidingRotating}
 }
 
-In equation \eqref{eq:slidingRotating}, $\hat{a}_{projected}$ is a constant unit-vector in the direction of the edge. The $|a_{projected}|(t)$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate, the magnitude term can be modeled as
+In equation \eqref{eq:slidingRotating}, $\hat{a}_{projected}$ is a constant unit-vector in the direction of the edge. The $|a_{projected}|(t)$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate and the acceleration vector begins perpendicular to the edge, the magnitude term can be modeled as
 $$
 mag_{accel} = cos(\omega \cdot t)
 $$
 
 where $\omega$ is the angular velocity.
 
-		\subsubsection{\#4: Concurrent Rotation \& Sliding Equation Intersection}
+		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
 
-In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, this makes it quite difficult to solve for particle-primitive intersections. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
+In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, it is now quite difficult to solve for particle-primitive intersections. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
 
 The ability to determine where the particle is at a given time will be crucial for our methods later; this scenario will still be simulated, despite the inability to intersect these trajectories with geometric primitives.
 
-		\subsection{Concurrent Rotation \& Free-Fall Equation}
+		\subsection{\#4: Concurrent Rotation \& Free-Fall Equation}
 
-The fourth scenario is when the particle is traveling through open space and the workpiece is rotating in time. In this case, the acceleration vector is no longer projected along an edge as shown in \eqref{eq:slidingRotating}. Thus, the acceleration vector has a direction that changes in time (with a fixed magnitude), as shown in \eqref{eq:freefallRotating}.
+The fourth scenario is when the particle is traveling through open space and the workpiece is rotating in time. In this case, the acceleration vector is no longer projected along an edge as shown in \eqref{eq:slidingRotating}. The acceleration vector now has a direction that changes in time (with a fixed magnitude), as shown in \eqref{eq:freefallRotating}.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
@@ -198,13 +195,13 @@ This scenario produces paths that are not strictly parabolic, as seen below.
 
 These non-linear terms produce an equation with many more terms, some of which are trigonometric. Consequently, we can no longer combine this equation with geometric primitives easily to determine intersection points in constant time.
 
-This effectively prevents our ability to simulate particles in this scenario which leads to our first assumption and restriction in this paper -- particles may not travel through open space while the workpiece is rotating.
+This effectively prevents our ability to simulate particles in this scenario, leading us to our first assumption and restriction in this paper -- particles may not travel through open space while the workpiece is rotating.
 
 		\subsubsection{Resolution of Scenario \#3}
 
-The third scenario, concurrent rotation and sliding, similarly has a kinetic path equation that cannot be easily intersected with geometric primitives. The key difference between this scenario and scenario 4, however, is that the particle is traveling along a known edge. With this edge's length and the duration of the turn known, we can compute the position of the particle after the turn.
+The third scenario, concurrent rotation and sliding, similarly has a kinetic path equation that cannot be easily intersected with geometric primitives. The key difference between this scenario and scenario 4, however, is that the particle is traveling along a known edge. With this edge's length and the duration of the turn known, we can compute the position of the particle after the specified turn duration time.
 
-If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
+If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface during the turn. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
 
 Thus although we have two scenarios where particle path and solid intersection tests are difficult, only one of them (concurrent rotation and free-fall) cannot be simulated at all. The other (concurrent rotation and sliding) can be simulated whenever the particle has not traveled beyond the edge at the end of the turn, which was the most common result during our tests.
 
@@ -213,7 +210,7 @@ Thus although we have two scenarios where particle path and solid intersection t
 
 Collisions occur when the path for a given particle intersects a surface inside the workpiece.
 
-\myfigure{width=0.2\linewidth}{planarcollision}{A particle colliding with a surface and the resulting elastic collision}
+\myfigure{width=0.4\linewidth}{planarcollision}{A particle colliding with a surface and the resulting elastic collision}
 
 After a collision occurs, the particle ``transitions'' into one of three states:
 
@@ -227,7 +224,7 @@ There are many types of collisions depending on the direction of the acceleratio
 
 		\subsubsection{Planar To Sliding Transition}
 
-When a particle collides with an edge and obtains a resulting perpendicular velocity ($v_{perp}$) less than some $\epsilon$ value, the particle transitions from free-fall to sliding along an edge.
+When a particle collides with an edge and obtains a resulting perpendicular velocity ($v_{perp}$) less than some epsilon ($\epsilon$) value, the particle transitions from free-fall to sliding along an edge.
 
 
 \myfigure{width=0.5\linewidth}{planartoslidingtransition}{Particle path transition from free-fall to sliding.}
@@ -253,15 +250,13 @@ When a particle reaches the end of an edge (effectively intersecting the adjacen
 
 	\subsection{Conservation of Momentum}
 
-		The only source of energy in this demo is the potential energy from gravity. Note that as the workpiece rotates, the gravity vector (and corresponding field) changes. This means that a particle in a low-energy configuration can transition to a high-energy configuration through rotation; consequently, that rotation adds energy into the system.
+		The only source of energy in this demo is the potential energy from gravity. Note that as the workpiece rotates, the gravity vector (and corresponding field) rotates. This means that a particle in a low-energy configuration can transition to a high-energy configuration through rotation; consequently, rotation may add energy into the system.
 
 		\subsubsection{Settling Guarantee}
 
 		The only addition of energy is from rotation, so in the absence of rotation, no energy is added to the system. Because the elasticity  $\kappa$ of the particle-edge collisions is chosen to be less than 1 in simulation, energy dissipates as a particle collides with other surfaces.
 
-		\subsubsection{Duration of Simulation}
-
-Because of this energy dissipation from collisions, the simulation of a particle is guaranteed to terminate in one of two ways:
+		This leads us to the settling guarantee: the simulation of a particle during a time period with no rotation is guaranteed to terminate in one of two ways:
 
 \begin{itemize}
 \item the particle settles into a concave vertex with a kinetic energy less than $\epsilon$, or
