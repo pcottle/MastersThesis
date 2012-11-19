@@ -51,13 +51,13 @@ Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized pos
 
 	\subsection{Ray Tracing}
 
-Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points.
+Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points \cite{purcell2002ray}.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to select the optimal intersection test approach. Parametric modeling of geometric primitives combined with parametric rays are the industry standard.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to select the optimal intersection test approach \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays are the industry standard \cite{glassner1989introduction}.
 
 	\subsection{Geometric Primitive Intersections}
 
-Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time.
+Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{glassner1989introduction}.
 
 For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in equation \eqref{eq:sphereParametric}.
 

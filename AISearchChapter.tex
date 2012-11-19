@@ -66,19 +66,19 @@ This work focuses on a traditional application of A.I. search to a novel state s
 
 	\subsection{Traditional Formulation}
 
-Rotating a water particle out of a workpiece can be considered a kinematic planning problem. Traditional kinematic planning problems often have state spaces that encode the kinematic properties of the object (or agent) being planned for \cite{plot}. The most common state formulation is to encode the position, velocity, and acceleration of the agent as the state formulation.
+Rotating a water particle out of a workpiece can be considered a kinematic planning problem. Traditional kinematic planning problems often have state spaces that encode the kinematic properties of the object (or agent) being planned for \cite{kuffner2000rrt}. The most common state formulation is to encode the position, velocity, and acceleration of the agent as the state formulation.
 
 The actions available to the agent at any time are usually actions that change the acceleration on the agent. The transition function integrates this kinematic state and acceleration change in time with a pre-defined accuracy. Consequently, many transition function calls must be made to accurately integrate the path of the agent through time.
 
 The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. For example, in a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors for the state, the state space is $1000^3$. This presents far too many possible states for search algorithms to enumerate through and may prevent the algorithm from terminating.
 
-Because of this, general A.I. search is rarely used in kinematics problems -- other techniques like kinematical motion planning are more common \cite{plot}.
+Because of this, general A.I. search is rarely used in kinematics problems -- other techniques that avoid combinatorial state space ``explosion'' are more common \cite{kuffner2000rrt} \cite{yakey2001randomized} \cite{nakamura1991nonholonomic}.
 
 	\subsection{Our State Formulation}
 
 Our state formulation overcomes these difficulties by drastically reducing the size of the state space. We instead offload most of the computational overhead to the successor function.
 
-The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yasui et al. \cite{plot} in order to reduce the scope of the rotation axis discovery problem. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
+The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yasui et al. \cite{Yasui2011} in order to reduce the scope of the rotation axis discovery problem. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
 
 We define our state as the ``settled'' position of the particle, meaning the state is either:
 
