@@ -2,8 +2,8 @@
 
 We have provided a new approach to the workpiece draining problem from manufacturing that produces results that are complementary to existing work.
 
-We first described our model of the problem -- one that introduces a more accurate kinetic model of the water particles and allows for bi-directional draining with finite rotation speeds. We then introduced a parametric simulation approach that maintained constant-time intersection tests between particle paths and geometric primitives.
+We first described our model of the problem -- one that introduces a more accurate kinetic model of the water particles and allows for bi-directional draining with finite rotation speeds. We then introduced a parametric simulation approach that maintains constant-time intersection tests between particle paths and geometric primitives.
 
-Finally, we then combined this simulation method with a unique search formulation of the problem to obtain a solution. By reducing the size of the state space and offloading complexity to the transition function, we can then ``sample'' from the action space until we are satisfied with the coverage of kinetic paths.
+Finally we then combined this simulation method with a unique search formulation of the draining problem to obtain a solution. By reducing the size of the state space and offloading complexity to the transition function, we can then ``sample'' from the action space until we are satisfied with the coverage of kinetic paths.
 
 This search formulation is then solved by standard uniform cost graph search; a solution post-processor then produces a control sequence that can be fed into machinery capable of rotating a workpiece. We believe this work makes significant progress towards a fully-realized solution for manufacturers and designers alike.

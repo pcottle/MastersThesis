@@ -8,9 +8,9 @@ Based on our ability to rapidly simulate water particles and the deterministic n
 
 	\subsection{Terminology}
 
-In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example, shown in figure \ref{robotGrid}. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attempting to reach a goal position $G_{pos}$
+In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example, shown below.
 
-\myfigure{width=0.5\linewidth}{robotGrid}{A small positional search problem.}
+\myfigure{width=0.7\linewidth}{robotGrid}{A small positional search problem; a robot on a $M$ by $N$ grid is attempting to reach a goal position $G_{pos}$}
 
 The ``state'' is defined as a set of information that minimally represents the current progress to the goal. For this positional search problem, the minimal state representation would be the position tuple of the robot $(R_x,R_y)$, where $R_x$ is the horizontal position of the robot and $R_y$ is the vertical position of the robot. Here these variables can take on positive integer values up to $M$ and $N$ respectively.
 
@@ -18,11 +18,11 @@ For every state, the agent under control has a number of actions available to ta
 
 When the agent under control takes an action, a new state is produced. The ``transition function'' is responsible for transforming a state action pair into a successor state. For example, if the robot above was in position $(M = 1, N = 2)$ and took the action $North$, the transition function would return the state $(M = 1, N = 3)$.
 
-This transition function is also responsible for performing validity checks against the environment. In our positional search example, the transition function would be responsible for making sure the robot does not move off the grid or into a square occupied by another agent or wall. If an invalid state action pair is given to the transition function, the transition function returns $null$ to designate this invalid combination.
+This transition function is also responsible for performing validity checks against the environment. In our positional search example, the transition function would be responsible for making sure the robot does not move off the grid or into a square occupied by another agent or wall. If an invalid state action pair is given to the transition function, the transition function commonly returns $null$ to designate this invalid combination.
 
-The ``successor function'' is a meta function that uses the transition function and available actions to the agent. It is responsible for generating a list of successor states from a given state. For the above problem, the successor function would return the list of adjacent squares the robot could move into and the actions that produce those states.
+The ``successor function'' is a meta-function that uses the transition function and available actions to the agent. It is responsible for generating a list of successor states reachable (in one action) from a given state. For the above problem, the successor function would return the list of adjacent squares the robot could move into and the actions that produce those states.
 
-A ``plan'' is simply a sequence of actions. Plans are usually maintained and updated by the successor function when exploring states. This is because while reaching the goal state determines that the search algorithm has succeeded, the sequence of actions to achieve a goal state is usually the objective of the solution.
+A ``plan'' is simply a sequence of actions. While reaching the goal state determines that the search algorithm has succeeded, the sequence of actions to achieve a goal state is usually the objective of the solution. Consequently, plans are usually maintained and updated by the successor function when exploring states.
 
 	\subsection{General Tree Search}
 
@@ -62,7 +62,7 @@ State spaces often grow exponentially large with the addition of new variables. 
 
 \section{Adaption of A.I. Search}
 
-This work focuses on a traditional application of A.I. search to a novel state space formulation for workpiece draining. Our unique state formulation reduces the size of the state space to make it manageable for general A.I algorithms.
+Our work focuses on a traditional application of A.I. search to a novel state space formulation for workpiece draining. Our unique state formulation reduces the size of the state space to make it manageable for general A.I algorithms.
 
 	\subsection{Traditional Formulation}
 
@@ -70,7 +70,7 @@ Rotating a water particle out of a workpiece can be considered a kinematic plann
 
 The actions available to the agent at any time are usually actions that change the acceleration on the agent. The transition function integrates this kinematic state and acceleration change in time with a pre-defined accuracy. Consequently, many transition function calls must be made to accurately integrate the path of the agent through time.
 
-The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. For example, in a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors for the state, the state space is $1000^3$. This presents far too many possible states for search algorithms to enumerate through and may prevent the algorithm from terminating.
+The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. Consider a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors. The size of the state space here is $1000^3$. This presents a large number of possible states for a search algorithm to enumerate through; the scale of this state space may prevent the algorithm from terminating.
 
 Because of this, general A.I. search is rarely used in kinematics problems -- other techniques that avoid combinatorial state space ``explosion'' are more common \cite{kuffner2000rrt} \cite{yakey2001randomized} \cite{nakamura1991nonholonomic}.
 
@@ -78,7 +78,7 @@ Because of this, general A.I. search is rarely used in kinematics problems -- ot
 
 Our state formulation overcomes these difficulties by drastically reducing the size of the state space. We instead offload most of the computational overhead to the successor function.
 
-The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yasui et al. \cite{Yasui2011} in order to reduce the scope of the rotation axis discovery problem. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
+The key insight here is to observe only the concave vertices of the workpiece; this insight was first used by Yasui et al. \cite{Yasui2011} in order to reduce the scope of analzying the drainability of all possible rotation axes. Here it is applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search.
 
 We define our state as the ``settled'' position of the particle, meaning the state is either:
 
@@ -109,9 +109,9 @@ $$
 
 	\subsection{Action Definition}
 
-The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time.
+The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece over time. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time. This means that our action results in a change in the acceleration field.
 
-Thus, one specific action, or ``turn,'' is defined by a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity.
+More formally, we define one action (or ``turn'') as a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{turn}$. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity.
 
 	\subsection{Transition Function}
 
@@ -125,15 +125,15 @@ $$
 
 	\subsection{Possible set of Turns}
 
-A turn is defined by three different variables: $g_{start}$, $g_{end}$, and $t_{turn}$. These variables could take on many values, which means many different turns could be produced. Consequently, a large number of actions are available to the agent at any given state, which leads to computational explosion (yet again).
+A turn is defined by three different variables: $g_{start}$, $g_{end}$, and $t_{turn}$. These variables could take on many values which means many different turns could be produced. Consequently, a large number of actions are available to the agent at any given state, which leads to computational explosion (yet again).
 
 
-In this work, we restrict the possible set of ``turns'' from a given concave vertex to reasonable limits. The main way this is accomplished is by reducing the set of gravity vectors available and fixing the duration of the turn. By doing so, we reduce the space of all possible actions to something manageable which still represents the full range of kinetic possibilities.
+In this work, we restrict the possible set of ``turns'' from a given concave vertex to reasonable limits. The main way this is accomplished is by reducing the set of gravity vectors available and fixing the duration of the turn. By doing so we reduce the space of all possible actions to something ``manageable'' which still represents the full range of kinetic possibilities. An action or state space is ``manageable'' if it does not jeopardize termination of the algorithm.
 
 
 To understand how the set of gravity vectors is reduced, some terminology must first be defined. A given concave vertex has two leading edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
 
-\myfigure{width=0.5\linewidth}{edgeDefinition}{A concave vertex $V_{cc}^1$ and its two corresponding outward edge vectors $\vec{e}_1$) and $\vec{e}_2$}
+\myfigure{width=0.5\linewidth}{edgeDefinition}{A concave vertex $V_{cc}^1$ and its two corresponding outward edge vectors $\vec{e}_1$ and $\vec{e}_2$}
 
 We start with a full sphere of possibilities to sample $g_{start}$ and $g_{end}$ from, as shown below:
 
@@ -150,7 +150,7 @@ Our second restriction is that $g_{end}$ must be a vector that produces motion o
 
 \myfigure{width=0.8\linewidth}{restriction3}{$g_{end}$ is reduced to vectors that produce motion while keeping the particle on the leading edge}
 
-This leaves two arcs of gravity vectors from which $g_{end}$ can be sampled.
+This leaves two arcs of gravity vectors from which $g_{end}$ can be selected.
 
 	\subsection{Ideal Successor Function}
 
@@ -164,13 +164,13 @@ To overcome this difficulty, we will instead sample from the continuous range of
 
 Sampling from this space produces a list of defined turns (or actions). Our successor function will then examine these actions in conjunction with an input concave vertex and produce the set of reachable concave vertices.
 
-Ideally this set of concave vertices would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but with careful design we can discover the majority of this set.
+Ideally this set of concave vertices produced by sampling would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but with careful design we can discover the majority of this set.
 
 	\subsection{Representative Coverage Between Limits}
 
 The way we produce the majority of this set is to obtain a representative coverage over the possible kinetic paths out of a concave vertex. This is done by choosing a sampling method that produces the most diverse set of kinetic paths.
 
-If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time, this uniform sampling method produces many kinetic paths that are almost identical as can be seen below.
+If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time however, this uniform sampling method produces many kinetic paths that are almost identical as can be seen below.
 
 \myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 samples from each side at uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
 
@@ -188,9 +188,9 @@ Now we have all the pieces to implement A.I. search. Our state is defined as the
 
 To further increase computational efficiency, we implement two types of graph reduction in our search.
 
-The first is by using the standard graph implementation of our search algorithm. This graph version of the algorithm prevents a state from being expanded twice. Because the connectivity graph within workpieces often has a lot of cycles, preventing more than one expansion at each state helps considerably in cutting down computational cost.
+The first is by using the standard graph implementation of our search algorithm. This graph version of the algorithm prevents a state from being expanded twice. Because the connectivity graph within workpieces often has many cycles \cite{Yasui2011}, preventing more than one expansion at each state helps considerably in cutting down computational cost.
 
-Note how this algorithm is similar to tree search but makes use of a closed set.
+Note how the following algorithm is similar to tree search but makes use of a closed set.
 
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
@@ -219,7 +219,7 @@ The second graph reduction is implemented directly in the successor function. Wh
 
 By doing so, our successor function produces the optimal reduced set of concave vertices reachable from a given state. This graph reduction enqueues fewer plans onto the fringe, reducing the memory overhead and improving performance.
 
-These two graph reductions excel in workpieces with finely-tesselated concave sections. Here, the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a lot of time expanding all the concave vertices over and over again.
+These two graph reductions excel in workpieces with finely-tesselated concave sections. Here the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a considerable amount of time expanding all the concave vertices multiple times.
 
 \myfigure{width=0.5\linewidth}{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
 
@@ -229,7 +229,7 @@ The uniform cost graph search algorithm we use ensures the plan produced is opti
 
 		\subsubsection{Time}
 
-The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the total backward time to execute that plan. This ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe.
+The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the total backward time to execute that plan. This ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe (ensuring optimality in time).
 
 		\subsubsection{Energy}
 
@@ -240,7 +240,7 @@ There are many ways to estimate the amount of energy required to execute a serie
 
 		\subsubsection{Energy - Rotation Angle}
 
-The first estimation of energy is based on the total rotation angle. If friction in the bearings and motor are the primary energy losses for the draining process, plans can be enqueued by their total absolute angle change.
+The first estimation of energy is based on the total rotation angle. If friction in the motor bearings are the primary energy losses for the draining process, plans can be enqueued by their total absolute angle change.
 
 This model would be appropriate if the workpiece was well balanced in a fixture that produced high energy loss due to friction.
 
@@ -256,7 +256,7 @@ Finally, if the workpiece is well balanced and friction in the rotator is low, t
 
 In this case, plans can be enqueued based on their total acceleration change.
 
-	\subsection{Solution}
+	\subsection{Solution Post Processing}
 
 A full solution is defined as the sequence of gravity transitions to drain the workpiece. The graph search algorithm returns a list of gravity turns from each concave vertex to drain the workpiece; the only issue is that the $g_{end}$ from one turn rarely matches the $g_{start}$ of the following turn.
 
@@ -282,6 +282,8 @@ Our implementation of this paper is available online at the following url when a
 
 \vspace{0.2in}
 
+\myfigure{width=0.8\linewidth}{demoFoundSolution}{A screen capture from our implementation, available online.}
+
 This implementation includes a graphical user interface that draws the sampling at each vertex and each path segment for a particle's full simulation. It also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
 
 	\subsection{Run Time}
@@ -290,11 +292,11 @@ Because our implementation is run asynchronously and performs a lot of (unnecess
 
 The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
 
-In fact, search for the solution is rate-limited by the animation engine which runs at 60 frames per second. Consequently, all computers that are capable of completing the necessary operations between frame draws will find the solution in the same amount of time, which is another reason why absolute computation time is not representative of performance for our work.
+In fact, search for the solution is rate-limited by the animation engine which runs at 60 frames per second. Consequently, all computers that are capable of completing the necessary operations between frame draws will find the solution in the same amount of time, another reason why absolute computation time is not representative of performance for our work.
 
 The following breakdown on CPU time is provided to get a sense of the computation workload for each high-level function. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
 
-\begin{table}
+\begin{table}[H]
 \label{resultsTable}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -328,7 +330,7 @@ The main time-intensive aspects of this algorithm are:
 
 The intersection between a particle path and the workpiece is linear in the number of edges $O(E)$ in the workpiece because each edge is intersected against a given path.
 
-A particle's full simulation duration is dependent on the elasticity $\kappa$ which controls the rate of energy dissipation. In the best case, a particle's simulation only has one path; in the worst case, the particle never stops moving if the elasticity of the system is 1. In practice we found that most particle simulations had a number of path segments that was proportional (linearly) to the number of edges in the polgyon. Thus the simulation step is $O(E)$, with $O(E)$ intersection tests, bringing us to $O(E^2).$
+A particle's full simulation duration is dependent on the elasticity $\kappa$ which controls the rate of energy dissipation. In the best case, a particle's simulation only has one path; in the worst case, the particle never stops moving if the elasticity of the system is 1. In practice we found that most particle simulations had a number of path segments that was proportional (linearly) to the number of edges in the polgyon. Thus the simulation step is $O(E)$ with $O(E)$ intersection tests, bringing us to a total (so far) of $O(E^2).$
 
 A full simulation is performed for every sampled turn at a given concave vertex. We restrict the number of samples to 20 in our implementation, so this step introduces a scalar constant $S$ defined as the number of samples taken at each concave vertex.
 
@@ -348,7 +350,7 @@ Further optimizations and improvements could be made to this work, namely to enh
 
 One standard improvement to uniform cost search is the addition of a consistent, admissible heuristic to convert the search into A* search. A heuristic is simply an estimation of the remaining cost from a state to the goal state. Admissibility of a heuristic requires that the heuristic never over-estimates the remaining cost, and consistency requires that the heuristic does not rapidly change values between states.
 
-Heuristics are, by nature, very dependent on the problem they are being applied to. Many heuristics exist for positional search problems and other common search formulations; since our search formulation is rather unique, there is not as much prior work to draw from.
+Heuristics are, by nature, very dependent on the problem they are being applied to. Many heuristics exist for positional search problems and other common search formulations; since our search formulation is rather unique, there is not as much prior work to draw from \cite{christofides1976worst}.
 
 One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it is also radially symmetric and does not take into account workpiece geometry. It is probable that better heuristics exist for this search formulation.
 
@@ -364,7 +366,7 @@ The rest of the approach, from solution search to particle simulation, would rem
 
 	\subsection{Adaption to 3D - Free Axis}
 
-Adapting this work to 3D polygonal meshes where the workpiece can rotate about \emph{any} rotation axis at any time presents a substantially more difficult problem. The chief obstacle here is that there is an explosion of possible turns available from any given concave vertex. The final gravity vector of the turn, $g_{end}$, could be sampled from an entire sphere rather than two small arcs from a given circle.
+Adapting this work to 3D polygonal meshes where the workpiece can rotate about \emph{any} rotation axis at any time presents a substantially more difficult problem. The chief obstacle here is that there is an explosion of possible turns available from any given concave vertex. The final gravity vector of the turn, $g_{end}$, could be sampled from an entire sphere rather than two small arcs in a planar circle.
 
 There may be ways to intelligently reduce the sample space and still maintain a representative coverage of the kinetic paths attainable from a concave vertex, but much work is needed before those methods can be validated.
 
@@ -378,7 +380,7 @@ The adaption of this work for multiple particles is fairly trivial to do in the 
 	\label{eq:multipleParticleStateSpace}
 }
 
-Now at each state, there are several sets of ``turns'' to sample from, one set for each concave vertex that contains a particle. When a turn is simulated, all other particles must be simulated as well. If any of these particles experiences scenario \#4, the entire sample has to be rejected.
+Now at each state there are several sets of ``turns'' to sample from, one set for each concave vertex that contains a particle. When a turn is simulated, all other particles must be simulated as well. If any of these particles experiences scenario \#4, the entire sample has to be rejected.
 
 The main disadvantage this naive implementation has is that now the runtime is exponential in the number of concave vertices $n$, as seen in \eqref{eq:bigo}.
 
