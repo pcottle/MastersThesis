@@ -2,13 +2,13 @@
 
 \section{General A.I. Search}
 
-Artificial Intelligence search is a field of study and class of algorithms that discover (or ``search'' for) plans that turn a start state into a goal state in a determinstic world. A.I. search makes heavy use of simulation to compute solutions offline before enacting those solutions in the real world.
+Artificial Intelligence search is a field of study and class of algorithms that discover (or ``search'' for) plans that turn a start state into a goal state in a deterministic world. A.I. search makes heavy use of simulation to compute solutions offline before enacting those solutions in the real world.
 
 Based on our ability to rapidly simulate water particles and the deterministic nature of the workpiece draining problem, we choose A.I. search to compute a series of rotations that fully drain a workpiece.
 
 	\subsection{Terminology}
 
-In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attemping to reach a goal position $G_{pos}$
+In order to describe how A.I. search applies to the draining problem in manufacturing, some terminology must be defined first. In order to aid our definitions, we will use a simple positional search problem as an example. Imagine a robot placed on a grid with $M$ columns and $N$ rows that is attempting to reach a goal position $G_{pos}$
 
 \myfigure{width=0.5\linewidth}{robotGrid}{A small positional search problem.}
 
@@ -54,7 +54,7 @@ The above definitions of state, actions, and successor functions are quite gener
 
 The size of the state space is the important factor when considering different problem formulations. A state space size is defined by size of the set of the different values the state could hold.
 
-For our example above, we define the state to be the position tuple $(R_x, R_y)$. Since $R_x$ and $R_y$ can take on postive integer values up until $M$ and $N$ respectively, the size of the set of possible state values is $MN$.
+For our example above, we define the state to be the position tuple $(R_x, R_y)$. Since $R_x$ and $R_y$ can take on positive integer values up until $M$ and $N$ respectively, the size of the set of possible state values is $MN$.
 
 While a positional search problem with one agent does not present a large (or ``expansive'') state space, these state spaces can quickly get out of control for slightly more complex problems. For instance in the general case of $l$ agents on a board of $M$ by $N$ size, the state space is defined by the list of position tuples $(R^1_x, R^1_y), (R^2_x, R^2_y)... (R^l_x, R^l_y)$. In this case the size of the state space is all possible permutations of these variables, or $(MN)^l$.
 
@@ -145,7 +145,7 @@ This means that $g_{start}$ is a vector that does not produce motion of the part
 
 \myfigure{width=0.8\linewidth}{restriction2}{$g_{start}$ is reduced to one of the two perpendicular vectors}
 
-Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaenously keeping the particle on the leading edge of the concave vertex. This produces two quarter-circle segements of possibilities for $g_{end}$, each of which are defined by a leading edge and the perpendicular vector to that edge.
+Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaneously keeping the particle on the leading edge of the concave vertex. This produces two quarter-circle segments of possibilities for $g_{end}$, each of which are defined by a leading edge and the perpendicular vector to that edge.
 
 
 \myfigure{width=0.8\linewidth}{restriction3}{$g_{end}$ is reduced to vectors that produce motion while keeping the particle on the leading edge}
@@ -282,11 +282,11 @@ Our implementation of this paper is available online at the following url when a
 
 \vspace{0.2in}
 
-This implementation includes a graphical user interface that draws the sampling at each vertex and each path segment for a particle's full simulation. It also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asychronously and is called inbetween graphical frame draws.
+This implementation includes a graphical user interface that draws the sampling at each vertex and each path segment for a particle's full simulation. It also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
 
 	\subsection{Run Time}
 
-Because our implementation is run asychronously and performs a lot of (unnecessary) graphics processing during the solution search process, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
+Because our implementation is run asynchronously and performs a lot of (unnecessary) graphics processing during the solution search process, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
 
 The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
 
