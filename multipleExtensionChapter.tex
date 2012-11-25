@@ -1,0 +1,23 @@
+  \chapter{Extension to Multiple Particles}
+
+  \subsection{Adaption to Multiple Particles}
+
+The adaption of this work for multiple particles is fairly trivial to do in the naive implementation. The main difference is now the state is a tuple of concave vertices, one for each particle:
+
+\myequation{
+  (V_{cc}^{1}, V_{cc}^{2}, V_{cc}^{3}, ... , V_{cc}^{n})
+} {
+  \label{eq:multipleParticleStateSpace}
+}
+
+Now at each state there are several sets of ``turns'' to sample from, one set for each concave vertex that contains a particle. When a turn is simulated, all other particles must be simulated as well. If any of these particles experiences scenario \#4, the entire sample has to be rejected.
+
+The main disadvantage this naive implementation has is that now the runtime is exponential in the number of concave vertices $n$, as seen in \eqref{eq:bigo}.
+
+\myequation{
+O(S \cdot E^2 \cdot V_{cc}^{n})
+} {
+  \label{eq:bigoTotal}
+}
+
+Alternative methods to intelligently combine separate particles or reduce the runtime of the algorithm are likely to exist.
