@@ -20,7 +20,7 @@ The second modification is to our successor function definition; the successor f
   \label{eq:successorMultipleParticle}
 }
 
-With only these modifications alone, we are now able to search for solutions that drain multiple particles out of the workpiece.
+With only these modifications alone we are now able to search for solutions that drain multiple particles out of the workpiece.
 
 \subsection{Implementation}
 
@@ -30,18 +30,19 @@ $$
 trans(V_{cc}^{i}, turn_{l}) = V_{cc}^j \qquad or \qquad exit
 $$
 
-Earlier we had restricted our action space to only turns that produced motion of the particle and kept the particle on the leading edge of the concave vertex.
+Earlier we had restricted our action space to only turns that produced motion of the particle and kept the particle on the leading edge of the concave vertex. This means there was only one possible outcome for a turn simulation -- motion of the particle was induced, and that motion began immediately when the turn was performed.
 
-This leads to four possible scenarios when simulating a turn for a given particle in a concave vertex:
+Now that any arbitrary turn can be simulated with a given particle, this guarantee no longer holds. Consequently, we now have four possible simulation scenarios:
+
 
 \begin{itemize}
 \item The particle is offscreen; a turn does not change this particle's state.
 \item The turn results in no motion; any linear combination between $g_{start}$ and $g_{end}$ does not produce motion of the particle.
-\item Motion of the particle starts immediately when the turn begins; $g_{start}$ is defined as one of the perpendicular edge vectors, similar to the single-particle simulation.
+\item Motion of the particle starts immediately when the turn begins; $g_{start}$ is a vector that produces motion.
 \item Motion of the particle starts midway through the turn; $g_{start}$ does not produce motion and $g_{end}$ does.
 \end{itemize}
 
-The multiple-particle version of the transition function must be much more robust against arbitrary input.
+Because of these multiple simulation scenarios, the multiple-particle version of the transition function must be much more robust against arbitrary input. While not of great detail for the overall picture of the approach, this presents a rather large obstacle during implementation.
 
 \section{Multiple Particle Time Complexity}
 
@@ -67,30 +68,40 @@ The one advantage of multiple-particle draining is that it allows for more creat
 
 \subsection{Plan Ranking Heuristic}
 
-The first optimization (and true search heuristic) we implemented was simply a ranking of the partial plans enqueued onto the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented these two optimizations:
+The first optimization (and true search heuristic) we implemented was simply a ranking of the partial plans in the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented the following two heuristics:
 
 \begin{itemize}
-\item Always prefer plans with a higher number of exited particles, overriding all else
-\item Determine the number of particles in the same location and use this feature to rank plans
+\item Always prefer plans with a higher number of exited particles, regardless of cost.
+\item When the number of exited particles is the same, determine the number of particles in the same location and use this feature to rank along with cost.
 \end{itemize}
 
-In practice for our parts, we discovered that ranking plans by
+Utilizing these two heuristics also serves to reduce down the potential state space TODO
+%TODO
+
+
+When ranking plans that have
 
 $$
-time - 10 \cdot numSame
+cost - 10 \cdot numSame
 $$
 
-produced the best mix between optimality of plans and speed of search.
+where $numSame$ is the number of particles in the same location produced the best mix between optimality of plans and speed of search.
 
-\subsection{Min Pocket Action Space Heuristic}
+\subsection{Action Space Heuristic}
 
-The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we define our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle, as seen in Figure \ref{restriction3} (shown below for convenience).
+The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle, as seen in Figure \ref{restriction3}.
 
-\begin{figure}[H]
-  \centering
-    \includegraphics[width=\0.8\linewidth]{figures/restriction3/figure.png}
-\end{figure}
+Now with multiple particles, we have multiple sets of these defined vectors:
 
-% figures
+\myfigure{width=0.8\linewidth}{multiMinPocket}{Action Space sampling for each concave vertex.}
 
+When sampling turns for our successor function, we may sample from each of these defined spaces. Doing so, however, presents three primary concerns.
+
+\begin{itemize}
+\item This action space is fairly large and grows linearly with the number of particles in the workpiece, further increasing our algorithm's time complexity.
+\item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the leading edge of its concave vertex, this $g_{end}$ vector may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected.
+\item If a particular turn's $g_{start}$ is
+\end{itemize}
+
+Of particular interest are the
 
