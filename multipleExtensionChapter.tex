@@ -1,6 +1,13 @@
-  \chapter{Extension to Multiple Particles}
+\chapter{Extension to Multiple Particles}
 
-  \subsection{Adaption to Multiple Particles}
+We now present an extension of this work for draining multiple particles out of a workpiece. The initial adaption to our approach is fairly trivial, but the two heuristics we present dramatically improve search performance without sacrificing optimality.
+
+\section{Initial Adaption}
+
+
+
+
+\section{Multiple Particle Runtime}
 
 The adaption of this work for multiple particles is fairly trivial to do in the naive implementation. The main difference is now the state is a tuple of concave vertices, one for each particle:
 
@@ -20,4 +27,16 @@ O(S \cdot E^2 \cdot V_{cc}^{n})
   \label{eq:bigoTotal}
 }
 
-Alternative methods to intelligently combine separate particles or reduce the runtime of the algorithm are likely to exist.
+\section{State Hashing for Graph Search Implementation}
+
+
+\section{Min Pocket Action Space Heuristic}
+
+% figures
+
+\section{Plan Ranking Heuristic}
+
+% first sort by numOutside
+
+% then sort by -10 * numSame + time
+

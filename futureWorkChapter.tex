@@ -50,31 +50,6 @@ CPU Self Time & CPU Total Time & Function \\ \hline
 
 An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
 
-  \subsection{Time Complexity}
-
-The main time-intensive aspects of this algorithm are:
-
-\begin{itemize}
-\item The intersection between a particle path and the workpiece
-\item The simulation of a particle until settling
-\item The simulation of different ``turns'' at each concave vertex
-\item The search expansion over the workpiece.
-\end{itemize}
-
-The intersection between a particle path and the workpiece is linear in the number of edges $O(E)$ in the workpiece because each edge is intersected against a given path.
-
-A particle's full simulation duration is dependent on the elasticity $\kappa$ which controls the rate of energy dissipation. In the best case, a particle's simulation only has one path; in the worst case, the particle never stops moving if the elasticity of the system is 1. In practice we found that most particle simulations had a number of path segments that was proportional (linearly) to the number of edges in the polgyon. Thus the simulation step is $O(E)$ with $O(E)$ intersection tests, bringing us to a total (so far) of $O(E^2).$
-
-A full simulation is performed for every sampled turn at a given concave vertex. We restrict the number of samples to 20 in our implementation, so this step introduces a scalar constant $S$ defined as the number of samples taken at each concave vertex.
-
-Finally, the graph search expansion over the workpiece is at worst linear in the total number of concave vertices $V_{cc}$. All together, the big order runtime is approximately
-
-\myequation{
-O(S \cdot E^2 \cdot V_{cc})
-} {
-  \label{eq:bigo}
-}
-
 
 \section{Future Work \& Discussion}
 
