@@ -1,10 +1,10 @@
 						\chapter{Modeling Approach}
 
-Analyzing the drainability of a workpiece requires that the behavior of fluid throughout the workpiece be modeled in some way. This behavior is complex; trapped gases, viscous effects, and fluid mechanics all interact during workpiece draining. There are many ways to model this fluid behavior, and each choice comes with both advantages and disadvantages.
+Solving either objective of the drainability problem requires that the behavior of fluid as it travels through the workpiece be modeled in some way. This behavior is complex; trapped gases, viscous effects, and fluid mechanics all interact during workpiece draining. There are many ways to model this fluid behavior, and each choice comes with both advantages and disadvantages.
 
-Advanced fluid simulation methods like the finite element method or smoothed-particle hydrodynamics approximate fluid behavior with high accuracy, but their computation is quite expensive in both time and memory. This is primarily because both are integration methods -- their accuracy relies on integrating many times over a small timestep.
+Advanced fluid simulation methods like computational fluid dynamics or smoothed-particle hydrodynamics approximate fluid behavior with high accuracy, but their computation is quite expensive in both time and memory. This is primarily because both are integration methods -- their accuracy relies on integrating many times over a small timestep.
 
-Thus, in order to quickly simulate fluid behavior during drainability analysis, most previous work chooses a  simplified fluid model \cite{Yasui2011}. While accuracy is sacrificed by choosing a simpler model, more useful analysis can be produced by simulating fluid in many different scenarios.
+Drainability analysis requires many different rounds of fluid simulation in many different configurations; consequently, it is worthwhile to sacrifice accuracy in the fluid model to obtain the ability to simulate many times. Yasui et al.'s previous work chooses this exact tradeoff and produces meaningful and worthwile results \cite{Yasui2011}. We choose a similar approach.
 
 \section{Straight-Line Multiple-Particle Model}
 
