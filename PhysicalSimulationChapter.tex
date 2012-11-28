@@ -19,11 +19,9 @@ Individual water particles under an acceleration field $a$ with initial position
 Equation \eqref{eq:basickinematic} shows the basic kinematic model of a water particle.
 
 
-Note that this model omits the effect of aerodynamic drag ($-\rho v^2 \cdot t$) on the particle. The velocities achieved in workpiece draining produce fairly negligible aerodynamic effects; this omission greatly simplifies calculating the trajectory of a particle.
-
 	\subsection{Reduction to Rays}
 
-In order to obtain particles that always travel in straight lines, many researchers chose to omit the acceleration term from \eqref{eq:basickinematic}. Under this condition, these particles can effectively be modeled as ``rays.''
+In order to obtain particles that always travel in straight lines, one may omit the acceleration term from \eqref{eq:basickinematic}. This is the approach that Yasui et al. chose to obtain straight-line particles \cite{Yasui2011}. Under this condition, these particles can effectively be modeled as ``rays.''
 
 \myequation{
 x(t) = x_0 + v_0 \cdot t
@@ -36,6 +34,8 @@ Equation \eqref{eq:kinematicDropAccel} shows this simplified ray model. Once the
 	\subsection{Parametric Equations (rays)}
 
 There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation \cite{purcell2002ray}.
+
+%TODO - more common text book here
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t
