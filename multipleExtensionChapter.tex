@@ -127,8 +127,11 @@ Combining all these vectors into one sample domain:
 
 And then selecting the pair of vectors that do not induce motion on any particle:
 
-\myfigure{width=0.8\linewidth}{actionspace2}{All $g_{start}$ vectors from each concave vertex combined into one domain.}
+\myfigure{width=0.8\linewidth}{actionspace3}{Pair of $g_{start}$ vectors selected that do not produce motion of any particle.}
 
-Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a leading edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$.
+Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a leading edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$:
 
+\myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
+
+Now our action space is a function of the set of conacve vertex locations; this means that our action space is always the same size, regardless of the number of particles being simulated. This greatly improves performance of the algorithm and is a recommended heuristic to implement.
 
