@@ -4,7 +4,7 @@ Solving either objective of the drainability problem requires that the behavior 
 
 Advanced fluid simulation methods like computational fluid dynamics or smoothed-particle hydrodynamics approximate fluid behavior with high accuracy, but their computation is quite expensive in both time and memory. This is primarily because both are integration methods -- their accuracy relies on integrating many times over a small timestep.
 
-Drainability analysis requires many different rounds of fluid simulation in many different configurations; consequently, it is worthwhile to sacrifice accuracy in the fluid model to obtain the ability to simulate many times. Yasui et al.'s previous work chooses this exact tradeoff and produces meaningful and worthwile results \cite{Yasui2011}. We choose a similar approach.
+Drainability analysis requires many different rounds of fluid simulation in many different configurations; consequently, it is worthwhile to sacrifice accuracy in the fluid model to obtain the ability to simulate many times during algorithm execution. Yasui et al.'s existing work chooses this exact tradeoff and produces meaningful and worthwile results \cite{Yasui2011}. We choose a similar approach of a simplified fluid model that is used in many different simulations.
 
 \section{Straight-Line Multiple-Particle Model}
 
@@ -20,11 +20,13 @@ Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that particles are always traveling either parallel to the acceleration field or along a workpiece surface.
+This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that particles are always traveling either parallel to gravity or along a workpiece surface.
 
-Consequently, particle simulation in this choice of model was essentially reduced to the intersection between lines and surfaces. Because these tests are computationally inexpensive and have a sub-linear runtime in the number of triangles within the workpiece, Yasui et al. were able to perform many particle simulations during analysis. The end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece \cite{Yasui2011}.
+Consequently, particle simulation in this choice of model was essentially reduced to finding intersections between lines and surfaces. An intersection test between a line and a surface runs in constant time; consequently, intersecting a line with the entire workpiece is linear in the number of triangles. Yasui et al. used bounding-box methods to reduce this complexity to sub-linear in the number of triangles, meaning each intersection test (and particle simulation as a whole) was then computationally inexpensive \cite{Yasui2011}.
 
-This thoroughness of simulation produces a set of results that describes the workpiece drainability of any rotation axis. This analysis serves great utility during the design stage of product creation; engineers can quickly determine if a geometry change would prevent drainability and ``seal'' off the part.
+Optimizing particle simulation gave Yasui et al. the ability to perform many particle simulations during analysis; the end result is that for every possible rotation axis, a particle is simulated out of every concave vertex in the workpiece \cite{Yasui2011}.
+
+This thoroughness of simulation produces a set of results that describes the workpiece drainability of any rotation axis. This analysis serves great utility when designing for manufacturability; engineers can quickly determine if a geometry change affects drainability of the workpiece before the workpiece is even manufactured.
 
 Yasui et al.'s model assumes infinitesimally slow rotation of the workpiece for an infinite amount of time. Because of the assumption about the workpiece rotation, Yasui et al.'s results produce a binary value of drainability about a particular axis rather than a direct control sequence.
 
@@ -54,17 +56,17 @@ This model is based on the following assumptions:
 	\item Each fluid body within the workpiece is approximated as a single particle
 	\item Water particles travel in parabolic paths that are influenced by acceleration
 	\item The workpiece can be rotated in either direction along its rotation axis
-	\item The workpiece's rotation speed can vary in time
-	\item The workpiece is a two dimensional polygonal mesh
+	\item The workpiece's rotation speed is non-constant
+	\item The workpiece is a two dimensional polygon
 \end{itemize}
 
 It is important to note that in the following chapters, we present our methods with a focus on single-particle draining for simplicity of presentation. We then extend this work to multiple particles in the penultimate chapter.
 
-	\subsection{Assumption Effects}
+	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling choice requires a different approach to drainability analysis than the approach used by Yasui et al.; our approach, however, draws inspiration from their previous work.
+This modeling choice requires a different approach to drainability analysis than the approach used by Yasui et al.; our approach, however, draws inspiration from their previous work. Our different modeling choice allows us to produce a specific sequence of rotations to drain the workpiece (solving the second objective); the existence of this sequence of rotations then answers the drainability query (the first objective).
 
-The key components of our approach break down into the water particle simulation (presented in Chapter 4) and the search for a drainability sequence (presented in Chapter 5).
+The key components of our approach break down into the water particle simulation (presented in Chapter 3) and the search for a drainability sequence (presented in Chapter 4).
 
 
 
