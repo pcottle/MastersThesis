@@ -32,7 +32,7 @@ $$
 
 Earlier we had restricted our action space to only turns that produced motion of the particle and kept the particle on the leading edge of the concave vertex. This means there was only one possible outcome for a turn simulation -- motion of the particle was induced, and that motion began immediately when the turn was performed.
 
-Now that any arbitrary turn can be simulated with a given particle, this guarantee no longer holds. Consequently, we now have four possible simulation scenarios:
+Now that any arbitrary turn can be simulated against an arbitrary particle, this guarantee no longer holds true. Consequently, we now have four possible simulation scenarios in the transition function:
 
 
 \begin{itemize}
@@ -42,11 +42,11 @@ Now that any arbitrary turn can be simulated with a given particle, this guarant
 \item Motion of the particle starts midway through the turn; $g_{start}$ does not produce motion and $g_{end}$ does.
 \end{itemize}
 
-Because of these multiple simulation scenarios, the multiple-particle version of the transition function must be much more robust against arbitrary input. While not of great detail for the overall picture of the approach, this presents a rather large obstacle during implementation.
+Because of these multiple simulation scenarios, the multiple-particle version of the transition function must be much more robust against arbitrary input. While not of great detail for the overall picture of the approach, this presents a rather large obstacle during implementation that should be considered.
 
 \section{Multiple Particle Time Complexity}
 
-Now that our state is defined as a set of concave vertex locations, the state space is unfortunately exponential in the number of particles, with a base defined as the number of concave vertices in the workpiece:
+Now that our state is defined as a set of concave vertex locations, the state space is unfortunately exponential in the number of particles, with a base defined as the number of concave vertices in the workpiece as seen below:
 
 $$
 (num(V_{cc}) + 1)^n
@@ -60,11 +60,15 @@ O(S \cdot E^2 \cdot V_{cc}^{n})
   \label{eq:bigoTotal}
 }
 
-Although we earlier had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space.
+Although we earlier had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space. Our algorithm as presented thus far will still find solutions to these problems, but may spend a fair amount of time expanding unseen states to ensure optimality.
+
+In order to improve running time of the algorithm, we present two search heuristics that greatly reduce the number of states expanded and obtain solutions much faster. These heuristics sacrifice the guarantee of optimality in exchange for an improvement in running time.
 
 \section{Search Heuristics}
 
-The one advantage of multiple-particle draining is that it allows for more creativity and flexibility when composing search optimizations.
+The one advantage of the multiple-particle formulation of the drainability problem is that it allows for more creativity and flexibility when composing search optimizations. Previously in single-particle draining, our state was simply defined as a concave vertex location. This meant that any potential heuristic had only the workpiece geometry and a position as input variables.
+
+Now that our state is a set of settle locations, we can instead create heuristics that operate on direct properties of the state.
 
 \subsection{Plan Ranking Heuristic}
 
@@ -72,20 +76,28 @@ The first optimization (and true search heuristic) we implemented was simply a r
 
 \begin{itemize}
 \item Always prefer plans with a higher number of exited particles, regardless of cost.
-\item When the number of exited particles is the same, determine the number of particles in the same location and use this feature to rank along with cost.
+\item The number of particles in the same location shall be combined with cost as the primary ranking key.
 \end{itemize}
 
-Utilizing these two heuristics also serves to reduce down the potential state space TODO
-%TODO
-
-
-When ranking plans that have
+During our testing of the algorith, we found that ranking potential plans by
 
 $$
 cost - 10 \cdot numSame
 $$
 
 where $numSame$ is the number of particles in the same location produced the best mix between optimality of plans and speed of search.
+
+With this plan ranking heuristic, our search algorithm prefers states that have a high number of particles out of the workpiece or a high number of particles in the same location. Plans that fit these characteristics have an additional performance benefit; exited particles do not have to be simulated in the transition function, and each concave vertex location only has to be simulated once.
+
+This essentially reduces the time complexity of the algorithm. If $o$ is the number of particles that have exited the workpiece and $m$ is the number of particles in duplicate locations, the time complexity is then:
+
+\myequation{
+O(S \cdot E^2 \cdot V_{cc}^{n -o -m})
+} {
+  \label{eq:bigoTotalWithHeuristic}
+}
+
+Which is a factor of $V_{cc}^{o + m}$ smaller than \eqref{bigoTotal}.
 
 \subsection{Action Space Heuristic}
 
