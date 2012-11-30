@@ -7,7 +7,7 @@ We now present an extension of this work for draining multiple particles out of 
 Only two elements of our approach need to be modified in order to drain multiple particles out of a workpiece. The first is a modification to the state definition; the state is now a set of settled locations, one for each particle:
 
 \myequation{
-  (V_{cc}^{1}, V_{cc}^{2}, V_{cc}^{3}, ... , V_{cc}^{n})
+  (V_{c}^{1}, V_{c}^{2}, V_{c}^{3}, ... , V_{c}^{n})
 } {
   \label{eq:multipleParticleState}
 }
@@ -15,7 +15,7 @@ Only two elements of our approach need to be modified in order to drain multiple
 The second modification is to our successor function definition; the successor function now takes in a set of particle locations and produces a set of ``reachable'' states:
 
 \myequation{
-  successor((V_{cc}^{1}, V_{cc}^{2}, ... , V_{cc}^{n})^i) = \left \{ (V_{cc}^{1}, V_{cc}^{2}, ... , V_{cc}^{n})^1, (V_{cc}^{1}, V_{cc}^{2}, ... , V_{cc}^{n})^2, ...  \right \}
+  successor((V_{c}^{1}, V_{c}^{2}, ... , V_{c}^{n})^i) = \left \{ (V_{c}^{1}, V_{c}^{2}, ... , V_{c}^{n})^1, (V_{c}^{1}, V_{c}^{2}, ... , V_{c}^{n})^2, ...  \right \}
 } {
   \label{eq:successorMultipleParticle}
 }
@@ -27,10 +27,10 @@ With only these modifications alone we are now able to search for solutions that
 These two modifications to our approach result in a fair number of changes in the implementation. One primary implementation difference is that now a given turn must be simulated across all particle locations. This simulation is usually performed by the transition function:
 
 $$
-trans(V_{cc}^{i}, turn_{l}) = V_{cc}^j \qquad or \qquad exit
+trans(V_{c}^{i}, turn_{l}) = V_{c}^j \qquad or \qquad exit
 $$
 
-Earlier we had restricted our action space to only turns that produced motion of the particle and kept the particle on the leading edge of the concave vertex. This means there was only one possible outcome for a turn simulation -- motion of the particle was induced, and that motion began immediately when the turn was performed.
+Earlier we had restricted our action space to only turns that produced motion of the particle and kept the particle on the incident edge of the concave vertex. This means there was only one possible outcome for a turn simulation -- motion of the particle was induced, and that motion began immediately when the turn was performed.
 
 Now that any arbitrary turn can be simulated against an arbitrary particle, this guarantee no longer holds true. Consequently, we now have four possible simulation scenarios in the transition function:
 
@@ -49,13 +49,13 @@ Because of these multiple simulation scenarios, the multiple-particle version of
 Now that our state is defined as a set of concave vertex locations, the state space is unfortunately exponential in the number of particles, with a base defined as the number of concave vertices in the workpiece as seen below:
 
 $$
-(num(V_{cc}) + 1)^n
+(num(V_{c}) + 1)^n
 $$
 
 This leads to a time-complexity that is now exponential in the number of concave vertices, rather than linear as in Equation \eqref{eq:bigo}:
 
 \myequation{
-O(S \cdot E^2 \cdot V_{cc}^{n})
+O(S \cdot E^2 \cdot V_{c}^{n})
 } {
   \label{eq:bigoTotal}
 }
@@ -92,12 +92,12 @@ With this plan ranking heuristic, our search algorithm prefers states that have 
 This essentially reduces the time complexity of the algorithm. If $o$ is the number of particles that have exited the workpiece and $m$ is the number of particles in duplicate locations, the time complexity is then:
 
 \myequation{
-O(S \cdot E^2 \cdot V_{cc}^{n -o -m})
+O(S \cdot E^2 \cdot V_{c}^{n -o -m})
 } {
   \label{eq:bigoTotalWithHeuristic}
 }
 
-Which is a factor of $V_{cc}^{o + m}$ smaller than \eqref{eq:bigoTotal}.
+Which is a factor of $V_{c}^{o + m}$ smaller than \eqref{eq:bigoTotal}.
 
 \subsection{Action Space Heuristic}
 
@@ -111,7 +111,7 @@ When sampling turns for our successor function, we may sample from any of these 
 
 \begin{itemize}
 \item This action space is fairly large and grows linearly with the number of particles in the workpiece, further increasing our algorithm's time complexity.
-\item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the leading edge of its concave vertex, a $g_{end}$ vector from this space may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected.
+\item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the incident edge of its concave vertex, a $g_{end}$ vector from this space may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected.
 \item A particular turn's $g_{start}$ may be well into the ``induce motion'' space of another concave vertex. If the workpiece would rotate infinitely fast to a particular orientation this would be of no concern, but our solution post-processor assumes that all turns inbetween partial plan turns do not induce motion. This means that in order to accurately simulate this turn, we must rotate $g_{start}$ back to the first vector that produces motion for any particle.
 \end{itemize}
 
@@ -129,7 +129,7 @@ And then selecting the pair of vectors that do not induce motion on any particle
 
 \myfigure{width=0.8\linewidth}{actionspace3}{Pair of $g_{start}$ vectors selected that do not produce motion of any particle.}
 
-Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a leading edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$:
+Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a incident edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$:
 
 \myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
 
