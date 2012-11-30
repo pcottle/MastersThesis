@@ -53,37 +53,37 @@ Once particles are modeled as parametric rays, all the existing techniques and l
 
 Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays are the industry standard \cite{glassner1989introduction}.
 
-	\subsection{Geometric Primitive Intersections}
+%	\subsection{Geometric Primitive Intersections}
 
-Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{glassner1989introduction}.
+%Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{glassner1989introduction}.
 
-For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in equation \eqref{eq:sphereParametric}.
+%For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in equation \eqref{eq:sphereParametric}.
 
-\myequation{
-	|\vec{X} - \vec{C}|^2 - r^2 = 0
-} {
-	\label{eq:sphereParametric}
-}
+% \myequation{
+% 	|\vec{X} - \vec{C}|^2 - r^2 = 0
+% } {
+% 	\label{eq:sphereParametric}
+% }
 
-In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the equation define the surface of the sphere. In order to solve for the intersection of a ray and a sphere, the parametric equation of the ray is substituted into \eqref{eq:sphereParametric} for $X$. This produces \eqref{eq:sphereParametricSubbed}.
+% In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the equation define the surface of the sphere. In order to solve for the intersection of a ray and a sphere, the parametric equation of the ray is substituted into \eqref{eq:sphereParametric} for $X$. This produces \eqref{eq:sphereParametricSubbed}.
 
-\myequation{
-	|(\vec{x}_0 + \vec{v}_0 \cdot t) - \vec{C}|^2 - r^2 = 0
-} {
-	\label{eq:sphereParametricSubbed}
-}
+% \myequation{
+% 	|(\vec{x}_0 + \vec{v}_0 \cdot t) - \vec{C}|^2 - r^2 = 0
+% } {
+% 	\label{eq:sphereParametricSubbed}
+%}
 
-\myfigure{width=0.5\linewidth}{raysphere}{A demonstration of a ray intersecting with a sphere.}
+% \myfigure{width=0.5\linewidth}{raysphere}{A demonstration of a ray intersecting with a sphere.}
 
-Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the standard quadratic formula:
+% Equation \eqref{eq:sphereParametricSubbed} can be expanded algebraically to yield an equation that is quadratic in $t$. This resulting equation can then be solved using the standard quadratic formula:
 
-\myequation{
-	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
-} {
-	\label{eq:quadratic}
-}
+% \myequation{
+% 	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
+% } {
+% 	\label{eq:quadratic}
+% }
 
-This constant-time solution for the intersection between a parametric equation and geometric primitive will be crucial for later parts of this paper.
+% This constant-time solution for the intersection between a parametric equation and geometric primitive will be crucial for later parts of this paper.
 
 \section{Kinetic Parametric Approach}
 
@@ -108,15 +108,15 @@ $$
 
 This gives us a parabola defined by three vectors:
 
-\myfigure{width=0.5\linewidth}{parablinetest2}{The parabola re-defined for notation purposes.}
+\myfigure{width=0.35\linewidth}{parablinetest2}{The parabola redefined for notation purposes.}
 
 This parabola needs to be intersected against an arbitrary edge with starting point $\vec{s}$ and direction $\vec{d}$:
 
-\myfigure{width=0.5\linewidth}{parablinetest1}{Edge for interesection test.}
+\myfigure{width=0.6\linewidth}{parablinetest1}{Edge for interesection test.}
 
 We know that any point $\alpha$ on the line defined by $\vec{d}$ and $\vec{s}$ has a cross product of 0:
 
-\myfigure{width=0.5\linewidth}{parablinetest3}{Definition of a point on the line defined by $\vec{d}$ and $\vec{s}$.}
+\myfigure{width=0.6\linewidth}{parablinetest3}{Definition of a point on the line defined by $\vec{d}$ and $\vec{s}$.}
 
 This can be represented algebraically as
 
@@ -130,7 +130,7 @@ $$
 (\vec{x}(t) - \vec{s}) \times \vec{d} = 0
 $$
 
-We can then expand algebraically into:
+We can then be expanded algebraically into:
 
 $$
 (\vec{p} + \vec{v} \cdot t + \frac{1}{2} \vec{a} \cdot t^2 - \vec{s}) \times \vec{d} = 0
@@ -138,46 +138,47 @@ $$
 
 In order to obtain a non-vectorized equation, we then break each vector into orthogonal components:
 
-\begin{align}
 $$
-\vec{p} = (p_x, p_y) && \vec{v} = (v_x, v_y)
-$$
-\end{align}
-
-$$
-\vec{s} = (s_x, s_y)
+\vec{p} = (p_x, p_y) \qquad \vec{v} = (v_x, v_y) \qquad \vec{a} = (a_x, a_y)
 $$
 
 $$
-\vec{d} = (d_x, d_y)
+\vec{s} = (s_x, s_y) \qquad \vec{d} = (d_x, d_y)
 $$
 
-This gives us two versions of the above equation, where the cross product operation $\times$ is replaced by normal multiplication:
+This gives us two versions of the above equation, where the cross product operation is replaced by normal multiplication:
 
 $$
-\left [ (p_x - s_x) + v_x \cdot t + \frac{1}{2} a_x \cdot t^2) \right ] \cdot d_y = 0
+\left [ (p_x - s_x) + v_x  t + \frac{1}{2} a_x  t^2) \right ] \cdot  d_y = 0
 $$
 
-and
+\vspace{0.1in}
 
 $$
-\left [ (p_y - s_y) + v_y \cdot t + \frac{1}{2} a_y \cdot t^2) \right ] \cdot d_x = 0
+\left [ (p_y - s_y) + v_y t + \frac{1}{2} a_y t^2) \right ] \cdot d_x = 0
 $$
 
 Subtracting the second equation from the first to perform the cross product and grouping terms by the power of $t$ gives us:
 
+
+\myequation{
+	(\frac{1}{2} a_x d_y - \frac{1}{2} a_y ) \cdot t^2 + (v_x d_y - v_y d_x) \cdot t +
+\left [ (p_x - s_x) d_y - (p_y - s_y) d_x \right ] = 0
+} {
+	\label{eq:parabLineTest}
+}
+
+Equation \ref{eq:parabLineTest} can easily solved by the quadratic equation:
+
 $$
-(\frac{1}{2} a_x \cdot d_y - \frac{1}{2} a_y \cdot ) \cdot t^2 + (v_x \cdot d_y - v_y \cdot d_x) \cdot t +
-\left [ (p_x - s_x) \cdot d_y - (p_y - s_y) \cdot d_x \right ] = 0
+	\frac{-b \pm \sqrt{b^2 - 4ac}}{2a} = t
 $$
 
-This leaves us an equation that is easily solved by the quadratic equation, where $a$, $b$, and $c$ are defined as:
+where $a$, $b$, and $c$ are defined as:
 
 $$
-a = (\frac{1}{2} a_x \cdot d_y - \frac{1}{2} a_y \cdot )
+a = (\frac{1}{2} a_x d_y - \frac{1}{2} a_y d_x) \qquad b = (v_x d_y - v_y d_x) \qquad c = [ (p_x - s_x) d_y - (p_y - s_y) d_x \right ]
 $$
-
-% TODO
 
 Solving for $t$ will yield two values (which may or may not be distinct). In order to ensure these two points lie on the edge defined by $\vec{d}$ and $\vec{s}$, first eliminate negative values of $t$. Then proceed to find the smallest value of $t$ that produces a point that lies between the points $\vec{s}$ and $\vec{s} + \vec{d}$.
 
