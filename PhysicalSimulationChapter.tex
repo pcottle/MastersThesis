@@ -21,7 +21,7 @@ Equation \eqref{eq:basickinematic} shows the basic kinematic model of a water pa
 
 	\subsection{Reduction to Rays}
 
-In order to obtain particles that always travel in straight lines, one may omit the acceleration term from \eqref{eq:basickinematic}. This is the approach that Yasui et al. chose to obtain straight-line particles \cite{Yasui2011}. Under this condition, these particles can effectively be modeled as ``rays.''
+In order to obtain particles that always travel in straight lines, one may omit the acceleration term from Equation \eqref{eq:basickinematic}. This is the approach that Yasui et al. chose to obtain straight-line particles \cite{Yasui2011}. Under this condition, these particles can effectively be modeled as ``rays.''
 
 \myequation{
 x(t) = x_0 + v_0 \cdot t
@@ -51,13 +51,13 @@ Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized pos
 
 Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points \cite{purcell2002ray}.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays are the industry standard \cite{glassner1989introduction}.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays is the industry standard \cite{glassner1989introduction}.
 
 %	\subsection{Geometric Primitive Intersections}
 
 %Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{glassner1989introduction}.
 
-%For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in equation \eqref{eq:sphereParametric}.
+%For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in Equation \eqref{eq:sphereParametric}.
 
 % \myequation{
 % 	|\vec{X} - \vec{C}|^2 - r^2 = 0
@@ -65,7 +65,7 @@ Ray-tracing produces 3D computer graphics by sending out rays from a camera loca
 % 	\label{eq:sphereParametric}
 % }
 
-% In equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the equation define the surface of the sphere. In order to solve for the intersection of a ray and a sphere, the parametric equation of the ray is substituted into \eqref{eq:sphereParametric} for $X$. This produces \eqref{eq:sphereParametricSubbed}.
+% In Equation \eqref{eq:sphereParametric}, all points $\vec{X}$ that satisfy the equation define the surface of the sphere. In order to solve for the intersection of a ray and a sphere, the parametric equation of the ray is substituted into Equation \eqref{eq:sphereParametric} for $X$. This produces Equation \eqref{eq:sphereParametricSubbed}.
 
 % \myequation{
 % 	|(\vec{x}_0 + \vec{v}_0 \cdot t) - \vec{C}|^2 - r^2 = 0
@@ -87,7 +87,7 @@ Ray-tracing produces 3D computer graphics by sending out rays from a camera loca
 
 \section{Kinetic Parametric Approach}
 
-While this straight-line particle approach is convenient, our model aims to examine particles with more realistic kinetic properties and paths. Consequently, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with \eqref{eq:basickinematic} to produce \eqref{eq:freeFall} -- a parabola defined parametrically.
+While this straight-line particle approach is convenient, our model aims to examine particles with more realistic kinetic properties and paths. Consequently, we choose to not omit the acceleration term from the kinetic model of a particle. This means we combine a parametric approach with Equation \eqref{eq:basickinematic} to produce Equation \eqref{eq:freeFall} -- a parabola defined parametrically.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_0 \cdot t + \frac{1}{2} \vec{a} \cdot t^2
@@ -98,7 +98,7 @@ While this straight-line particle approach is convenient, our model aims to exam
 
 	\subsection{Geometric Primitive Intersections}
 
-We would like to intersect these particle paths (represented by parabolas) with geometric primitives in the workpiece for simulation purposes. Since our algorithm takes in a set of polygons that define the workpiece, the only geometric primitive of interest is a polygon edge. We will first describe the parabola-line intersection test and then present the small amount of validation needed for the parabola-edge intersection test.
+We would like to intersect these particle paths (represented by parabolas) with geometric primitives in the workpiece for simulation purposes. Since our algorithm takes in a set of polygons that define the workpiece, the only geometric primitive of interest is a polygon edge. We will first describe the parabola-line intersection test and then present the small amount of extra validation needed for the parabola-edge intersection test.
 
 We begin by redefining the parabola's initial point $\vec{x}_0$ as $\vec{p}$ and initial velocity $\vec{v}_0$ as $\vec{v}$ for notation purposes:
 
@@ -177,17 +177,18 @@ $$
 where $a$, $b$, and $c$ are defined as:
 
 $$
-a = (\frac{1}{2} a_x d_y - \frac{1}{2} a_y d_x) \qquad b = (v_x d_y - v_y d_x) \qquad c = [ (p_x - s_x) d_y - (p_y - s_y) d_x \right ]
+a = (\frac{1}{2} a_x d_y - \frac{1}{2} a_y d_x) \qquad b = (v_x d_y - v_y d_x) \qquad c = \left [ (p_x - s_x) d_y - (p_y - s_y) d_x \right ]
 $$
 
-Solving for $t$ will yield two values (which may or may not be distinct). In order to ensure these two points lie on the edge defined by $\vec{d}$ and $\vec{s}$, first eliminate negative values of $t$. Then proceed to find the smallest value of $t$ that produces a point that lies between the points $\vec{s}$ and $\vec{s} + \vec{d}$.
+Solving for $t$ will yield two values, representing points along the parabola path that intersect the line defined by $\vec{d}$ and $\vec{s}$:
 
-% TODO
+\myfigure{width=0.6\linewidth}{parablinetest4}{Solution points for the parabola-line intersection test.}
 
+This concludes the parabola-line intersection tests. For our simulation purposes, we would like to determine the first point that lies on on the edge defined by $\vec{d}$ and $\vec{s}$ rather than the line. This requires a small extra validation step; first, negative values of $t$ are eliminated, for these points represent the particle traveling backwards in time. Then, the smallest value of $t$ is found that produces a point that lies inbetween points $\vec{s}$ and $\vec{s} + \vec{d}$. If no such value exists, this parabola does not intersect the given edge.
 
 \section{Equation Types}
 
-Now that we have defined a parabolic path segment in parametric form, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
+Now that we have defined a parabolic path segment in parametric form, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to Equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
 
 \begin{itemize}
 	\item Whether the workpiece is rotating
@@ -198,7 +199,7 @@ These two conditions, when combined in all possible ways, produce four scenarios
 
 		\subsection{\#1: Free Fall Equation}
 
-When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola, and no modification to equation \eqref{eq:freeFall} is necessary.
+When the particle is moving through open space with no workpiece rotation, we consider that particle to be in basic ``free-fall.'' Equation \eqref{eq:freeFall} gives us the equation that models this scenario; the particle travels through empty space with a constant acceleration field. The resulting motion is a parabola, and no modification to Equation \eqref{eq:freeFall} is necessary.
 
 \myfigure{width=0.9\linewidth}{freefallequation}{Example path traced out by the ``free-fall'' equation}
 
@@ -208,7 +209,7 @@ During simulation, a particle may also begin to travel along an edge if it has a
 
 In this scenario, the acceleration of the particle in free-fall is projected along the surface of the workpiece. If this projected acceleration is zero, the particle will stay in place; if not, the particle will begin to ``slide'' along this edge.
 
-We achieve the modeling of this scenario by projecting the acceleration in \eqref{eq:freeFall} along the workpiece surface, which produces a straight-line path.
+We achieve the modeling of this scenario by projecting the acceleration in Equation \eqref{eq:freeFall} along the workpiece surface, which produces a straight-line path.
 
 Note that while the particle is now traveling along an edge, it is essentially the same as the free-fall equation with a new projected acceleration.
 
@@ -220,7 +221,7 @@ Note that while the particle is now traveling along an edge, it is essentially t
 
 \myfigure{width=0.8\linewidth}{slidingequation}{Demonstration of the sliding equation.}
 
-With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating). Furthermore, because both of these equations are strictly quadratic in $t$, they can be substituted into the definition of geometric primitives to perform intersect tests. Further modifications to \eqref{eq:freeFall} may sacrifice our ability to perform constant-time intersections.
+With these two formulations, the water particle's path can be simulated on both edges and in open space when the acceleration field is constant (e.g. the workpiece is not rotating). Furthermore, because both of these equations are strictly quadratic in $t$, they can be substituted into the definition of geometric primitives to perform intersect tests. Further modifications to Equation \eqref{eq:freeFall} may sacrifice our ability to perform constant-time intersections.
 
 		\subsection{Rotation}
 
@@ -244,7 +245,7 @@ This leads to a special case of particle motion, referred to as ``concurrent rot
 	\label{eq:slidingRotating}
 }
 
-In equation \eqref{eq:slidingRotating}, $\hat{a}_{projected}$ is a constant unit-vector in the direction of the edge. The $|a_{projected}|(t)$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate and the acceleration vector begins perpendicular to the edge, the magnitude term can be modeled as
+In Equation \eqref{eq:slidingRotating}, $\hat{a}_{projected}$ is a constant unit-vector in the direction of the edge. The $|a_{projected}|(t)$ term scales as the acceleration field changes direction. If the rotation occurs at a constant rate and the acceleration vector begins perpendicular to the edge, the magnitude term can be modeled as
 $$
 mag_{accel} = cos(\omega \cdot t)
 $$
@@ -253,13 +254,13 @@ where $\omega$ is the angular velocity.
 
 		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
 
-In equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, it is now quite difficult to solve for particle-primitive intersections. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
+In Equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. With the additional $cos$ term, it is now quite difficult to solve for particle-primitive intersections. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
 
 The ability to determine where the particle is at a given time will be crucial for our methods later; this scenario will still be simulated, despite the inability to intersect these trajectories with geometric primitives.
 
 		\subsection{\#4: Concurrent Rotation \& Free-Fall Equation}
 
-The fourth scenario is when the particle is traveling through open space and the workpiece is rotating in time. In this case, the acceleration vector is no longer projected along an edge as shown in \eqref{eq:slidingRotating}. The acceleration vector now has a direction that changes in time (with a fixed magnitude), as shown in \eqref{eq:freefallRotating}.
+The fourth scenario is when the particle is traveling through open space and the workpiece is rotating in time. In this case, the acceleration vector is no longer projected along an edge as shown in Equation \eqref{eq:slidingRotating}. The acceleration vector now has a direction that changes in time (with a fixed magnitude), as shown in Equation \eqref{eq:freefallRotating}.
 
 \myequation{
 	\vec{x}(t) = \vec{x}_0 + \vec{v}_{0} \cdot t + \frac{1}{2}\vec{a}(t)  \cdot t^2
