@@ -50,6 +50,33 @@ CPU Self Time & CPU Total Time & Function \\ \hline
 
 An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
 
+  \subsection{Constants}
+
+The above results were obtained with the following values for simulation constants:
+
+\begin{table}[H]\label{constantsTable}
+\begin{tabular}{|c|c|c|}
+\hline
+Constant Description & Symbol & Value \\ \hline
+Particle Elasticity & $\kappa$ & 0.5 \\
+Perpendicular Edge Velocity & $\epsilon$ & 0.9\\
+\end{tabular}
+\end{table}
+
+
+  \subsection{Scenario \#4 Rejection}
+
+Our preliminary tests indicate that our restriction on scenario \#4 during simulation does not have a large effect on obtaining a solution. While we are not able to determine if workpieces exist in which every solution contains a scenario \#4 particle path, we present a summary of the number of samples rejected due to this restriction below in Table \ref{scenario4rejects}.
+
+
+\begin{table}[H]\label{scenario4rejects}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Test Piece URL & Total Samples & Scenario \#4 Samples Rejected & Percentage \\ \hline
+$/index.html?demo$ & 3400 & 854 & 25.12\%\\
+$/yc.html?demo$ & 1200 & 264 & 22\% \\
+\end{tabular}
+\end{table}
 
 \section{Future Work \& Discussion}
 

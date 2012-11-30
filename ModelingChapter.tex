@@ -10,7 +10,7 @@ Drainability analysis requires many different rounds of fluid simulation in many
 
 	\subsection{Core Assumptions}
 
-Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with a few core underlying simplifications:
+Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with the following core assumptions:
 
 \begin{itemize}
 	\item Each fluid body within the workpiece is approximated as a single particle
@@ -20,7 +20,7 @@ Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 
-This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that particles are always traveling either parallel to gravity or along a workpiece surface.
+This modeling approach allowed Yasui et al. to reduce the fluid draining problem down to a particle draining problem. Furthermore, particle simulation within the workpiece is greatly simplified; particles always travel in straight lines and do not accumulate kinetic energy. This means that particles are always traveling either parallel to gravity or along a workpiece edge.
 
 Consequently, particle simulation in this choice of model was essentially reduced to finding intersections between lines and surfaces. An intersection test between a line and a surface runs in constant time; consequently, intersecting a line with the entire workpiece is linear in the number of triangles. Yasui et al. used bounding-box methods to reduce this complexity to sub-linear in the number of triangles, meaning each intersection test (and particle simulation as a whole) was then computationally inexpensive \cite{Yasui2011}.
 
@@ -59,6 +59,14 @@ This model is based on the following assumptions:
 	\item The workpiece's rotation speed is non-constant
 	\item The workpiece is a two dimensional polygon
 \end{itemize}
+
+These simplifying assumptions define the model that we use. Additionally, one more restriction is imposed due to simulation constraints:
+
+\begin{itemize}
+	\item Particles may not travel through open space during workpiece rotation
+\end{itemize}
+
+The reasons for this additional assumption are detailed in Chapter \ref{physicalChapter}.
 
 It is important to note that in the following chapters, we present our methods with a focus on single-particle draining for simplicity of presentation. We then extend this work to multiple particles in the penultimate chapter.
 
