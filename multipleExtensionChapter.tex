@@ -133,5 +133,7 @@ Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}
 
 \myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
 
-Now our action space is a function of the set of conacve vertex locations; this means that our action space is always the same size, regardless of the number of particles being simulated. This greatly improves performance of the algorithm and is a recommended heuristic to implement.
+Now our action space is a function of the set of conacve vertex locations; this means that our action space is always the same size, regardless of the number of particles being simulated. Furthermore, we are guaranteed that every $g_{end}$ vector sampled does not cause
+
+ This greatly improves performance of the algorithm and is a recommended heuristic to implement.
 

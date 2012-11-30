@@ -95,6 +95,95 @@ While this straight-line particle approach is convenient, our model aims to exam
 	\label{eq:freeFall}
 }
 
+
+	\subsection{Geometric Primitive Intersections}
+
+We would like to intersect these particle paths (represented by parabolas) with geometric primitives in the workpiece for simulation purposes. Since our algorithm takes in a set of polygons that define the workpiece, the only geometric primitive of interest is a polygon edge. We will first describe the parabola-line intersection test and then present the small amount of validation needed for the parabola-edge intersection test.
+
+We begin by redefining the parabola's initial point $\vec{x}_0$ as $\vec{p}$ and initial velocity $\vec{v}_0$ as $\vec{v}$ for notation purposes:
+
+$$
+\vec{x}(t) = \vec{p} + \vec{v} \cdot t + \frac{1}{2} \vec{a} \cdot t^2
+$$
+
+This gives us a parabola defined by three vectors:
+
+\myfigure{width=0.5\linewidth}{parablinetest2}{The parabola re-defined for notation purposes.}
+
+This parabola needs to be intersected against an arbitrary edge with starting point $\vec{s}$ and direction $\vec{d}$:
+
+\myfigure{width=0.5\linewidth}{parablinetest1}{Edge for interesection test.}
+
+We know that any point $\alpha$ on the line defined by $\vec{d}$ and $\vec{s}$ has a cross product of 0:
+
+\myfigure{width=0.5\linewidth}{parablinetest3}{Definition of a point on the line defined by $\vec{d}$ and $\vec{s}$.}
+
+This can be represented algebraically as
+
+$$
+(\vec{\alpha} - \vec{s}) \times \vec{d} = 0
+$$
+
+Knowing this, we can substitute our definition of the particle's path through time into this cross product:
+
+$$
+(\vec{x}(t) - \vec{s}) \times \vec{d} = 0
+$$
+
+We can then expand algebraically into:
+
+$$
+(\vec{p} + \vec{v} \cdot t + \frac{1}{2} \vec{a} \cdot t^2 - \vec{s}) \times \vec{d} = 0
+$$
+
+In order to obtain a non-vectorized equation, we then break each vector into orthogonal components:
+
+\begin{align}
+$$
+\vec{p} = (p_x, p_y) && \vec{v} = (v_x, v_y)
+$$
+\end{align}
+
+$$
+\vec{s} = (s_x, s_y)
+$$
+
+$$
+\vec{d} = (d_x, d_y)
+$$
+
+This gives us two versions of the above equation, where the cross product operation $\times$ is replaced by normal multiplication:
+
+$$
+\left [ (p_x - s_x) + v_x \cdot t + \frac{1}{2} a_x \cdot t^2) \right ] \cdot d_y = 0
+$$
+
+and
+
+$$
+\left [ (p_y - s_y) + v_y \cdot t + \frac{1}{2} a_y \cdot t^2) \right ] \cdot d_x = 0
+$$
+
+Subtracting the second equation from the first to perform the cross product and grouping terms by the power of $t$ gives us:
+
+$$
+(\frac{1}{2} a_x \cdot d_y - \frac{1}{2} a_y \cdot ) \cdot t^2 + (v_x \cdot d_y - v_y \cdot d_x) \cdot t +
+\left [ (p_x - s_x) \cdot d_y - (p_y - s_y) \cdot d_x \right ] = 0
+$$
+
+This leaves us an equation that is easily solved by the quadratic equation, where $a$, $b$, and $c$ are defined as:
+
+$$
+a = (\frac{1}{2} a_x \cdot d_y - \frac{1}{2} a_y \cdot )
+$$
+
+% TODO
+
+Solving for $t$ will yield two values (which may or may not be distinct). In order to ensure these two points lie on the edge defined by $\vec{d}$ and $\vec{s}$, first eliminate negative values of $t$. Then proceed to find the smallest value of $t$ that produces a point that lies between the points $\vec{s}$ and $\vec{s} + \vec{d}$.
+
+% TODO
+
+
 \section{Equation Types}
 
 Now that we have defined a parabolic path segment in parametric form, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
