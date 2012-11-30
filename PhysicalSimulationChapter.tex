@@ -298,14 +298,15 @@ These non-linear trigonometric terms produce an equation that can no longer be i
 
 This restriction effectively prevents our ability to simulate particles in this ``concurrent rotation and free-fall'' scenario, leading us to our induced first assumption and restriction in this paper -- particles may not travel through open space while the workpiece is rotating.
 
+Our results chapter provides numerical analysis of this scenario \#4 rejection and a related justification.
+
 		\subsubsection{Resolution of Scenario \#3}
 
-The third scenario, concurrent rotation and sliding, similarly has a kinetic path equation that cannot be easily intersected with geometric primitives. The key difference between this scenario and scenario \#4, however, is that the particle is traveling along a known edge. With this edge's length and the duration of the turn known, we can compute the position of the particle after the specified turn duration time.
+The third scenario, concurrent rotation and sliding, similarly has a kinetic path equation that cannot be easily intersected with geometric primitives. The key difference between this scenario and scenario \#4, however, is that the particle is traveling along a known edge. Since this edge length is known as well as the duration of the turn, this particle path does \emph{not} need to be intersected with any primitive in the workpiece.
 
-If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface during the turn. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
+Insteady, the the position of the particle after the specified turn is calculated. If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface during the turn. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
 
 Thus although we have two scenarios where particle path and solid intersection tests are difficult, only one of them (concurrent rotation and free-fall) cannot be simulated at all. The other (concurrent rotation and sliding) can be simulated whenever the particle has not traveled beyond the edge at the end of the turn, which was the most common result during our tests.
-
 
 	\section{Collisions}
 
