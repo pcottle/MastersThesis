@@ -3,7 +3,7 @@
 
 \section{Online Demo}
 
-Our implementation of this paper and a small solution demonstration is available online at the following url (Mozilla Firefox, Google Chrome, or Apple Safari recommended for full compatibility):
+Our implementation of this paper and a brief solution demonstration is available online at the following url (Mozilla Firefox, Google Chrome, or Apple Safari recommended for full compatibility):
 
 \vspace{0.2in}
 
@@ -29,52 +29,52 @@ Another solution demonstration for a more complex part is available at this url:
 
 \myfigure{width=0.85\linewidth}{demoFoundSolution}{A screen capture from our implementation, available online.}
 
+Our goal with the implementation of this work was to create an interactive, dynamic experience that visualized both solution search and final results. Creating this experience required a significant investment in graphical design and subroutines solely dedicated to visualization; it also required that our implemenation be designed to run asynchronously between frame draws.
 
-This implementation includes a visualization that draws the sampling at each vertex and each particle's full path. It includes a graphical user interface for inputting and editing workpiece geometry. Lastly, it also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
+The result of this design objective was a highly visual experience for the user at the expense of raw performance. Consequently, we remind readers that the following run time analysis was conducted on an implementation optimized for visuals rather than performance.
 
   \subsection{Run Time}
 
-Because our implementation is run asynchronously and performs a lot of graphics processing during the solution search process solely for visualization, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
+Because our algorithm performs a significant amount of graphics processing, absolute time benchmarks for our algorithm do not provide as much utility for analysis. Consequently, we supplement our analysis with percentage breakdowns of CPU time between high-level functions to give readers an idea of which subroutines require the most computation.
 
-The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
+The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 RAM. This benchmark time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the lower-bound runtime for the algorithm.
 
-In fact, search for the solution is rate-limited by the animation engine which runs at 60 frames per second. Consequently, all computers that are capable of completing the necessary operations between frame draws will find the solution in the same amount of time, another reason why absolute computation time is not representative of performance for our work.
+In Table \ref{resultsTable}, CPU ``Total Time'' is defined as the sum of computational time spent inside a given function call and all other functions called from that location. This means that high-level functions that simply call other parts of the program will have a large total time, despite very little computational time being spent inside them.
 
-The following breakdown on CPU time is provided to get a sense of the computation workload for each high-level function. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
-
-\begin{table}[H]
+\begin{table}[H]\label{resultsTable}
 \centering
-\label{resultsTable}
-\begin{tabular}{|c|c|c|}
+\def\arraystretch{1.2}
+\begin{tabular}{|l|c|c|}
 \hline
-CPU Self Time & CPU Total Time & Function \\ \hline
-46.08\% & 46.08\% & Program (total time spent processing in Javascript) \\
-20.61\% & 21.35\% & Graphical path generation \& painting \\
-1.7\% & 2.8\% & Edge-Parabola intersection \\
-0.63\% & 0.64\% & Quadratic equation solver \\
-0.30\% & 0.30\% & Edge-Point containment test \\
-0.07\% & 0.38\% & Particle sliding equation \\
-0.07\% & 0.11\% & Particle collision \\
-0.05\% & 3.83\% & Gravity turn sampling \\
-0.03\% & 48.74\% & Graph search step \\
+High Level Category & CPU Total Time & Function \\ \hline
+Idle Time & 53.92\% & (time spent idle waiting for next animation frame) \\
+Program & 46.08\% & (total time spent processing in Javascript) \\
+Graphics & 21.35\% &  (total time spent in graphics processing) \\ \hline
+\textbf{Physical Simulation} & ~ &  ~ \\ \hline
+~ &  2.8\% &  Edge-Parabola intersection \\
+~ &  0.64\% & Quadratic equation solver \\
+~ &  0.30\% &  Edge-Point containment test \\
+~ &  0.38\% & Particle sliding equation \\
+~ &  0.11\% & Particle collision \\ \hline
+\textbf{A.I. Search} & ~ & ~ \\ \hline
+~ &  3.83\% & Gravity turn sampling \\
 \hline
 \end{tabular}
 \caption{CPU Time breakdown for a solution search}
 \end{table}
 
-An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
-
   \subsection{Ranking Heuristic Performance Improvement}
 
-Our plan ranking heuristic presented in Chapter \ref{multipleExtension} produced great performance improvements during multiple-particle search. Here we present a table summarizing the running time difference between a our implementation with and without this plan heuristic.
+Our plan ranking heuristic presented in Chapter \ref{multipleExtension} produced great performance improvements during multiple-particle search. Here we present a table summarizing the running time difference between our implementation with and without this plan heuristic.
 
 \begin{table}[H]\label{rankingHeuristicResults}
 \centering
+\def\arraystretch{1.5}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-Test Piece URL & Number of Particles & Time without Ranking Heuristic & Time with Ranking Heuristc & Factor Improvement \\ \hline
-$/index.html?demo$ & 4 & 20.672s & 7.009s & 2.949 \\ \hline
-$/yc.html?demo$ & 2 & 100.947s & 62.104s & 1.625 \\ \hline
+Test Piece URL & \specialcell{ Number \\ of Particles} & \specialcell{Time without \\ Ranking Heuristic} & \specialcell{Time with \\ Ranking Heuristic} & Factor Improvement \\ \hline
+$index.html?demo$ & 4 & 20.672s & 7.009s & 2.949 \\ \hline
+$yc.html?demo$ & 2 & 100.947s & 62.104s & 1.625 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -84,6 +84,7 @@ Our implementation uses the following values for simulation constants:
 
 \begin{table}[H]\label{constantsTable}
 \centering
+\def\arraystretch{1.1}
 \begin{tabular}{|c|c|c|}
 \hline
 Constant Description & Symbol & Value \\ \hline
@@ -99,11 +100,12 @@ Our preliminary tests indicate that our restriction on scenario \#4 during simul
 
 \begin{table}[H]\label{scenario4rejects}
 \centering
+\def\arraystretch{1.2}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Test Piece URL & Total Samples & Scenario \#4 Samples Rejected & Percentage \\ \hline
-$/index.html?demo$ & 3400 & 854 & 25.12\%\\
-$/yc.html?demo$ & 1200 & 264 & 22\% \\ \hline
+$index.html?demo$ & 3400 & 854 & 25.12\%\\
+$yc.html?demo$ & 1200 & 264 & 22\% \\ \hline
 \end{tabular}
 \end{table}
 

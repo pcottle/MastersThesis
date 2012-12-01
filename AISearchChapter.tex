@@ -26,9 +26,9 @@ A ``plan'' is simply a sequence of actions. While reaching the goal state determ
 
 	\subsection{General Tree Search}
 
-These definitions are enough to implement the standard tree search algorithm.
+These definitions are enough to implement the standard tree search algorithm \cite{AIBook}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[H]\label{treeSearch}
 \begin{algorithmic}[1]
 \Function{TreeSearch}{$problem$}
 	\State $queue \gets$ (initial state of $problem$, empty $plan$)
@@ -45,6 +45,7 @@ These definitions are enough to implement the standard tree search algorithm.
 \EndFunction
 
 \end{algorithmic}
+\caption{Standard A.I. Tree Search}
 \end{algorithm}
 
 	\subsection{Importance of Formulation}
@@ -82,10 +83,10 @@ The key insight for this state space reduction is to observe only the concave ve
 
 Here this insight is instead applied to the state space formulation for the first time in order to maintain the effectiveness of general A.I. search. We define our state as the ``settled'' position of the particle, meaning the state is either:
 
-\begin{enumerate}
+\begin{itemize}
 \item The concave vertex the particle is resting in, or
 \item outside of the workpiece.
-\end{enumerate}
+\end{itemize}
 
 By defining our state this way, we produce a state space with size of
 $$
@@ -196,23 +197,23 @@ With this sampling function, we can obtain better coverage with lower computatio
 
 Now we have all the pieces to implement A.I. search. Our state is defined as the concave vertex the particle rests in (or workpiece exit). Our successor function samples from an available range of actions to produce a representative set of reachable concave vertices. Simply combining these two definitions together can produce an algorithm that discovers a sequence of actions to rotate a water particle out of a workpiece.
 
-	\subsection{Graph Search}
+We now present two modificiatons to general A.I. search to enhance performance.
 
-To further increase computational efficiency, we implement two types of graph reduction in our search.
+	\subsection{Uniform Cost Graph Search}
 
-The first is by using the standard graph implementation of our search algorithm. This graph version of the algorithm prevents a state from being expanded twice. Because the connectivity graph within workpieces often has many cycles \cite{Yasui2011}, preventing more than one expansion at each state helps considerably in cutting down computational cost.
+The first search modification is to switch to the standard graph implementation of our search algorithm; this effectively converts tree search (detailed in Algorithm 1) into graph search \cite{AIBook}. This graph version of the algorithm prevents a state from being expanded twice \cite{AIBook}. Because the connectivity graph within workpieces often has many cycles \cite{Yasui2011}, preventing more than one expansion from each state helps considerably in cutting down computational cost.
 
-Note how the following algorithm is similar to tree search but makes use of a closed set.
+Furthermore, we use the ``uniform cost'' version of graph search \cite{AIBook} to ensure that the solution discovered is optimal in cost. This is accomplished by enqueueing partial plans onto the priority queue by their associated cost, as detailed in Algorithm 2.
 
-\begin{algorithm}[H]
+\begin{algorithm}[H]\label{graphSearch}
 \begin{algorithmic}[1]
 \Function{UniformCostGraphSearch}{$problem,fringe$}
 	\State $closed \gets$ an empty set
-	\State $fringe \gets$ INSERT(MAKE-NODE(INITIAL-STATE[$problem$]),$fringe$)
+	\State $fringe \gets$ Insert(Make-Node(Initial-State[$problem$]),$fringe$)
 
 	\While{$fringe$ not empty}
-		\State $node \gets$ REMOVE-FRONT($fringe$)
-		\If{Goal-Test($problem$,STATE[$node$])}
+		\State $node \gets$ Remove-Front($fringe$)
+		\If{Goal-Test($problem$,State[$node$])}
 			\State \textbf{return} $node$ \Comment{Success}
 		\EndIf
 		\If{State[$node$] not in $closed$}
@@ -225,19 +226,22 @@ Note how the following algorithm is similar to tree search but makes use of a cl
 \EndFunction
 
 \end{algorithmic}
+\caption{Uniform Cost Graph Search}
 \end{algorithm}
 
-The second graph reduction is implemented directly in the successor function. When the successor function enumerates through the list of samples from the possible turns, it maintains a cost-sensitive closed set of concave vertices that are reachable. This set is keyed based on the ``cost'' of a transition, which in most cases is defined as the duration of the simulation.
+	\subsection{Optimal Actions}
 
-By doing so, our successor function produces the optimal reduced set of concave vertices reachable from a given state. This graph reduction enqueues fewer plans onto the fringe, reducing the memory overhead and improving performance.
+The second search modificaiton is implemented directly in the successor function. By definition, the successor function returns a set of ``reachable'' states; each state is paired with a list of associated actions to transition to that state. Normally during search, every one of these associated actions generates a new plan that is placed in the priority queue.
 
-%These two graph reductions excel in workpieces with finely-tesselated concave sections. Here the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a considerable amount of time expanding all the concave vertices multiple times.
+Our optimization here is simply to return a single optimal action that produces a state, rather than a list of arbitray actions. This results in fewer plans enqueued onto the fringe while maintaining optimality.
 
-%\myfigure{width=0.5\linewidth}{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
+This is accomplished by placing actions into a cost-sensitive closed set \cite{AIBook}. A cost-sensitive set behaves like a normal set; the only difference is that each entry is keyed by a ``cost'' variable. When inserting a new item, that item will be inserted into the set if it does not already exist \emph{or} if it has a cost that is lower than the existing member.
+
+By using this slightly different data structure, our successor function produces the same set of reachable states, but now each state is paired with am optimal action.
 
 \section{Cost}
 
-The uniform cost graph search algorithm we use ensures the plan produced is optimal in cost. This is because the goal check for a partial plan is performed after the plan is dequeued from the priority queue. When a partial plan is dequeued from a priority queue that is ranked by cost, we are guaranteed that no other plan has a lower cost. This guarantee of optimality is the foundation of uniform cost and A* search.
+The uniform cost graph search algorithm we use ensures the plan produced is optimal in cost. This is because the goal check for a partial plan is performed after the plan is dequeued from the priority queue. When a partial plan is dequeued from a priority queue that is ranked by cost, we are guaranteed that no other plan has a lower cost. This guarantee of optimality is the foundation of uniform cost and A* search \cite{AIBook}.
 
 Our definition of cost however is very flexible and can be modified according to different manufacturing priorities.
 
