@@ -1,9 +1,5 @@
-          \chapter{Results \& Future Work}
+          \chapter{Results \& Future Work}\label{results}
 
-
-\myfigure{width=0.85\linewidth}{demoFoundSolution}{A screen capture from our implementation, available online.}
-
-\newpage
 
 \section{Online Demo}
 
@@ -17,13 +13,21 @@ Our implementation of this paper and a small solution demonstration is available
 
 \vspace{0.2in}
 
-Another solution demonstration for a more complicated part is available at this url:
+Another solution demonstration for a more complex part is available at this url:
+
+\vspace{0.2in}
 
 \begin{centering}
 \url{http://petercottle.com/liquidGraph/yc.html?demo}
 \end{centering}
 
 \vspace{0.2in}
+
+
+\newpage
+
+
+\myfigure{width=0.85\linewidth}{demoFoundSolution}{A screen capture from our implementation, available online.}
 
 
 This implementation includes a visualization that draws the sampling at each vertex and each particle's full path. It includes a graphical user interface for inputting and editing workpiece geometry. Lastly, it also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
@@ -39,6 +43,7 @@ In fact, search for the solution is rate-limited by the animation engine which r
 The following breakdown on CPU time is provided to get a sense of the computation workload for each high-level function. CPU Self time is defined as the time spent inside the function; CPU total time is defined as the time spent inside that function and the functions called from that location.
 
 \begin{table}[H]
+\centering
 \label{resultsTable}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -59,16 +64,31 @@ CPU Self Time & CPU Total Time & Function \\ \hline
 
 An important note here is that only 46.08\% of execution time was spent doing computation; the rest was idle time used for animation.
 
+  \subsection{Ranking Heuristic Performance Improvement}
+
+Our plan ranking heuristic presented in Chapter \ref{multipleExtension} produced great performance improvements during multiple-particle search. Here we present a table summarizing the running time difference between a our implementation with and without this plan heuristic.
+
+\begin{table}[H]\label{rankingHeuristicResults}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Test Piece URL & Number of Particles & Time without Ranking Heuristic & Time with Ranking Heuristc & Factor Improvement \\ \hline
+$/index.html?demo$ & 4 & 20.672s & 7.009s & 2.949 \\ \hline
+$/yc.html?demo$ & 2 & 100.947s & 62.104s & 1.625 \\ \hline
+\end{tabular}
+\end{table}
+
   \subsection{Constants}
 
-The above results were obtained with the following values for simulation constants:
+Our implementation uses the following values for simulation constants:
 
 \begin{table}[H]\label{constantsTable}
+\centering
 \begin{tabular}{|c|c|c|}
 \hline
 Constant Description & Symbol & Value \\ \hline
 Particle Elasticity & $\kappa$ & 0.5 \\
-Perpendicular Edge Velocity & $\epsilon$ & 0.9\\
+Perpendicular Edge Velocity & $\epsilon$ & 0.9\\ \hline
 \end{tabular}
 \end{table}
 
@@ -78,11 +98,12 @@ Perpendicular Edge Velocity & $\epsilon$ & 0.9\\
 Our preliminary tests indicate that our restriction on scenario \#4 during simulation does not have a large effect on obtaining a solution. While we are not able to determine if workpieces exist in which every solution contains a scenario \#4 particle path, we present a summary of the number of samples rejected due to this restriction below in Table \ref{scenario4rejects}.
 
 \begin{table}[H]\label{scenario4rejects}
+\centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 Test Piece URL & Total Samples & Scenario \#4 Samples Rejected & Percentage \\ \hline
 $/index.html?demo$ & 3400 & 854 & 25.12\%\\
-$/yc.html?demo$ & 1200 & 264 & 22\% \\
+$/yc.html?demo$ & 1200 & 264 & 22\% \\ \hline
 \end{tabular}
 \end{table}
 
@@ -98,11 +119,11 @@ One standard improvement to uniform cost search is the addition of a consistent,
 
 Heuristics are, by nature, very dependent on the problem they are being applied to. Many heuristics exist for positional search problems and other common search formulations; since our search formulation is rather unique, there is not as much prior work to draw from \cite{christofides1976worst}.
 
-One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it is also radially symmetric and does not take into account workpiece geometry. It is probable that better heuristics exist for this search formulation.
+One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it does not take into account workpiece geometry; consequently, the information. It is probable that better heuristics exist for this search formulation.
 
   \subsection{Bounding Box Method Adaption for Particle Path Intersections}
 
-When intersecting rays with geometric primitives, most implementations using bounding-box methods to reduce the number of primitives tested against the ray. This bounding-box idea could be adapted to parabolic paths as well; determining which bounding boxes are needed still presents a fairly reasonable computational load, but great gains in efficiency could be made for dense workpieces with many edges.
+When intersecting rays with geometric primitives, most implementations using bounding-box methods to reduce the number of primitives tested against the ray. This bounding-box idea could be adapted to parabolic paths as well; determining which bounding boxes are needed still presents a fairly reasonable computational load, but great gains in efficiency could be made for complex input with many edges.
 
   \subsection{Adaption to 3D - Fixed Axis}
 

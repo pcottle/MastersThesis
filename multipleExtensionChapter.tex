@@ -1,6 +1,6 @@
-\chapter{Extension to Multiple Particles}\ref{multipleExtension}
+\chapter{Extension to Multiple Particles}\label{multipleExtension}
 
-We now present an extension of this work for draining multiple particles out of a workpiece. The initial adaption to our approach is fairly trivial, but the two heuristics we present shortly afterwards dramatically improve search performance.
+We now present an extension of this work for draining multiple particles out of a workpiece. The initial adaption to our approach is fairly trivial, but the two search optimizations we present shortly afterwards dramatically improve search performance.
 
 \section{Initial Adaption}
 
@@ -36,10 +36,10 @@ Now that any arbitrary turn can be simulated against an arbitrary particle, this
 
 
 \begin{itemize}
-\item The particle is offscreen; a turn does not change this particle's state.
+\item The particle has exited the workpiece; a turn does not change this particle's state.
 \item The turn results in no motion; any linear combination between $g_{start}$ and $g_{end}$ does not produce motion of the particle.
 \item Motion of the particle starts immediately when the turn begins; $g_{start}$ is a vector that produces motion.
-\item Motion of the particle starts midway through the turn; $g_{start}$ does not produce motion and $g_{end}$ does.
+\item Motion of the particle starts midway through the turn; $g_{start}$ does not produce motion, but as the gravity vector sweeps to $g_{end}$, motion is induced at some intermediate point.
 \end{itemize}
 
 Because of these multiple simulation scenarios, the multiple-particle version of the transition function must be much more robust against arbitrary input. While not of great detail for the overall picture of the approach, this presents a rather large obstacle during implementation that should be considered.
@@ -52,17 +52,17 @@ $$
 (num(V_{c}) + 1)^n
 $$
 
-This leads to a time-complexity that is now exponential in the number of concave vertices, rather than linear as in Equation \eqref{eq:bigo}:
+This leads to an approximate time-complexity that is now exponential in the number of concave vertices, rather than linear as in Equation \eqref{eq:bigo}:
 
 \myequation{
-O(S \cdot E^2 \cdot V_{c}^{n})
+\tilde{O}(S \cdot E^2 \cdot V_{c}^{n})
 } {
   \label{eq:bigoTotal}
 }
 
-Although we earlier had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space. Our algorithm as presented thus far will still find solutions to these problems, but may spend a fair amount of time expanding unseen states to ensure optimality.
+Although earlier we had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space. Our algorithm as presented thus far will still find solutions to these problems; unfortunately, it will take several factors of time longer to obtain solutions.
 
-In order to improve running time of the algorithm, we present two search heuristics that greatly reduce the number of states expanded and obtain solutions much faster. These heuristics sacrifice the guarantee of optimality in exchange for an improvement in running time.
+In order to improve running time of the algorithm, we present two search optimizations that greatly reduce the number of states expanded and obtain solutions much faster. These optimizations sacrifice the guarantee of optimality in exchange for an improvement in running time.
 
 \section{Search Heuristics}
 
@@ -72,20 +72,20 @@ Now that our state is a set of settle locations, we can instead create heuristic
 
 \subsection{Plan Ranking Heuristic}
 
-The first optimization (and true search heuristic) we implemented was simply a ranking of the partial plans in the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented the following two heuristics:
+The first optimization (and true search heuristic) we implemented was simply a ranking of the partial plans in the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented the following two ranking modifications:
 
 \begin{itemize}
 \item Always prefer plans with a higher number of exited particles, regardless of cost.
 \item The number of particles in the same location shall be combined with cost as the primary ranking key.
 \end{itemize}
 
-During our testing of the algorith, we found that ranking potential plans by
+During our testing of the algorithm, we found that ranking potential plans by
 
 $$
 cost - 10 \cdot numSame
 $$
 
-where $numSame$ is the number of particles in the same location produced the best mix between optimality of plans and speed of search.
+where $numSame$ is the number of particles in the same location produced an effective mix between optimality of plans and speed of search.
 
 With this plan ranking heuristic, our search algorithm prefers states that have a high number of particles out of the workpiece or a high number of particles in the same location. Plans that fit these characteristics have an additional performance benefit; exited particles do not have to be simulated in the transition function, and each concave vertex location only has to be simulated once.
 
@@ -97,9 +97,9 @@ O(S \cdot E^2 \cdot V_{c}^{n -o -m})
   \label{eq:bigoTotalWithHeuristic}
 }
 
-Which is a factor of $V_{c}^{o + m}$ smaller than \eqref{eq:bigoTotal}.
+Which is a factor of $V_{c}^{o + m}$ smaller than \eqref{eq:bigoTotal}. Chapter \ref{results} provides quantitative details on the performance improvements gained from this ranking heuristic; the average speedup was approximately $1.5x$.
 
-\subsection{Action Space Heuristic}
+\subsection{Action Space Reduction Technique}
 
 The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle, as seen in Figure \ref{restriction3}.
 
@@ -133,7 +133,5 @@ Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}
 
 \myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
 
-Now our action space is a function of the set of conacve vertex locations; this means that our action space is always the same size, regardless of the number of particles being simulated. Furthermore, we are guaranteed that every $g_{end}$ vector sampled does not cause
-
- This greatly improves performance of the algorithm and is a recommended heuristic to implement.
+Now our action space is a function of the set of conacve vertex locations; this means that our action space is always the same size, regardless of the number of particles being simulated. This greatly improves performance of the algorithm.
 

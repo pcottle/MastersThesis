@@ -294,22 +294,26 @@ These ``setup'' turns can be seen during the solution animation process in our i
 Now that the entire algorithm has been defined, we can analyze the time complexity of each subroutine. The most time complex aspects of our approach are:
 
 \begin{itemize}
-\item The intersection between a particle path and the workpiece
-\item The simulation of a particle until settling
-\item The simulation of different ``turns'' at each concave vertex
-\item The search expansion over the workpiece.
+\item the intersection between a particle path and the workpiece
+\item the simulation of a particle until settling
+\item the simulation of different ``turns'' at each concave vertex
+\item the search expansion over the workpiece.
 \end{itemize}
 
-The intersection between a particle path and the workpiece is linear in the number of edges $O(E)$ in the workpiece because each edge is intersected against a given path.
+The intersection between a particle path and the workpiece is linear in the number of edges in the workpiece, since each edge is intersected against a given path. This brings us to a runtime of $O(E)$ for each path-workpiece intersection test.
 
-A particle's full simulation duration is dependent on the elasticity $\kappa$ which controls the rate of energy dissipation. In the best case, a particle's simulation only has one path; in the worst case, the particle never stops moving if the elasticity of the system is 1. In practice we found that most particle simulations had a number of path segments that was proportional (linearly) to the number of edges in the polgyon. Thus the simulation step is $O(E)$ with $O(E)$ intersection tests, bringing us to a total (so far) of $O(E^2).$
+Next, the simulation of a single particle continues until the particle settles in a given location. Each time a particle collides with a surface, it obtains a new kinetic state and resulting parabola. This new parabola then needs to be intersected against the workpiece; consequently, the time complexity of particle simulation is determined by the number of collisions the particle experiences before settling.
+
+The number of collisions for a given particle simulation is not easily bounded by an upper value; if the elasticity of the system $\kappa$ is 1, the particle could never stop moving depending on the geometry of the workpiece. The lower bound is the best case, when a a particle's simulation terminates after one collision.
+
+In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polgyon. Going forward with our time complexity analysis, we will switch to an approximate time complexity $\tilde{O}$. We will estimate the complexity of the simulation step to be $\tilde{O}(E)$. With each simulation step requiring an intersection test, our overall time complexity is now $\tilde{O}(E^2).$
 
 A full simulation is performed for every sampled turn at a given concave vertex. We restrict the number of samples to 20 in our implementation, so this step introduces a scalar constant $S$ defined as the number of samples taken at each concave vertex.
 
 Finally, the graph search expansion over the workpiece is at worst linear in the total number of concave vertices $V_{c}$. All together, the big order runtime is approximately
 
 \myequation{
-O(S \cdot E^2 \cdot V_{c})
+\tilde{O}(S \cdot E^2 \cdot V_{c})
 } {
   \label{eq:bigo}
 }
