@@ -33,7 +33,7 @@ Equation \eqref{eq:kinematicDropAccel} shows this simplified ray model. Once the
 
 	\subsection{Parametric Equations (rays)}
 
-There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation \cite{purcell2002ray}.
+There are many ways to find these intersection (or ``collision'') points. One common approach is to model the ray equation as a parametric equation \cite{glassner1989introduction} \cite{fundamentals}.
 
 %TODO - more common text book here
 
@@ -49,13 +49,13 @@ Equation \eqref{eq:parametricRay} shows this modeling choice with vectorized pos
 
 	\subsection{Ray Tracing}
 
-Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points \cite{purcell2002ray}.
+Once particles are modeled as parametric rays, all the existing techniques and libraries from ``ray-tracing'' (a standard approach to producing 3D computer graphics) can be used to find intersection points \cite{glassner1989introduction} \cite{fundamentals}.
 
-Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{purcell2002ray}. Parametric modeling of geometric primitives combined with parametric rays is the industry standard \cite{glassner1989introduction}.
+Ray-tracing produces 3D computer graphics by sending out rays from a camera location. If one of these rays intersects a geometric primitive in the scene, the resulting color of that ray is calculated and stored in a pixel table. These ray-primitive intersections are the fundamental computational bottleneck for ray tracing; consequently, much work has been done to optimize intersection tests \cite{glassner1989introduction} \cite{fundamentals}. Parametric modeling of geometric primitives combined with parametric rays is the industry standard \cite{glassner1989introduction} \cite{fundamentals}.
 
 %	\subsection{Geometric Primitive Intersections}
 
-%Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{glassner1989introduction}.
+%Because these rays are defined parametrically, they can be substituted into the parametric definition of a geometric primitive to obtain exact solutions of intersection points. This is the primary advantage of parametric equations over integration schemes -- intersections between a ray and a geometric primitive can be solved for directly in constant time \cite{g||lassner1989introduction}.
 
 %For example, the parametric definition of a sphere with center $C$ and radius $r$ is given in Equation \eqref{eq:sphereParametric}.
 

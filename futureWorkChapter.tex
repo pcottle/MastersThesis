@@ -117,7 +117,7 @@ Further optimizations and improvements could be made to this work, namely to enh
 
 One standard improvement to uniform cost search is the addition of a consistent, admissible heuristic to convert the search into A* search. A heuristic is simply an estimation of the remaining cost from a state to the goal state. Admissibility of a heuristic requires that the heuristic never over-estimates the remaining cost, and consistency requires that the heuristic does not rapidly change values between states.
 
-Heuristics are, by nature, very dependent on the problem they are being applied to. Many heuristics exist for positional search problems and other common search formulations; since our search formulation is rather unique, there is not as much prior work to draw from \cite{christofides1976worst}.
+Heuristics are, by nature, very dependent on the problem they are being applied to. Many heuristics exist for positional search problems and other common search formulations; since our search formulation is rather unique, there is not as much prior work to draw from \cite{heuristics}.
 
 One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it does not take into account workpiece geometry; consequently, the information. It is probable that better heuristics exist for this search formulation.
 
