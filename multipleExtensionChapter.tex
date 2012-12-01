@@ -46,7 +46,7 @@ Because of these multiple simulation scenarios, the multiple-particle version of
 
 \section{Multiple Particle Time Complexity}
 
-Now that our state is defined as a set of concave vertex locations, the state space is unfortunately exponential in the number of particles, with a base defined as the number of concave vertices in the workpiece as seen below:
+Now that our state is defined as a set of concave vertex locations, the state space is unfortunately exponential in the number of particles, with a base defined as the number of concave vertices in the workpiece as described below:
 
 $$
 (num(V_{c}) + 1)^n
@@ -101,9 +101,7 @@ Which is a factor of $V_{c}^{o + m}$ smaller than \eqref{eq:bigoTotal}. Chapter 
 
 \subsection{Action Space Reduction Technique}
 
-The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle, as seen in Figure \ref{restriction3}.
-
-Now with multiple particles, we have multiple sets of these defined vectors:
+The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle. Now with multiple particles, we have multiple sets of these defined vectors as illustrated in Figure \ref{multiMinPocket}.
 
 \myfigure{width=0.8\linewidth}{multiMinPocket}{Action Space sampling for each concave vertex.}
 
@@ -112,12 +110,12 @@ When sampling turns for our successor function, we may sample from any of these 
 \begin{itemize}
 \item This action space is fairly large and grows linearly with the number of particles in the workpiece, further increasing our algorithm's time complexity.
 \item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the incident edge of its concave vertex, a $g_{end}$ vector from this space may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected.
-\item A particular turn's $g_{start}$ may be well into the ``induce motion'' space of another concave vertex. If the workpiece would rotate infinitely fast to a particular orientation this would be of no concern, but our solution post-processor assumes that all turns inbetween partial plan turns do not induce motion. This means that in order to accurately simulate this turn, we must rotate $g_{start}$ back to the first vector that produces motion for any particle.
+\item A particular turn's $g_{start}$ may be well into the ``induce motion'' space of another concave vertex. If the workpiece were able to rotate infinitely fast to a particular orientation this would be of no concern; unfortunately, we assume finite rotation speed, which means a ``setup'' turn here would induce motion of another particle. This means that our solution post-processor can no longer assume that all turns in between partial plan turns do not induce motion. Consequently, in order to accurately simulate a turn with this condition we must rotate $g_{start}$ back to the first vector that produces motion for any particle.
 \end{itemize}
 
-This third concern is the most troubling; if almost every turn must be modified during simulation, there is a potential for optimization of turn simulation.
+The second and third concerns are the primary reasons why an action space reduction technique is employed. These two concerns result in a high number of sample rejections or modifications, which leads to wasted computation and altered sampling distribution.
 
-Our approach was to simply find the one pair of $g_{start}$ vectors that do not induce motion of any particle. This is done by examining all the $g_{start}$ vectors for each concave vertex:
+Our action space reduction technique is to simply find the one pair of $g_{start}$ vectors that do not induce motion of any particle. This is done by examining all the $g_{start}$ vectors for each concave vertex:
 
 \myfigure{width=0.5\linewidth}{actionspace1}{$g_{start}$ vectors from each concave vertex.}
 
@@ -130,6 +128,8 @@ And then selecting the pair of vectors that do not induce motion on any particle
 \myfigure{width=0.8\linewidth}{actionspace3}{Pair of $g_{start}$ vectors selected that do not produce motion of any particle.}
 
 Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a incident edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$:
+
+% TODO
 
 \myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
 

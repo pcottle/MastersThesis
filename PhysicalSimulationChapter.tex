@@ -184,7 +184,7 @@ Solving for $t$ will yield two values, representing points along the parabola pa
 
 \myfigure{width=0.7\linewidth}{parablinetest4}{Solution points for the parabola-line intersection test.}
 
-This concludes the parabola-line intersection tests. For our simulation purposes, we would like to determine the first point that lies on on the edge defined by $\vec{d}$ and $\vec{s}$ rather than the line. This requires a small extra validation step; first, negative values of $t$ are eliminated, for these points represent the particle traveling backwards in time. Then, the smallest value of $t$ is found that produces a point that lies inbetween points $\vec{s}$ and $\vec{s} + \vec{d}$. If no such value exists, this parabola does not intersect the given edge.
+This concludes the parabola-line intersection tests. For our simulation purposes, we would like to determine the first point that lies on on the edge defined by $\vec{d}$ and $\vec{s}$ rather than the line. This requires a small extra validation step; first, negative values of $t$ are eliminated, for these points represent the particle traveling backwards in time. Then, the smallest value of $t$ is found that produces a point that lies in between points $\vec{s}$ and $\vec{s} + \vec{d}$. If no such value exists, this parabola does not intersect the given edge.
 
 \section{Equation Types}
 
@@ -262,11 +262,11 @@ $$
 
 where $\omega$ is the angular velocity.
 
-		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
+%		\subsubsection{Concurrent Rotation \& Sliding Equation Intersection}
 
-In Equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. The trigonometric terms introduced by the rotation of the workpiece make it impossible to solve for particle-primitive intersections in constant time. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
+In Equation \eqref{eq:slidingRotating}, we no longer have a formulation of particle motion that is strictly quadratic in $t$. The trigonometric terms introduced by the rotation of the workpiece make it impossible to solve for path-primitive intersections in constant time. We can, however, easily substitute in values of $t$ to determine the position of the particle at a given time.
 
-Despite the inability to intersect these trajectories with geometric primitives in constant time, we still simulate this scenario in practice. The reasons for this will be detailed after Scenario \#4 is presented, when a holistic comparison of these two scenarios can be conducted.
+Despite the inability to intersect these trajectories with geometric primitives in constant time, we still simulate this scenario in practice. The reason for this will be detailed after Scenario \#4 is presented, when a holistic comparison of these two scenarios can be conducted.
 
 		\subsection{Scenario \#4: Concurrent Rotation \& Free-Fall Equation}
 
