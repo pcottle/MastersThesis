@@ -137,54 +137,66 @@ To understand how the set of gravity vectors is reduced, some terminology must f
 
 \myfigure{width=0.5\linewidth}{edgeDefinition}{A concave vertex $V_{c}^1$ and its two corresponding outward edge vectors $\vec{e}_1$ and $\vec{e}_2$}
 
-We start with a full sphere of possibilities to sample $g_{start}$ and $g_{end}$ from, as shown below:
+We start with a full Gaussian circle of possibilities to sample $g_{start}$ and $g_{end}$ from, as illustrated in Figure \ref{restriction1}.
 
 \myfigure{width=0.8\linewidth}{restriction1}{The initial set of possible vectors to sample $g_{start}$ and $g_{end}$ from.}
 
-We first restrict the possible values of $g_{start}$. We would like $g_{start}$ to be a vector that does not induce motion of the particle; this ensures a turn that ends in $g_{start}$ does not require simulation once the turn ends. Simultaneously, we would also like any defined turn to spend the maximum amount of time inducing motion of the particle.
+We first restrict the possible values of $g_{start}$. We define $g_{start}$ as a vector that does not produce motion of the particle but is as close as possible to producing motion.
 
-This means that $g_{start}$ is a vector that does not produce motion of the particle but is as close as possible to producing motion. There are only two vectors that satisfy these conditions -- the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$.
+If $g_{start}$ satisfies these two conditions, two benefits arise. The first is that if $g_{start}$ does not induce motion of the particle, a turn that ends in $g_{start}$ does not require simulation once the turn ends. This will be greatly useful for our solution post-processor. The second benefit is that any turn defined with $g_{start}$ spends the maximum amount of time inducing motion of the particle.
+
+There are only two vectors that satisfy these two conditions -- the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that point into the workpiece as illustrated in Figure \ref{restriction2}.
 
 \myfigure{width=0.8\linewidth}{restriction2}{$g_{start}$ is reduced to one of the two perpendicular vectors}
 
-Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaneously keeping the particle on the incident edge of the concave vertex. This produces two quarter-circle segments of possibilities for $g_{end}$, each of which are defined by a incident edge and the perpendicular vector to that edge.
+Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaneously keeping the particle on either incident edge of the concave vertex. This produces two quarter-circle segments of possibilities for $g_{end}$, each of which are defined by a incident edge and the perpendicular vector to that edge as illustrated in Figure \ref{restriction3}.
 
 
 \myfigure{width=0.8\linewidth}{restriction3}{$g_{end}$ is reduced to vectors that produce motion while keeping the particle on the incident edge}
 
-This leaves two arcs of gravity vectors from which $g_{end}$ can be selected.
+This leaves two arcs of gravity vectors from which $g_{end}$ can be selected. It is important to note that once $g_{start}$ is selected, $g_{end}$ is selected from the arc of vectors that borders $g_{start}$ in order to produce turns that maximize motion of the particle.
 
 	\subsection{Ideal Successor Function}
 
-The ideal successor function produces the maximum set of ``reachable'' concave vertices from a given input concave vertex (and the actions to achieve those states).
+The ideal successor function produces the set of all ``reachable'' concave vertices from a given input concave vertex (and the actions to achieve those states).
 
-Unfortunately, there are an infinite number of turns possible from each concave vertex, for $g_{end}$ can be selected from a continuous range of vectors. Clearly enumerating through every possible turn at every concave vertex is not possible.
+Unfortunately there are an infinite number of turns possible from each concave vertex, since $g_{end}$ can be selected from a continuous range of vectors. Clearly enumerating through every possible turn at every concave vertex is not possible.
 
 	\subsection{Sampling}
 
-To overcome this difficulty, we will instead sample from the continuous range of $g_{end}$ vectors and produce a limited number of turns. Each sample from this $g_{end}$ space produces a turn, which can be simulated with our transition function to produce a settled state.
+To overcome this difficulty, we will instead sample from the continuous range of $g_{end}$ vectors and produce a finite number of turns. Ideally the set of concave vertices produced by these sampled turns would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but with careful design we can discover the majority of this set.
 
-Sampling from this space produces a list of defined turns (or actions). Our successor function will then examine these actions in conjunction with an input concave vertex and produce the set of reachable concave vertices.
-
-Ideally this set of concave vertices produced by sampling would be identical to the set achieved by the full enumeration of the sampling space. This is not likely to happen in practice, but with careful design we can discover the majority of this set.
+%Each sample from the $g_{end}$ space produces a turn which can be simulated with our transition function to produce a settled state. These turns are the actions available to our agent. Our successor function will then examine these actions in conjunction with an input concave vertex and produce the set of reachable concave vertices.
 
 	\subsection{Representative Coverage Between Limits}
 
 The way we produce the majority of this set is to obtain a representative coverage over the possible kinetic paths out of a concave vertex. This is done by choosing a sampling method that produces the most diverse set of kinetic paths.
 
-If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$, then an initial best-guess sampling function may be to use uniform sampling in the form of $x$. Because acceleration effects compound with time however, this uniform sampling method produces many kinetic paths that are almost identical as can be seen below.
+If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$ and our interpolation function $f(x)$ is a function of this progress variable $x$, then an initial best-guess sampling function might be to use uniform sampling:
 
-\myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 samples from each side at uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
+$$
+f(x) = x
+$$
 
-A far better sampling function is to use $x^3$. This function produces many samples at the low end of the range of $g_{end}$ vectors and only a few at the higher end. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths as can be seen below.
+With this sampling function, turns are selected uniformly between the limits of $g_{end}$. This sampling function unfortunately does not produce a uniform distribution of kinetic paths. This is primarly because acceleration effects compound with time; uniform sampling produces many kinetic paths that are almost identical. This is illustrated in Figure \ref{samplingUniform}.
 
-\myfigure{width=0.5\linewidth}{samplingCubed}{The range of kinetic paths produced from 10 samples at cubed sampling. Note the resulting kinetic paths evenly cover the space after the incident edge.}
+\myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 per side with uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
+
+A far better sampling function is to use cubic sampling:
+
+$$
+f(x) = x^3
+$$
+
+This function produces many samples near the lower bound of $g_{end}$ vectors and only a few samples near the upper bound. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths. This is illustrated in Figure \ref{samplingCubed}.
+
+\myfigure{width=0.5\linewidth}{samplingCubed}{The range of kinetic paths produced from 6 samples per side with cubed sampling. Note the resulting kinetic paths evenly cover the space after the incident edge.}
 
 With this sampling function, we can obtain better coverage with lower computational cost.
 
 	\section{Complete Formulation}
 
-Now we have all the pieces to implement A.I. search. Our state is defined as the concave vertex the particle rests in (or workpiece exit). Our successor function samples from an available range of actions to produce a reasonable set of reachable concave vertices. Simply combining these two definitions together can produce an algorithm that discovers a sequence of actions to rotate a water particle out of a workpiece.
+Now we have all the pieces to implement A.I. search. Our state is defined as the concave vertex the particle rests in (or workpiece exit). Our successor function samples from an available range of actions to produce a representative set of reachable concave vertices. Simply combining these two definitions together can produce an algorithm that discovers a sequence of actions to rotate a water particle out of a workpiece.
 
 	\subsection{Graph Search}
 
@@ -221,21 +233,23 @@ The second graph reduction is implemented directly in the successor function. Wh
 
 By doing so, our successor function produces the optimal reduced set of concave vertices reachable from a given state. This graph reduction enqueues fewer plans onto the fringe, reducing the memory overhead and improving performance.
 
-These two graph reductions excel in workpieces with finely-tesselated concave sections. Here the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a considerable amount of time expanding all the concave vertices multiple times.
+%These two graph reductions excel in workpieces with finely-tesselated concave sections. Here the connectivity graph is highly connected and contains many cycles. Without graph reductions, tree search would spend a considerable amount of time expanding all the concave vertices multiple times.
 
-\myfigure{width=0.5\linewidth}{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
+%\myfigure{width=0.5\linewidth}{hemisphereSection}{A tesselated concave section. The draining graph for a workpiece like this is highly connected and cyclic.}
 
 \section{Cost}
 
-The uniform cost graph search algorithm we use ensures the plan produced is optimal in cost. Our definition of cost however is very flexible and can be modified according to different manufacturing priorities.
+The uniform cost graph search algorithm we use ensures the plan produced is optimal in cost. This is because the goal check for a partial plan is performed after the plan is dequeued from the priority queue. When a partial plan is dequeued from a priority queue that is ranked by cost, we are guaranteed that no other plan has a lower cost. This guarantee of optimality is the foundation of uniform cost and A* search.
+
+Our definition of cost however is very flexible and can be modified according to different manufacturing priorities.
 
 		\subsubsection{Time}
 
-The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the total backward time to execute that plan. This ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe (ensuring optimality in time).
+The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the time needed to execute that plan. This total time includes the sum of all turn durations as well as the time needed to wait for particles to settle. Enqueuing plans by this value ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe (ensuring optimality in time).
 
 		\subsubsection{Energy}
 
-Another common concern in manufacturing is the energy required for a given procedure. If energy is the optimization goal, plans can be instead enqueued by the estimated total amount of energy required to execute that series of turns.
+Another concern in manufacturing is the energy required for a given procedure. If energy is the optimization goal, plans can be instead enqueued by the estimated total amount of energy required to execute that series of turns.
 
 
 There are many ways to estimate the amount of energy required to execute a series of turns. The exact details are dependent on the fixture setup and associated motor; we present three simple models of energy estimation.
@@ -248,25 +262,29 @@ This model would be appropriate if the workpiece was well balanced in a fixture 
 
 		\subsubsection{Energy - Workpiece Center of Gravity}
 
-Another model for energy is based on the work the motor has to perform against gravity. If the workpiece's center of gravity is positioned far away from the center of rotation, the workpiece is unbalanced in the fixture. Turns that raise the center of gravity will produce counter-torques, will turns that lower the center of gravity will produce added acceleration.
+Another model for energy is based on the work the motor has to perform against gravity. If the workpiece's center of gravity is positioned far away from the center of rotation, the workpiece is unbalanced in the fixture. Turns that raise the center of gravity will produce counter-torques, whereas turns that lower the center of gravity will produce added acceleration.
 
 If this model is more appropriate for the fixture setup, the plans can be enqueued onto the fringe based on the integrated change in height for the center of gravity.
 
 		\subsubsection{Energy - Acceleration And Deceleration}
 
-Finally, if the workpiece is well balanced and friction in the rotator is low, the most appropriate model may be one based on acceleration and deceleration of the workpiece. While the total number of accelerations commonly scales with the total angle, these two properties are not necessarily the same.
+Finally, if the workpiece is well balanced and friction in the rotator is low, the majority of energy loss will be due to acceleration and deceleration of the workpiece. In this case, the most appropriate model for energy cost may be one based on the total number of turns in the plan.
 
-In this case, plans can be enqueued based on their total acceleration change.
+This contrasts with the energy model of total angle; while the total number of turns in a plan commonly scales with the total angle of a plan, these two properties are not necessarily the same.
 
 	\subsection{Solution Post Processing}
 
 A full solution is defined as the sequence of gravity transitions to drain the workpiece. The graph search algorithm returns a list of gravity turns from each concave vertex to drain the workpiece; the only issue is that the $g_{end}$ from one turn rarely matches the $g_{start}$ of the following turn.
 
-In order to rectify this situation and produce a full control sequence, our implementation contains a solution post-processor that stitches together these disparate turns and creates interpolations between one turn's $g_{end}$ and the next turn's $g_{start}$. We refer to these turns as ``setup'' turns, for they prepare the workpiece's orientation prior to the next stage of particle movement.
+In order to rectify this situation and produce a full control sequence, our implementation contains a solution post-processor that stitches together these disparate turns and creates interpolations between one turn's $g_{end}$ and the next turn's $g_{start}$. We refer to these turns as ``setup'' turns, for they transition the workpiece's orientation from the previous action ($A=i$) to the beginning of the next action ($A=i + 1$).
 
-These ``setup'' turns never induce motion of the particle; this is because only one particle is simulated at a time and the range of vectors from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ does not produce motion. The latter cause is guaranteed because a particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that does not produce particle motion, a sweep from $g_{end}^{t=1}$ to $g_{start}^{t=2}$ never produces an acceleration field that induces movement of the particle.
+These ``setup'' turns never induce motion of the particle; this is because only one particle is simulated at a time and the range of vectors from $g_{end}^{A=i}$ to $g_{start}^{A=i + 1}$ does not produce motion.
 
-\myfigure{width=0.7\linewidth}{setupturn}{The geometric relationship between $g_{end}^{t=1}$ and $g_{start}^{t=2}$ as it relates to the guarantee that a setup turn does not induce motion}
+We arrive at this guarantee with the following reasoning. A particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that \emph{also} does not produce particle motion, a sweep from $g_{end}^{A=i}$ to $g_{start}^{A=i + 1}$ never produces an acceleration that induces movement of the particle.
+
+When simulating multiple particles, this guarantee no longer holds. We present a further reduction of the action space in Chapter \ref{multipleExtension} to restore this guarantee when working with multiple particles.
+
+\myfigure{width=0.7\linewidth}{setupturn}{The geometric relationship between $g_{end}^{A=i}$ and $g_{start}^{A=i + 1}$ as it relates to the guarantee that a setup turn does not induce motion}
 
 These ``setup'' turns can be seen during the solution animation process in our implementation which is linked in the results chapter.
 
