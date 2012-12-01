@@ -111,7 +111,7 @@ The second search optimization we present is centered around sampling from the a
 
 \myfigure{width=0.8\linewidth}{multiMinPocket}{Action Space sampling for each concave vertex.}
 
-When sampling turns for our successor function, we may sample from any of these defined spaces. Doing so, however, presents three primary concerns.
+When sampling turns for our successor function, we may sample from any of these defined spaces. Doing so, however, presents three primary concerns:
 
 \begin{itemize}
 \item This action space is fairly large and grows linearly with the number of particles in the workpiece, further increasing our algorithm's time complexity.
@@ -127,11 +127,11 @@ Reducing our action space in this way resolves each of our previous concerns. Fi
 
 This action space reduction technique is accomplished in several steps. The first is to examine all the $g_{start}$ vectors for each concave vertex, as illustrated in Figure \ref{actionspace1}.
 
-\myfigure{width=0.5\linewidth}{actionspace1}{$g_{start}$ vectors from each concave vertex.}
+\myfigure{width=0.4\linewidth}{actionspace1}{$g_{start}$ vectors from each concave vertex.}
 
 We then define a region of the Gaussian circle between each pair of $g_{start}$ vectors that does not result in particle motion. This region is referred to as the ``dead space'' for a particular concave vertex, as illustrated in Figure \ref{actionspace15}.
 
-\myfigure{width=0.8\linewidth}{actionspace15}{The ``dead space'' for each concave vertex visualized as a shaded region of the Gaussian circle.}
+\myfigure{width=0.5\linewidth}{actionspace15}{The ``dead space'' for each concave vertex visualized as a shaded region of the Gaussian circle.}
 
 By intersecting all of these ``dead space'' regions together, we can then find the total intersection region as illustrated in Figure \ref{actionspace2}.
 
