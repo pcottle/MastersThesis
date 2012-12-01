@@ -112,7 +112,7 @@ This gives us a parabola defined by three vectors:
 
 This parabola needs to be intersected against an arbitrary edge with starting point $\vec{s}$, direction vector $\vec{d}$, and length $|\vec{d}|$:
 
-\myfigure{width=0.6\linewidth}{parablinetest1}{Edge for interesection test.}
+\myfigure{width=0.6\linewidth}{parablinetest1}{Edge for intersection test.}
 
 We know that any point $\alpha$ on the line defined by $\vec{d}$ and $\vec{s}$ has a cross product of 0:
 
@@ -188,7 +188,7 @@ This concludes the parabola-line intersection tests. For our simulation purposes
 
 \section{Equation Types}
 
-Now that we have defined a parabolic path segment in parametric form and demonstrated a geometric primtive intersection test, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to Equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
+Now that we have defined a parabolic path segment in parametric form and demonstrated a geometric primitive intersection test, we would like to use this equation to simulate particle movement over time. During the course of simulation however, a particle may be traveling in a variety of conditions which require modifications to Equation \eqref{eq:freeFall}. The two primary conditions that determine the modifications necessary are:
 
 \begin{itemize}
 	\item Whether the workpiece is rotating
@@ -304,7 +304,7 @@ Our results chapter provides numerical analysis of this scenario \#4 rejection a
 
 The third scenario, concurrent rotation and sliding, similarly has a kinetic path equation that cannot be easily intersected with geometric primitives. The key difference between this scenario and scenario \#4, however, is that the particle is traveling along a known edge. Since this edge length is known as well as the duration of the turn, this particle path does \emph{not} need to be intersected with any primitive in the workpiece.
 
-Insteady, the the position of the particle after the specified turn is calculated. If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface during the turn. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
+Instead, the position of the particle after the specified turn is calculated. If the particle is still on the same edge at the end of the turn, we can then proceed with simulation because we are guaranteed that the particle did not collide with any other surface during the turn. If the particle is beyond the length of the edge at the end of the turn, we do not have this no-collision guarantee and cannot proceed with simulation.
 
 Thus although we have two scenarios where particle path and solid intersection tests are difficult, only one of them (concurrent rotation and free-fall) cannot be simulated at all. The other (concurrent rotation and sliding) can be simulated whenever the particle has not traveled beyond the edge at the end of the turn, which was the most common result during our tests.
 

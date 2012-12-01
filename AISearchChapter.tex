@@ -73,7 +73,7 @@ The actions available to the agent at any time are usually actions that change t
 
 The problem with this type of state formulation is that the state space commonly becomes far too expansive for general A.I. search algorithms. Consider a reduced problem where there are only 1000 possible position, velocity, and acceleration vectors. The size of the state space in this reduced problem is $1000^3$. This presents a large number of possible states for a search algorithm to enumerate through; the scale of this state space may even prevent the algorithm from terminating.
 
-In kinematics problems, this type of ``traditionl'' state formulation may jeopardize the entire algorithm by producing a state space that is too expansive. We present a different formulation that overcomes this obstacle.
+In kinematics problems, this type of ``traditional'' state formulation may jeopardize the entire algorithm by producing a state space that is too expansive. We present a different formulation that overcomes this obstacle.
 
 	\subsection{Our State Formulation}
 
@@ -197,7 +197,7 @@ With this sampling function, we can obtain better coverage with lower computatio
 
 Now we have all the pieces to implement A.I. search. Our state is defined as the concave vertex the particle rests in (or workpiece exit). Our successor function samples from an available range of actions to produce a representative set of reachable concave vertices. Simply combining these two definitions together can produce an algorithm that discovers a sequence of actions to rotate a water particle out of a workpiece.
 
-We now present two modificiatons to general A.I. search to enhance performance.
+We now present two modifications to general A.I. search to enhance performance.
 
 	\subsection{Uniform Cost Graph Search}
 
@@ -231,9 +231,9 @@ Furthermore, we use the ``uniform cost'' version of graph search \cite{AIBook} t
 
 	\subsection{Optimal Actions}
 
-The second search modificaiton is implemented directly in the successor function. By definition, the successor function returns a set of ``reachable'' states; each state is paired with a list of associated actions to transition to that state. Normally during search, every one of these associated actions generates a new plan that is placed in the priority queue.
+The second search modification is implemented directly in the successor function. By definition, the successor function returns a set of ``reachable'' states; each state is paired with a list of associated actions to transition to that state. Normally during search, every one of these associated actions generates a new plan that is placed in the priority queue.
 
-Our optimization here is simply to return a single optimal action that produces a state, rather than a list of arbitray actions. This results in fewer plans enqueued onto the fringe while maintaining optimality.
+Our optimization here is simply to return a single optimal action that produces a state, rather than a list of arbitrary actions. This results in fewer plans enqueued onto the fringe while maintaining optimality.
 
 This is accomplished by placing actions into a cost-sensitive closed set \cite{AIBook}. A cost-sensitive set behaves like a normal set; the only difference is that each entry is keyed by a ``cost'' variable. When inserting a new item, that item will be inserted into the set if it does not already exist \emph{or} if it has a cost that is lower than the existing member.
 
@@ -308,7 +308,7 @@ Next, the simulation of a single particle continues until the particle settles i
 
 The number of collisions for a given particle simulation is not easily bounded by an upper value; if the elasticity of the system $\kappa$ is 1, the particle could never stop moving depending on the geometry of the workpiece. The lower bound is the best case, when a a particle's simulation terminates after one collision.
 
-In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polgyon. Going forward with our time complexity analysis, we will switch to an approximate time complexity $\tilde{O}$. We will estimate the complexity of the simulation step to be $\tilde{O}(E)$. With each simulation step requiring an intersection test, our overall time complexity is now $\tilde{O}(E^2).$
+In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polygon. Going forward with our time complexity analysis, we will switch to an approximate time complexity $\tilde{O}$. We will estimate the complexity of the simulation step to be $\tilde{O}(E)$. With each simulation step requiring an intersection test, our overall time complexity is now $\tilde{O}(E^2).$
 
 A full simulation is performed for every sampled turn at a given concave vertex. We restrict the number of samples to 20 in our implementation, so this step introduces a scalar constant $S$ defined as the number of samples taken at each concave vertex.
 
