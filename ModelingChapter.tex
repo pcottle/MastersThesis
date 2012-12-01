@@ -64,5 +64,24 @@ This modeling choice requires a different approach to drainability analysis than
 
 The key components of our approach break down into the water particle simulation (presented in Chapter 3) and the search for a drainability sequence (presented in Chapter 4).
 
+\section{Algorithm Inputs and Outputs}
 
+Before proceeding, it is important to formally define the inputs to the draining problem and the outputs that our work produces.
 
+The draining problem is defined as removing bodies of fluid from a given workpiece. Consequently, our work  accepts the following variables as input:
+
+\begin{itemize}
+\item a collection of 2D polygons that represent the workpiece
+\item a set of concave vertices representing the bodies of water to drain
+\end{itemize}
+
+Our work also accepts the desired rotation speed of the workpiece as an input. While this value could theoretically vary in time, we decide to use an algorithm-wide constant for simplicity.
+
+Our work then produces the following two results:
+
+\begin{itemize}
+\item Whether or not a solution exists (answering the ``drainability'' query)
+\item A continuous sequence of rotation angles throughout time. If the workpiece is rotated according to this sequence, the input particles will be drained
+\end{itemize}
+
+The following chapters present how these results are obtained.
