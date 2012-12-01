@@ -62,17 +62,23 @@ This leads to an approximate time-complexity that is now exponential in the numb
 
 Although earlier we had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space. Our algorithm as presented thus far will still find solutions to these problems; unfortunately, it will take several factors of time longer to obtain solutions.
 
-In order to improve running time of the algorithm, we present two search optimizations that greatly reduce the number of states expanded and obtain solutions much faster. These optimizations sacrifice the guarantee of optimality in exchange for an improvement in running time.
+In order to improve running time of the algorithm, we present two search optimizations that significantly reduce the number of states expanded and obtain solutions much faster. These optimizations sacrifice the guarantee of optimality in exchange for an improvement in running time.
 
 \section{Search Heuristics}
 
-The one advantage of the multiple-particle formulation of the drainability problem is that it allows for more creativity and flexibility when composing search optimizations. Previously in single-particle draining, our state was simply defined as a concave vertex location. This meant that any potential heuristic had only the workpiece geometry and a position as input variables.
+The high level goal of a search heuristic is to ``guide'' the exploration of state space towards potential solutions \cite{AIBook}. This is accomplished by either preventing the exploration of certain states or by intelligently ranking potential plans on the fringe \cite{AIBook}. If fewer states are explored before a solution is found, the algorithm's performance will improve.
 
-Now that our state is a set of settle locations, we can instead create heuristics that operate on direct properties of the state.
+Because the definition of a heuristic is quite general, there are many possible heuristics to choose from -- the space of heuristic choices is wide. We present our specific choice of a heuristic for the multiple-particle draining problem below, but many other valid (and potentially better) heuristics exist.
+
+\subsection{Multiple Particle Heuristics}
+
+The one advantage of the multiple-particle formulation of the drainability problem is that it allows for more creativity and flexibility when composing search heuristics. Previously in single-particle draining, our state was simply defined as a concave vertex location. This meant that any potential heuristic had only the workpiece geometry and a position as input variables.
+
+Now that our state is a set of settle locations, we can instead create heuristics that operate on direct properties of the state in addition to workpiece geometry.
 
 \subsection{Plan Ranking Heuristic}
 
-The first optimization (and true search heuristic) we implemented was simply a ranking of the partial plans in the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented the following two ranking modifications:
+The first search optimization (and true search heuristic) we implemented was simply a ranking of the partial plans in the priority queue during uniform cost search. Rather than ranking only by cost, we also implemented the following two ranking modifications:
 
 \begin{itemize}
 \item Always prefer plans with a higher number of exited particles, regardless of cost.
@@ -101,7 +107,7 @@ Which is a factor of $V_{c}^{o + m}$ smaller than \eqref{eq:bigoTotal}. Chapter 
 
 \subsection{Action Space Reduction Technique}
 
-The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed set of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle. Now with multiple particles, we have multiple sets of these defined vectors as illustrated in Figure \ref{multiMinPocket}.
+The second search optimization we present is centered around sampling from the action space. Recall that for a single particle, we defined our action space to sample from as a fixed pair of $g_{start}$ vectors and a range of $g_{end}$ vectors that produce motion of the particle as illustrated in Figure \ref{restriction3}. Now with multiple particles, we have multiple sets of these defined vectors as illustrated in Figure \ref{multiMinPocket}.
 
 \myfigure{width=0.8\linewidth}{multiMinPocket}{Action Space sampling for each concave vertex.}
 
@@ -109,27 +115,33 @@ When sampling turns for our successor function, we may sample from any of these 
 
 \begin{itemize}
 \item This action space is fairly large and grows linearly with the number of particles in the workpiece, further increasing our algorithm's time complexity.
-\item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the incident edge of its concave vertex, a $g_{end}$ vector from this space may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected.
-\item A particular turn's $g_{start}$ may be well into the ``induce motion'' space of another concave vertex. If the workpiece were able to rotate infinitely fast to a particular orientation this would be of no concern; unfortunately, we assume finite rotation speed, which means a ``setup'' turn here would induce motion of another particle. This means that our solution post-processor can no longer assume that all turns in between partial plan turns do not induce motion. Consequently, in order to accurately simulate a turn with this condition we must rotate $g_{start}$ back to the first vector that produces motion for any particle.
+\item Although the set of $g_{end}$ vectors for a particular concave vertex have been reduced to keep that particular particle on the incident edge of its concave vertex, a $g_{end}$ vector from this space may cause other particles to leave the surface of the workpiece during rotation. This results in scenario \#4 which causes the sample to be rejected immediately.
+\item A particular turn's $g_{start}$ may be well into the ``induce motion'' space of another concave vertex. If the workpiece were able to rotate infinitely fast to a particular orientation this would be of no concern; unfortunately, we assume finite rotation speed, which means a ``setup'' turn to this $g_{start}$ vector would induce motion of another particle. This means that our solution post-processor can no longer assume that all turns in between partial plan turns do not induce motion. Consequently, in order to accurately simulate a turn with this condition we must rotate $g_{start}$ back to the first vector that produces motion for any particle.
 \end{itemize}
 
 The second and third concerns are the primary reasons why an action space reduction technique is employed. These two concerns result in a high number of sample rejections or modifications, which leads to wasted computation and altered sampling distribution.
 
-Our action space reduction technique is to simply find the one pair of $g_{start}$ vectors that do not induce motion of any particle. This is done by examining all the $g_{start}$ vectors for each concave vertex:
+The goal of our action space reduction technique is to find a pair of $g_{start}$ vectors that do not induce motion of \emph{any} particle. The sample space of $g_{end}$ vectors will then be defined by this pair of $g_{start}$ vectors as before.
+
+Reducing our action space in this way resolves each of our previous concerns. First, the action space will now be a constant size regardless of the number of particles. Secondly, because the $g_{end}$ sample space is generated from a pair of $g_{start}$ vectors that do not induce motion for any particle, no $g_{end}$ vector will directly cause scenario \#4. Finally, no turn sampled from this space will induce motion of a particle immediately, meaning our solution post-processor requires no further modificaitons.
+
+This action space reduction technique is accomplished in several steps. The first is to examine all the $g_{start}$ vectors for each concave vertex, as illustrated in Figure \ref{actionspace1}.
 
 \myfigure{width=0.5\linewidth}{actionspace1}{$g_{start}$ vectors from each concave vertex.}
 
-Combining all these vectors into one sample domain:
+We then define a region of the Gaussian circle between each pair of $g_{start}$ vectors that does not result in particle motion. This region is referred to as the ``dead space'' for a particular concave vertex, as illustrated in Figure \ref{actionspace15}.
 
-\myfigure{width=0.8\linewidth}{actionspace2}{All $g_{start}$ vectors from each concave vertex combined into one domain.}
+\myfigure{width=0.8\linewidth}{actionspace15}{The ``dead space'' for each concave vertex visualized as a shaded region of the Gaussian circle.}
 
-And then selecting the pair of vectors that do not induce motion on any particle:
+By intersecting all of these ``dead space'' regions together, we can then find the total intersection region as illustrated in Figure \ref{actionspace2}.
+
+\myfigure{width=0.8\linewidth}{actionspace2}{The intersection between all ``dead space'' regions.}
+
+Lastly, we can then select the pair of $g_{start}$ vectors that define this region to compute our final pair of $g_{start}$ vectors as illustrated in Figure \ref{actionspace3}.
 
 \myfigure{width=0.8\linewidth}{actionspace3}{Pair of $g_{start}$ vectors selected that do not produce motion of any particle.}
 
 Now with a defined set of $g_{start}$ vectors, we can simply define the $g_{end}$ sample space as those vectors which keep all particles on a incident edge of the workpiece. This is simply the set of vectors that range from parallel to orthogonal from $g_{start}$:
-
-% TODO
 
 \myfigure{width=0.8\linewidth}{actionspace4}{$g_{start}$ and $g_{end}$ vectors defined from a set of concave vertices.}
 
