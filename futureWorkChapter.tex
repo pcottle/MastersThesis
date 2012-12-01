@@ -7,9 +7,17 @@
 
 \section{Online Demo}
 
-Our implementation of this paper is available online at the following url when accessed with a modern web browser:
+Our implementation of this paper and a small solution demonstration is available online at the following url (Mozilla Firefox, Google Chrome, or Apple Safari recommended for full compatibility):
 
 \vspace{0.2in}
+
+\begin{centering}
+\url{http://petercottle.com/liquidGraph/index.html?demo}
+\end{centering}
+
+\vspace{0.2in}
+
+Another solution demonstration for a more complicated part is available at this url:
 
 \begin{centering}
 \url{http://petercottle.com/liquidGraph/yc.html?demo}
@@ -17,11 +25,12 @@ Our implementation of this paper is available online at the following url when a
 
 \vspace{0.2in}
 
-This implementation includes a graphical user interface that draws the sampling at each vertex and each path segment for a particle's full simulation. It also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
+
+This implementation includes a visualization that draws the sampling at each vertex and each particle's full path. It includes a graphical user interface for inputting and editing workpiece geometry. Lastly, it also animates the solution search process and the final result; consequently, our implementation of this algorithm runs asynchronously and is called in-between graphical frame draws.
 
   \subsection{Run Time}
 
-Because our implementation is run asynchronously and performs a lot of (unnecessary) graphics processing during the solution search process, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
+Because our implementation is run asynchronously and performs a lot of graphics processing during the solution search process solely for visualization, we provide both absolute time benchmarks and percentage breakdowns of CPU time between high-level functions.
 
 The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 ram. This time, however, was obtained while a CPU profiler was running (in addition to other applications) and is not representative of the typical runtime for the algorithm.
 
