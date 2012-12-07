@@ -110,9 +110,11 @@ $$
 
 	\subsection{Action Definition}
 
-The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece over time. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time. This means that our action results in a change in the acceleration field.
+The ``actions'' available to our agent will be represented by the possible set of rotations of the workpiece. In this problem we choose our frame of reference to be the workpiece geometry, so the rotation of the workpiece is observed as a rotation of the gravity vector through time. This means that our action results in a change in the acceleration field.
 
-More formally, we define one action (or ``turn'') as a sweep in the gravity vector from $g_{start}$ to $g_{end}$ over a time $t_{duration}$. We restrict all turns to be less than $180^{\circ}$; consequently, the direction of the turn from $g_{start}$ to $g_{end}$ is then implied. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity.
+More formally, we define one action (or ``turn'') as a sweep in the gravity vector from $g_{start}$ to $g_{end}$. The duration of this sweep is computed from the algorithm-wide rotation speed constant; consequently, the duration of the turn is a derived property rather than a free variable.
+
+We restrict all turns to be less than $180^{\circ}$; consequently, the direction of the turn from $g_{start}$ to $g_{end}$ is then implied. The interpolation function between $g_{start}$ and $g_{end}$ could take on any form, but we restrict ourselves to linear interpolation for simplicity.
 
 	\subsection{Transition Function}
 
@@ -121,16 +123,16 @@ Now we have fully defined both elements for the transition function; the states 
 Consequently, the transition function is then defined as a function that takes in a concave vertex and a turn; it produces the settled state of the particle after simulation.
 
 $$
-trans(V_{c}^{i}, turn_{l}) = V_{c}^j \qquad or \qquad exit
+transition(V_{c}^{i}, turn(g_{start}, g_{end}) = V_{c}^n \qquad or \qquad exit
 $$
 
 	\subsection{Possible set of Turns}
 
-A turn is defined by three different variables: $g_{start}$, $g_{end}$, and $t_{duration}$. These variables could take on many values which means many different turns could be produced. Consequently, a large number of actions are available to the agent at any given state, which leads to computational explosion (yet again).
+A turn is defined by two different variables: $g_{start}$ and $g_{end}$. These variables could take on many values which means many different turns can be defined. Consequently, a large number of actions are available to the agent at any given state which leads to computational explosion (yet again).
 
+In this work, we reduce the possible set of ``turns'' from a given concave vertex to within reasonable limits. This is accomplished by reducing the set of gravity vectors available from which turns are defiend.
 
-In this work, we restrict the possible set of ``turns'' from a given concave vertex to reasonable limits. The main way this is accomplished is by reducing the set of gravity vectors available and fixing the duration of the turn. By doing so we reduce the space of all possible actions to something ``manageable'' which still represents the full range of kinetic possibilities. An action or state space is ``manageable'' if it does not jeopardize termination of the algorithm.
-
+Ideally, we reduce the space of all possible actions to something ``manageable'' which still represents the full range of kinetic possibilities. An action or state space is ``manageable'' if it does not jeopardize termination of the algorithm.
 
 To understand how the set of gravity vectors is reduced, some terminology must first be defined. A given concave vertex has two incident edges $E_1$ and $E_2$ defined by outward vectors $\vec{e}_1$ and $\vec{e}_2$.
 
