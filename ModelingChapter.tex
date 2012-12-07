@@ -13,9 +13,9 @@ Drainability analysis requires many different rounds of fluid simulation in many
 Yasui et al. \cite{Yasui2011} chose a simplified particle modeling approach with the following core assumptions:
 
 \begin{itemize}
-	\item Each fluid body within the workpiece is approximated as a single particle
-	\item Water particles only travel in straight lines and do not maintain a kinetic state
-	\item The workpiece rotates infinitesimally slow in one direction for an infinite amount of time
+	\item each fluid body within the workpiece is approximated as a single particle,
+	\item water particles only travel in straight lines and do not maintain a kinetic state,
+	\item the workpiece rotates infinitesimally slow in one direction for an infinite amount of time.
 \end{itemize}
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
@@ -41,22 +41,22 @@ Our work utilizes a different (but related) model of the workpiece draining prob
 This model is based on the following assumptions:
 
 \begin{itemize}
-	\item Each fluid body within the workpiece is approximated as a single particle
-	\item Water particles travel in parabolic paths that are influenced by acceleration
-	\item The workpiece can be rotated in either direction along its rotation axis
-	\item The workpiece's rotation speed is non-constant
-	\item The workpiece is a two dimensional polygon
+	\item each fluid body within the workpiece is approximated as a single particle,
+	\item water particles travel in parabolic paths that are influenced by acceleration,
+	\item the workpiece can be rotated in either direction along its rotation axis,
+	\item the workpiece can alternate between rotating for any amount of time or holding a specific orientation for any amount of time,
+	\item the workpiece is a two dimensional polygon.
 \end{itemize}
 
 These simplifying assumptions define the model that we use. Additionally, one more restriction is imposed due to simulation constraints:
 
 \begin{itemize}
-	\item Particles may not travel through open space during workpiece rotation
+	\item particles may not travel through open space during workpiece rotation.
 \end{itemize}
 
 The reasons for this additional assumption are detailed in Chapter \ref{physicalChapter}.
 
-It is important to note that in the following chapters, we present our methods with a focus on single-particle draining for simplicity of presentation. We then extend this work to multiple particles in the penultimate chapter.
+In the following chapters, we first present our methods assuming a single particle will be drained for simplicity of presentation. We then extend this work to multiple particles in Chapter \ref{multipleExtension}.
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 
@@ -68,11 +68,11 @@ The key components of our approach break down into the water particle simulation
 
 Before proceeding, it is important to formally define the inputs to the draining problem and the outputs that our work produces.
 
-The draining problem is defined as removing bodies of fluid from a given workpiece. Consequently, our work  accepts the following variables as input:
+The draining problem is defined as removing bodies of fluid from a given workpiece. Consequently, our work accepts the following variables as input:
 
 \begin{itemize}
-\item a collection of 2D polygons that represent the workpiece
-\item a set of concave vertices representing the bodies of water to drain
+\item a collection of 2D polygons that represent the workpiece,
+\item a set of concave vertices representing the bodies of water to drain.
 \end{itemize}
 
 Our work also accepts the desired rotation speed of the workpiece as an input. While this value could theoretically vary in time, we decide to use an algorithm-wide constant for simplicity.
@@ -80,8 +80,13 @@ Our work also accepts the desired rotation speed of the workpiece as an input. W
 Our work then produces the following two results:
 
 \begin{itemize}
-\item Whether or not a solution exists (answering the ``drainability'' query)
-\item A continuous sequence of rotation angles throughout time. If the workpiece is rotated according to this sequence, the input particles will be drained
+\item whether or not a solution exists (answering the ``drainability'' query),
+\item a $C0$ continuous function of rotation angle through time. If the workpiece is rotated according to this function, the input particles will be drained; consequently, this function is referred to as the control sequence.
 \end{itemize}
 
+Figure \ref{controlsquence} illustrates the control sequence that is generated from our work.
+
+\myfigure{width=0.8\linewidth}{controlsquence}{The $C0$ continuous function of rotation angle through time that will drain the input particles. This control sequence is the solution to one of the example geometries provided in the results chapter (Chapter \ref{results})}
+
 The following chapters present how these results are obtained.
+
