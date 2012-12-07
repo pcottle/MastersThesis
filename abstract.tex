@@ -2,11 +2,11 @@
 
 \begin{abstract}
 
-This paper provides several contributions related to the workpiece drainability problem in manufacturing. First we describe our parametric approach to a particle model that uses parabolic path segments rather than straight-line segments. This improvement allows for particles to maintain velocity, travel through rotating acceleration fields, and collide with workpiece edges while maintaining constant-time intersection tests per geometric primitive.
+This paper provides several contributions related to the workpiece drainability problem in manufacturing. First we describe our parametric water particle model that uses parabolic path segments. This improvement allows for particles to maintain velocity, travel through rotating acceleration fields, and collide with workpiece edges while maintaining constant-time intersection tests per geometric primitive.
 
-Next we provide a framework for approaching the drainability problem from an artificial intelligence perspective. We define our state space formulation and note how the size of the state space is linear with geometric features and exponential with the number of particles being drained. We then define our sampling approach to the successor function; this sampling approach allows us to discover the majority of connectivity information while only exploring a subset of the action space.
+Next we provide a framework for approaching the drainability problem from an artificial intelligence perspective. We define our state space formulation, the size of which is linear with geometric features and exponential with the number of particles being drained. We then define our sampling approach to the successor function; this sampling approach allows us to discover the majority of connectivity information while only exploring a subset of the action space.
 
-Finally, we describe how our algorithm searches for a solution to determine if a given workpiece is drainable. The primary result produced by our work is a full sequence of rotation angles throughout time to drain the workpiece; this represents a direct control sequence that can be fed into fixture rotator, providing immediate utility in industry.
+Finally, we describe how our algorithm searches for a solution to determine if a given workpiece is drainable. The primary result produced by our work is a full sequence of rotation angles throughout time to drain the workpiece; this represents a direct control sequence that can be fed into fixture rotator.
 
 %First we describe our method for
 %This improvement leads to a technique for handling vertex placement
