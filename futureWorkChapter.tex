@@ -37,7 +37,7 @@ The result of this design objective was a highly visual experience for the user 
 
 Because our algorithm performs a significant amount of graphics processing, absolute time benchmarks for our algorithm do not provide as much utility for analysis. Consequently, we supplement our analysis with percentage breakdowns of CPU time between high-level functions to give readers an idea of which subroutines require the most computation.
 
-The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 RAM. This benchmark time, however, was obtained while a CPU profiler was running (in addition to other applications) and thus overstates the runtime for the algorithm.
+The following CPU profile was collected during a solution search on a workpiece with 180 total vertices, 180 edges, 55 concave vertices, and 21 polygons. The solution was obtained in 14.64 seconds on a Macbook Air with a 1.86 GHz Intel Core 2 Duo and 2 GB of 1067 MHz DDR3 RAM. This benchmark time, however, was obtained while a CPU profiler was running (in addition to other applications) and thus overstates the runtime for the algorithm.
 
 In Table \ref{resultsTable}, CPU ``Total Time'' is defined as the sum of computational time spent inside a given function call and all other functions called from that location. This means that high-level functions that simply call other parts of the program will have a large total time, despite very little computational time being spent inside them.
 
