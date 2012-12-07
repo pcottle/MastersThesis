@@ -90,9 +90,9 @@ Here this insight is instead applied to the state space formulation for the firs
 
 By defining our state this way, we produce a state space with size of
 $$
-V_{c} + 1
+V_{concave} + 1
 $$
-where $V_{c}$ is defined as number of concave vertices in the workpiece. The size of this state space is small compared to kinetic state definitions which can be exponential in the accuracy of each value.
+where $V_{concave}$ is defined as number of concave vertices in the workpiece. The size of this state space is small compared to kinetic state definitions which can be exponential in the accuracy of each value.
 
 Because the maximum number of states visited is now only linear in concave vertices, our search algorithms have far fewer states to expand and a lower upper bound on running time.
 
@@ -313,7 +313,7 @@ The number of collisions for a given particle simulation is not easily bounded b
 
 In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polygon. However, since we cannot accurately bound the time complexity of the particle simulation step, we will instead focus on the time complexity of the search component of the algorithm.
 
-The state space our formulation has a size of $V_{c} + 1$. In the worst case scenario of solution search, the algorithm must call the successor function at every possible state. This brings us to a worst-case time complexity of:
+The state space our formulation has a size of $V_{concave} + 1$. In the worst case scenario of solution search, the algorithm must call the successor function at every possible state. This brings us to a worst-case time complexity for solution search of:
 
 \myequation{
 	O(V_{c})
