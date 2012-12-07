@@ -55,7 +55,7 @@ $$
 This leads to an approximate time-complexity that is now exponential in the number of concave vertices, rather than linear as in Equation \eqref{eq:bigo}:
 
 \myequation{
-\tilde{O}(S \cdot E^2 \cdot V_{c}^{n})
+O(V_{c}^{n})
 } {
   \label{eq:bigoTotal}
 }
@@ -98,7 +98,7 @@ With this plan ranking heuristic, our search algorithm prefers states that have 
 This essentially reduces the time complexity of the algorithm. If $o$ is the number of particles that have exited out of the workpiece and $m$ is the number of particles in duplicate locations, the time complexity is then:
 
 \myequation{
-O(S \cdot E^2 \cdot V_{c}^{n -o -m})
+O(V_{c}^{n -o -m})
 } {
   \label{eq:bigoTotalWithHeuristic}
 }
