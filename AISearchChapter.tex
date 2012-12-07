@@ -90,9 +90,9 @@ Here this insight is instead applied to the state space formulation for the firs
 
 By defining our state this way, we produce a state space with size of
 $$
-num(V_{c}) + 1
+V_{c} + 1
 $$
-where $V_{c}$ is defined as the set of concave vertices in the workpiece. The size of this state space is small compared to kinetic state definitions which can be exponential in the accuracy of each value.
+where $V_{c}$ is defined as number of concave vertices in the workpiece. The size of this state space is small compared to kinetic state definitions which can be exponential in the accuracy of each value.
 
 Because the maximum number of states visited is now only linear in concave vertices, our search algorithms have far fewer states to expand and a lower upper bound on running time.
 
@@ -146,16 +146,16 @@ We first restrict the possible values of $g_{start}$. We define $g_{start}$ as a
 
 If $g_{start}$ satisfies these two conditions, two benefits arise. The first is that if $g_{start}$ does not induce motion of the particle, a turn that ends in $g_{start}$ does not require simulation once the turn ends. This will be greatly useful for our solution post-processor. The second benefit is that any turn defined with $g_{start}$ spends the maximum amount of time inducing motion of the particle.
 
-There are only two vectors that satisfy these two conditions -- the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that point into the workpiece as illustrated in Figure \ref{restriction2}.
+There are only two vectors that satisfy these two conditions -- the perpendicular vectors to $\vec{e}_1$ and $\vec{e}_2$ that point into the workpiece, denoted as $\vec{e}_1^p$ and $\vec{e}_2^p$ in Figure \ref{restriction2}.
 
 \myfigure{width=0.8\linewidth}{restriction2}{$g_{start}$ is reduced to one of the two perpendicular vectors}
 
-Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaneously keeping the particle on either incident edge of the concave vertex. This produces two quarter-circle segments of possibilities for $g_{end}$, each of which are defined by a incident edge and the perpendicular vector to that edge as illustrated in Figure \ref{restriction3}.
+Our second restriction is that $g_{end}$ must be a vector that produces motion of the particle while simultaneously keeping the particle on either incident of the edges of the concave vertex. This produces two quarter-circle segments of possibilities for $g_{end}$, each of which are defined by a incident edge and the perpendicular vector to that edge as illustrated in Figure \ref{restriction3}.
 
 
 \myfigure{width=0.8\linewidth}{restriction3}{$g_{end}$ is reduced to vectors that produce motion while keeping the particle on the incident edge}
 
-This leaves two arcs of gravity vectors from which $g_{end}$ can be selected. It is important to note that once $g_{start}$ is selected, $g_{end}$ is selected from the arc of vectors that borders $g_{start}$ in order to produce turns that maximize motion of the particle.
+This leaves two arcs of gravity vectors from which $g_{end}$ can be selected. Note that once $g_{start}$ is selected, $g_{end}$ is selected from the arc of vectors that borders $g_{start}$ in order to produce turns that maximize motion of the particle.
 
 	\subsection{Ideal Successor Function}
 
@@ -176,7 +176,7 @@ The way we produce the majority of this set is to obtain a representative covera
 If the possible range of $g_{end}$ vectors is defined between the limits of $0$ and $1$ and our interpolation function $f(x)$ is a function of this progress variable $x$, then an initial best-guess sampling function might be to use uniform sampling:
 
 $$
-f(x) = x
+f(x) = x.
 $$
 
 With this sampling function, turns are selected uniformly between the limits of $g_{end}$. This sampling function unfortunately does not produce a uniform distribution of kinetic paths. This is primarly because acceleration effects compound with time; uniform sampling produces many kinetic paths that are almost identical. This is illustrated in Figure \ref{samplingUniform}.
@@ -186,7 +186,7 @@ With this sampling function, turns are selected uniformly between the limits of 
 A far better sampling function is to use cubic sampling:
 
 $$
-f(x) = x^3
+f(x) = x^3.
 $$
 
 This function produces many samples near the lower bound of $g_{end}$ vectors and only a few samples near the upper bound. These low-end samples produce accelerations that are minimally different, but since acceleration effects compound with time, they produce drastically different kinetic paths. This is illustrated in Figure \ref{samplingCubed}.
@@ -247,18 +247,18 @@ The uniform cost graph search algorithm we use ensures the plan produced is opti
 
 Our definition of cost however is very flexible and can be modified according to different manufacturing priorities.
 
-		\subsubsection{Time}
+		\subsection{Time}
 
 The primary concern in manufacturing is often the processing time for a given procedure. In this case, the plans enqueued into the fringe are ordered by the time needed to execute that plan. This total time includes the sum of all turn durations as well as the time needed to wait for particles to settle. Enqueuing plans by this value ensures that when we dequeue a plan that ends in the goal, it has the lowest total time out of any plan on the fringe (ensuring optimality in time).
 
-		\subsubsection{Energy}
+		\subsection{Energy}
 
 Another concern in manufacturing is the energy required for a given procedure. If energy is the optimization goal, plans can be instead enqueued by the estimated total amount of energy required to execute that series of turns.
 
 
 There are many ways to estimate the amount of energy required to execute a series of turns. The exact details are dependent on the fixture setup and associated motor; we present three simple models of energy estimation.
 
-		\subsubsection{Energy - Rotation Angle}
+		\subsubsection{Energy - Total Rotation Angle}
 
 The first estimation of energy is based on the total rotation angle. If friction in the motor bearings are the primary energy losses for the draining process, plans can be enqueued by their total absolute angle change.
 
@@ -276,22 +276,23 @@ Finally, if the workpiece is well balanced and friction in the rotator is low, t
 
 This contrasts with the energy model of total angle; while the total number of turns in a plan commonly scales with the total angle of a plan, these two properties are not necessarily the same.
 
+		\subsubsection{Our Implementation}
+
+Our implementation of this paper (described further in Chapter \ref{results}) uses time as the cost function during solution search. This is primarily an interaction design decision; users are more likely to sense optimality in time over other possible cost functions.
+
 	\subsection{Solution Post Processing}
 
 A full solution is defined as the sequence of gravity transitions to drain the workpiece. The graph search algorithm returns a list of gravity turns from each concave vertex to drain the workpiece; the only issue is that the $g_{end}$ from one turn rarely matches the $g_{start}$ of the following turn.
 
-In order to rectify this situation and produce a full control sequence, our implementation contains a solution post-processor that stitches together these disparate turns and creates interpolations between one turn's $g_{end}$ and the next turn's $g_{start}$. We refer to these turns as ``setup'' turns, for they transition the workpiece's orientation from the previous action ($A=i$) to the beginning of the next action ($A=i + 1$).
+In order to rectify this situation and produce a full control sequence, our implementation contains a solution post-processor that stitches together these disparate turns and creates interpolations between one turn's $g_{end}$ and the next turn's $g_{start}$. We refer to these turns as ``setup'' turns, for they transition the workpiece's orientation from the previous action ($A=i$) to the beginning of the next action ($A=i + 1$). These ``setup'' turns can be seen during the solution animation process in our implementation which is linked in the results chapter.
 
 These ``setup'' turns never induce motion of the particle; this is because only one particle is simulated at a time and the range of vectors from $g_{end}^{A=i}$ to $g_{start}^{A=i + 1}$ does not produce motion.
 
-We arrive at this guarantee with the following reasoning. A particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that \emph{also} does not produce particle motion, a sweep from $g_{end}^{A=i}$ to $g_{start}^{A=i + 1}$ never produces an acceleration that induces movement of the particle.
+We arrive at this guarantee with the following reasoning. A particle only settles when the terminal acceleration field $g_{end}$ points ``into'' a concave vertex. Since the $g_{start}$ of the next turn is defined as one of the outermost vectors that \emph{also} does not produce particle motion, a sweep from $g_{end}^{A=i}$ to $g_{start}^{A=i + 1}$ never produces an acceleration that induces movement of the particle. This guarantee is illustrated in Figure \ref{setupturn}.
 
 When simulating multiple particles, this guarantee no longer holds. We present a further reduction of the action space in Chapter \ref{multipleExtension} to restore this guarantee when working with multiple particles.
 
 \myfigure{width=0.7\linewidth}{setupturn}{The geometric relationship between $g_{end}^{A=i}$ and $g_{start}^{A=i + 1}$ as it relates to the guarantee that a setup turn does not induce motion}
-
-These ``setup'' turns can be seen during the solution animation process in our implementation which is linked in the results chapter.
-
 
   \section{Time Complexity}
 
