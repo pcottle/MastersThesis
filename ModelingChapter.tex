@@ -34,7 +34,7 @@ If this assumption about the rotation of the workpiece could be relaxed and a  c
 
 This work aims to produce those complementary results while simultaneously improving the kinetic model of fluid behavior.
 
-\section{Parabolic Single-Particle Model}
+\section{Parabolic Single-Particle Model}\label{parabSingleParticle}
 
 Our work utilizes a different (but related) model of the workpiece draining problem. The results produced are complementary to Yasui et al.'s results and are ideally used in conjunction.
 
@@ -57,6 +57,19 @@ These simplifying assumptions define the model that we use. Additionally, one mo
 The reasons for this additional assumption are detailed in Chapter \ref{physicalChapter}.
 
 In the following chapters, we first present our methods assuming a single particle will be drained for simplicity of presentation. We then extend this work to multiple particles in Chapter \ref{multipleExtension}.
+
+	\subsection{Omitted Kinetic Terms}
+
+It is important to note that our particle model (described further in Section \ref{KineticEquation}) is based solely off of acceleration, velocity, and position. The following more complex kinetic terms (among others) are omitted from our model:
+
+\begin{itemize}
+\item aerodynamic drag $-\rho v^2$,
+\item rotational velocity about the particle's center of mass,
+\item velocity imparted from workpiece rotation,
+\item the Coriolis effect $-2 \Omega \times v$.
+\end{itemize}
+
+These more complex kinetic terms would affect particle trajectory if included; incorporating these terms, however, can jeopardize theoretical and performance-related qualities of our approach. Consequently, we choose to omit these terms for the same reasons as Yasui et. al \cite{Yasui2011}.
 
 	\subsection{Modeling Choice Advantages and Disadvantages}
 

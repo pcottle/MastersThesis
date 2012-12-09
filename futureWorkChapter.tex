@@ -123,6 +123,12 @@ Heuristics are, by nature, very dependent on the problem they are being applied 
 
 One initial idea for a heuristic would be to use the free-fall time from the current concave vertex to the outside of the workpiece bounding box. This essentially would be the optimistic estimation that the particle would free-fall immediately from the concave vertex at the next turn. While this heuristic would be admissible and consistent, it does not take into account workpiece geometry. It is probable that better heuristics exist for this search formulation.
 
+  \subsection{Kinetic Models}
+
+Another possible way to extend this work is to further expand on the kinetic model used during particle simulation. As detailed in Section \ref{parabSingleParticle}, many complex terms from true particle dynamics were omitted from our kinetic model. By reformulating the kinetic model with additional terms like rotational inertia or the Coriolis effect, particle paths obtained from simulation would better represent true particle behavior.
+
+Inclusion of these terms may jeopardize the time complexity of the algorithm. One possible way to incorporate more accurate particles while retaining performance is to first discover a solution with our simplified kinetic model and then verify that solution with a more complex kinetic model. If the previously-obtained solution is no longer valid with a more complex kinetic model, that solution could then perhaps be intelligently modified towards validation. This approach may have better performance than an approach consisting purely of search based on a more accurate kinetic model.
+
   \subsection{Bounding Box Method Adaption for Particle Path Intersections}
 
 When intersecting rays with geometric primitives, most implementations using bounding-box methods to reduce the number of primitives tested against the ray. This bounding-box idea could be adapted to parabolic paths as well; determining which bounding boxes are needed still presents a fairly reasonable computational load, but great gains in efficiency could be made for complex input with many edges.
