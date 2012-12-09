@@ -301,21 +301,30 @@ Now that the entire search algorithm has been defined, we can analyze the time c
 \begin{itemize}
 \item the intersection between a particle path and the workpiece,
 \item the simulation of a particle until settling,
-\item the search expansion over the workpiece.
+\item the search expansion for a particular state, and
+\item the overall search for a solution.
 \end{itemize}
 
-The intersection between a particle path and the workpiece is linear in the number of edges in the workpiece $e$, since each edge is intersected against a given path. This brings us to a time complexity of $O(e)$ for each path-workpiece intersection test.
+We start with the intersection between a particle and the workpiece -- our fundamental unit of computation. The intersection between a particle path and the workpiece is linear in the number of edges in the workpiece $e$, since each edge in the workpiece is intersected against a test path.
 
 Next, the simulation of a single particle continues until the particle settles in a given location. Each time a particle collides with a surface, it obtains a new kinetic state and resulting parabola. This new parabola then needs to be intersected against the workpiece; consequently, the time complexity of particle simulation is determined by the number of collisions the particle experiences before settling.
 
-The number of collisions for a given particle simulation is not easily bounded by an upper value; if the elasticity of the system $\kappa$ is 1, the particle could never settle in a concave vertex depending on the geometry of the workpiece. The best case lower bound is when a particle's simulation terminates after one collision.
+The number of collisions for a given particle simulation is not easily bounded; if the elasticity of the system $\kappa$ is 1, the particle could never settle in a concave vertex depending on the geometry of the workpiece. The best case lower bound is when a particle's simulation terminates after one collision or immediately exits the workpiece.
 
-In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polygon. We cannot however accurately bound the time complexity of the particle simulation step, so we will omit time complexity analysis for this subroutine.
+In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polygon $e$. We cannot however theoretically bound the time complexity of the particle simulation step.
 
-Finally, time complexity of the solution search must be analyzed. The state space our formulation has a size of $V_{concave} + 1$. In the worst case scenario of solution search, the algorithm must explore every possible state. This brings us to a worst-case time complexity for solution search of:
+If a particle were to collide with each of the $e$ edges in the workpiece once, there would be $e^2$ total intersection tests for a single particle simulation.
+
+Next, the search expansion for a state results in many particle simulations. The exact number is specified by $c_1$, the user-specified number of samples per state. If each particle simulation involves $e^2$ intersection tests, an expansion from a given state results in $c_1 \cdot e^2$ intersection tests.
+
+Finally, the time complexity of the entire solution search must be analyzed. The state space of our formulation has a size of $V_{concave} + 1$. In the worst case scenario of solution search, the algorithm must explore every possible state. If each state expansion requires $c_1 \cdot e^2$ intersection tests, the entire algorithm requires:
 
 \myequation{
-	O(V_{concave})
+	c_1 \cdot e^2 \cdot	V_{concave}
 } {
 	\label{eq:bigo}
 }
+
+intersection tests.
+
+Note that Equation \eqref{eq:bigo} provides a meaningful upper-bound on the number of intersection tests that must be performed with one core assumption -- each particle during simulation intersects with each edge of the workpiece once.
