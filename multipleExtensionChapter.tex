@@ -52,13 +52,15 @@ $$
 (V_{concave} + 1)^n.
 $$
 
-This leads to an approximate time-complexity that is now exponential in the number of concave vertices, rather than linear as in Equation \eqref{eq:bigo}:
+As in Section \ref{timeComplexity}, we would like to produce an expression that estimates the upper bound of intersection tests that must be performed during search. With the same previous assumption that each particle simulation involves $e^2$ intersection tests, our expression for the upper bound intersection tests for multiple-particle search becomes:
 
 \myequation{
-O((V_{concave})^{n})
+  c_1 \cdot e^2 \cdot (V_{concave})^n
 } {
   \label{eq:bigoTotal}
 }
+
+Equation \eqref{eq:bigoTotal} is exponential in the number of concave vertices rather than linear as in Equation \eqref{eq:bigo}.
 
 Although earlier we had avoided exponential state spaces and runtimes due to our search formulation, the introduction of multiple particles has yet again vastly expanded our state space. Our algorithm as presented thus far will still find solutions to these problems; unfortunately, it will take several factors of time longer to obtain solutions.
 
@@ -95,15 +97,15 @@ where $numSame$ is the number of particles in the duplicate locations produced a
 
 With this plan ranking heuristic, our search algorithm prefers states that have a high number of particles out of the workpiece or a high number of particles in duplicate locations. Plans that fit these characteristics have an additional performance benefit; exited particles do not have to be simulated in the transition function, and each concave vertex location only has to be simulated once.
 
-This essentially reduces the time complexity of the algorithm. If $o$ is the number of particles that have exited out of the workpiece and $m$ is the number of particles in duplicate locations, the time complexity is then:
+This essentially reduces the time complexity of the algorithm. If $o$ is the number of particles that have exited out of the workpiece and $m$ is the number of particles in duplicate locations, our expression from Equation \eqref{eq:bigoTotal} for the upper bound of intersection tests becomes
 
 \myequation{
-O((V_{concave})^{n -o -m})
+  c_1 \cdot e^2 \cdot (V_{concave})^{n -o -m}
 } {
   \label{eq:bigoTotalWithHeuristic}
 }
 
-Which is a factor of $(V_{concave})^{o + m}$ smaller than Equation \eqref{eq:bigoTotal}. Chapter \ref{results} provides quantitative details on the performance improvements gained from this ranking heuristic; the average speedup was approximately $1.5 \times$.
+which is a factor of $(V_{concave})^{o + m}$ smaller than Equation \eqref{eq:bigoTotal}. Chapter \ref{results} provides quantitative details on the performance improvements gained from this ranking heuristic; the average speedup was approximately $1.5 \times$.
 
 \subsection{Action Space Reduction Technique}
 

@@ -294,7 +294,7 @@ When simulating multiple particles, this guarantee no longer holds. We present a
 
 \myfigure{width=0.7\linewidth}{setupturn}{The geometric relationship between $g_{end}^{A=i}$ and $g_{start}^{A=i + 1}$ as it relates to the guarantee that a setup turn does not induce motion}
 
-  \section{Time Complexity}
+  \section{Time Complexity}\label{timeComplexity}
 
 Now that the entire search algorithm has been defined, we can analyze the time complexity of each subroutine. The most time complex components of our approach are:
 
@@ -313,7 +313,7 @@ The number of collisions for a given particle simulation is not easily bounded; 
 
 In practice we found that most particles had a number of collisions that was proportional (linearly) to the number of edges in the polygon $e$. We cannot however theoretically bound the time complexity of the particle simulation step.
 
-If a particle were to collide with each of the $e$ edges in the workpiece once, there would be $e^2$ total intersection tests for a single particle simulation.
+If a particle were to collide with each of the $e$ edges in the workpiece once during simulation, there would be $e^2$ total intersection tests for a single particle simulation.
 
 Next, the search expansion for a state results in many particle simulations. The exact number is specified by $c_1$, the user-specified number of samples per state. If each particle simulation involves $e^2$ intersection tests, an expansion from a given state results in $c_1 \cdot e^2$ intersection tests.
 
@@ -327,4 +327,4 @@ Finally, the time complexity of the entire solution search must be analyzed. The
 
 intersection tests.
 
-Note that Equation \eqref{eq:bigo} provides a meaningful upper-bound on the number of intersection tests that must be performed with one core assumption -- each particle during simulation intersects with each edge of the workpiece once.
+Note that Equation \eqref{eq:bigo} provides a meaningful upper-bound on the number of intersection tests that must be performed during solution search with only one core assumption -- every particle simulation produces a path that collides with each edge of the workpiece once. The actual behavior of particle simulation may involve far fewer collisions.
