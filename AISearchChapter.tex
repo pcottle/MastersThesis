@@ -130,7 +130,7 @@ $$
 
 A turn is defined by two different variables: $g_{start}$ and $g_{end}$. These variables could take on many values which means many different turns can be defined. Consequently, a large number of actions are available to the agent at any given state which leads to computational explosion (yet again).
 
-In this work, we reduce the possible set of ``turns'' from a given concave vertex to within reasonable limits. This is accomplished by reducing the set of gravity vectors available from which turns are defiend.
+In this work, we reduce the possible set of ``turns'' from a given concave vertex to within reasonable limits. This is accomplished by reducing the set of gravity vectors available from which turns are defined.
 
 Ideally, we reduce the space of all possible actions to something ``manageable'' which still represents the full range of kinetic possibilities. An action or state space is ``manageable'' if it does not jeopardize termination of the algorithm.
 
@@ -179,7 +179,7 @@ $$
 f(x) = x.
 $$
 
-With this sampling function, turns are selected uniformly between the limits of $g_{end}$. This sampling function unfortunately does not produce a uniform distribution of kinetic paths. This is primarly because acceleration effects compound with time; uniform sampling produces many kinetic paths that are almost identical. This is illustrated in Figure \ref{samplingUniform}.
+With this sampling function, turns are selected uniformly between the limits of $g_{end}$. This sampling function unfortunately does not produce a uniform distribution of kinetic paths. This is primarily because acceleration effects compound with time; uniform sampling produces many kinetic paths that are almost identical. This is illustrated in Figure \ref{samplingUniform}.
 
 \myfigure{width=0.5\linewidth}{samplingUniform}{The range of kinetic paths produced from 10 per side with uniform sampling. Many of the sampled kinetic paths are nearly identical and thus visually appear as one.}
 
@@ -260,7 +260,7 @@ There are many ways to estimate the amount of energy required to execute a serie
 
 		\subsubsection{Energy - Total Rotation Angle}
 
-The first estimation of energy is based on the total rotation angle. If friction in the motor bearings are the primary energy losses for the draining process, plans can be enqueued by their total absolute angle change.
+The first estimation of energy is based on the total rotation angle. If friction in the motor bearings is the primary cause of energy loss for the draining process, plans can be enqueued by their total absolute angle change.
 
 This model would be appropriate if the workpiece was well balanced in a fixture that produced high energy loss due to friction.
 

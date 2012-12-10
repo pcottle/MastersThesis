@@ -55,7 +55,7 @@ $$
 As in Section \ref{timeComplexity}, we would like to produce an expression that estimates the upper bound of intersection tests that must be performed during search. With the same previous assumption that each particle simulation involves $e^2$ intersection tests, our expression for the upper bound intersection tests for multiple-particle search becomes:
 
 \myequation{
-  c_1 \cdot e^2 \cdot (V_{concave})^n
+  c_1 \cdot e^2 \cdot (V_{concave})^n.
 } {
   \label{eq:bigoTotal}
 }
@@ -125,7 +125,7 @@ The second and third concerns are the primary reasons why an action space reduct
 
 The goal of our action space reduction technique is to find a pair of $g_{start}$ vectors that do not induce motion of \emph{any} particle. The sample space of $g_{end}$ vectors will then be defined by this pair of $g_{start}$ vectors as before.
 
-Reducing our action space in this way resolves each of our previous concerns. First, the action space will now be a constant size regardless of the number of particles. Secondly, because the $g_{end}$ sample space is generated from a pair of $g_{start}$ vectors that do not induce motion for any particle, no $g_{end}$ vector will directly cause scenario \#4. Finally, no turn sampled from this space will induce motion of a particle immediately, meaning our solution post-processor requires no further modificaitons.
+Reducing our action space in this way resolves each of our previous concerns. First, the action space will now be a constant size regardless of the number of particles. Secondly, because the $g_{end}$ sample space is generated from a pair of $g_{start}$ vectors that do not induce motion for any particle, no $g_{end}$ vector will directly cause scenario \#4. Finally, no turn sampled from this space will induce motion of a particle immediately, meaning our solution post-processor requires no further modifications.
 
 This action space reduction technique is accomplished in several steps. The first is to examine all the $g_{start}$ vectors for each concave vertex, as illustrated in Figure \ref{actionspace1}.
 
